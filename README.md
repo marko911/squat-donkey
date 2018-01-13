@@ -1,13 +1,17 @@
-# React , Webpack with Hod Module Replacement, PostCSS Boilerplate
+# React , Webpack with Hot Module Replacement & React-hot-loader, PostCSS Boilerplate
+
 A minimal, pre-configured starter kit for react with webpack and hmr.
 
 ## Usage
-Clone repository and run
 
-`npm install` 
+Clone repository and run:
 
-To start server with live-reload and hmr run 
+`npm install`
+
+To start server:
 
 `npm start`
 
-Babel presets and plugins are in `.babelrc` and not in the webpack config. 
+Babel presets and plugins are in `.babelrc` and not in the webpack config.
+
+Comes with PostCSS loaders and presets.
