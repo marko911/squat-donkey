@@ -1,0 +1,71 @@
+{
+  "templateName": "Maximus Body",
+  "categories": [
+    {
+      "type": "Circuit",
+      "workouts": [
+        {
+          "name": "Holy Trinity",
+          "instructions": {
+            "main":
+              "Do 1 set of exercise 1, 1 set of exercise 2 , 1 set of exercise 3. Thats one round. Do asmany rounds as possible in 30 minutes. Hint: Keep your sets low, 5-10 pushups, 3-5 dips, 3-5 pullups. Aim for 150 reps.",
+            "exercises": [
+              {
+                "label": "Pushup",
+                "value": ""
+              },
+              {
+                "label": "Pullup",
+                "value": ""
+              },
+              {
+                "label": "Dip",
+                "value": ""
+              }
+            ],
+            "additional": ["Reps: AMRAP", "Time: 30 minutes"],
+            "score": ""
+          }
+        },
+        {
+          "name": "Love/Hate",
+          "instructions": {
+            "main":
+              "Do the bench press with your body weight loaded on the bar. If you weight 185lbs, you load the bar with 185lbs. If its too heavy, use the heaviest weight you can do 10 reps with. Do one set of the bench press then one set of the burpees with the rep scheme specified.",
+            "exercises": [
+              {
+                "label": "Bench Press (@body weight)",
+                "value": "10,9,8,7,6,5,4,3,2,1 Reps"
+              },
+              {
+                "label": "Burpee",
+                "value": "1,2,3,4,5,6,7,8,9,10 Reps"
+              }
+            ],
+            "additional": ["Time: 10 to 20 minutes"],
+            "score": ""
+          }
+        },
+        {
+          "name": "400-Meter Manslaughter",
+          "instructions": {
+            "main":
+              "On a running track, start by doing 5 reps(each leg) of dumbell walking lunge, then immediately do 5 push presses. Repeat until you've covered 400m. Don't use heavy weights. 20lbs for most men will do.",
+            "exercises": [
+              {
+                "label": "Dumbell Walking Lunge",
+                "value": "5 Reps"
+              },
+              {
+                "label": "Dumbell Push Press",
+                "value": "5 Reps"
+              }
+            ],
+            "additional": ["Distance: 400 meters", "Time: 25 minutes"],
+            "score": ""
+          }
+        }
+      ]
+    }
+  ]
+}

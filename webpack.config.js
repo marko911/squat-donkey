@@ -9,6 +9,7 @@ module.exports = {
     chunks: false
   },
   entry: ["react-hot-loader/patch", "./src/index.js"],
+  devtool: "inline-source-map",
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist")
@@ -40,6 +41,12 @@ module.exports = {
         }
       },
       {
+        test: /\.json$/,
+        use: {
+          loader: "json-loader"
+        }
+      },
+      {
         test: /\.scss$/,
         include: [path.join(__dirname, "./src")],
         use: [
@@ -50,6 +57,7 @@ module.exports = {
             loader: "css-loader",
             options: {
               modules: true,
+              camelCase: "dashes",
               localIdentName: "[name]_[local]_[hash:base64:3]"
             }
           },
