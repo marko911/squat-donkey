@@ -7,8 +7,11 @@ const Card = ({ data }) => {
  name, instructions, exercises, additional 
 } = data;
   return (
-    <div id="Card" className={cs(c.box, c.col, c.container)}>
-      <div>{name}</div>
+    <div id="Card" className={cs(c.box, c.col, c.container, c.name)}>
+      <div>
+        Our data is delivered to you on-demand using well-documented and simple
+        HTTP RESTful API in JSON, XML or CSV formats.
+      </div>
     </div>
   );
 };

@@ -1,9 +1,16 @@
 @import "../layout.scss";
 
 .container {
-  width: 260px;
+  width: 380px;
   border: 1px solid #e0ebfc;
   border-radius: 5px;
-  // background: #fff;
-  padding: 10px 0 25px 0;
+  background: #fff;
+  padding: 16px 16px 25px;
+}
+
+.name {
+  color: #6881a9;
+  font-weight: 400;
+  line-height: 30px;
+  font-size: 14px;
 }
