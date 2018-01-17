@@ -1,11 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import s from "../layout.scss";
-import classNames from "classnames";
+import React from 'react';
+import PropTypes from 'prop-types';
+import cs from 'classnames';
+import s from '../layout.scss';
+import Box from '../box/Box';
+
 const Layout = ({ children }) => (
-  <div className={classNames(s.main, s.box, s.col, s.alignCenter, s.flex1)}>
+  <Box className={cs(s.main, s.flex1)}>
     {children}
-  </div>
+  </Box>
 );
 
 export default Layout;

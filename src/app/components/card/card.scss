@@ -1,16 +1,117 @@
 @import "../layout.scss";
+@import "./fontello.scss";
 
 .container {
-  width: 380px;
-  border: 1px solid #e0ebfc;
-  border-radius: 5px;
   background: #fff;
-  padding: 16px 16px 25px;
+  padding: 16px 16px 16px 24px;
+  border-radius: 5px;
 }
-
-.name {
+.with-records {
+  padding-bottom: 0;
+}
+.card {
   color: #6881a9;
   font-weight: 400;
-  line-height: 30px;
-  font-size: 14px;
+  font-size: 13px;
 }
+.card-header {
+  font-size: 16px;  
+  font-weight: 500;
+}
+.date {
+  font-weight: bold;
+  line-height: 16px;
+}
+.instructions {
+  margin-top:10px;
+}
+.additional:not(:first-child) {
+  margin-top: 5px;
+}
+.section-wrapper {
+  padding-top:10px;
+}
+.section-item {
+  margin-left:10px;  
+}
+.border {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.toggle-link {
+  font-size: 10px;
+  font-weight: 500;
+  margin: 6px 0 6px;
+  display: inline-block;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.exercises {
+  font-size: 13px;
+  &:not(:first-child) {
+    @extend .section-wrapper;
+  }
+}
+.exercise-container {
+  padding-left: 16px;
+}
+.io-pad {
+  padding: 4px;
+}
+.btn {
+  border-radius: 3px;
+  font-size: 11px;
+  color: #58E4D2;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 56px;
+  box-sizing: border-box;
+  @extend .section-item;
+  padding: 4px 10px;
+  background-color: #F7FAFF;  
+  &:hover {
+    background-color: #080059;
+  }
+}
+.recordable {
+  margin-top: 4px;
+  &:last-child {
+    margin-bottom:0;
+  }
+}
+.recent-record {
+  margin: 10px -16px 0 -24px;
+  font-size:11px;
+  padding: 4px 16px 4px 24px;
+  color: #5c5c5c;
+  background-color: #f5f5f5;
+}
+.record-row:not(:last-child) {
+  padding-bottom:4px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.record-row:not(:first-child){
+  padding-top: 4px;
+}
+.label {
+  font-weight: bold;
+  color: #49A3FF;
+  flex: 1 0 50%;
+}
+.value {
+  min-width: 0;
+  word-wrap: break-word;
+}
+.score-input {
+  @extend .section-item;
+  border: 1px solid #e0ebfc;
+  border-radius: 2px;
+  background-color: #fff;
+  font-size: 11px;
+  max-width: 56px;
+  @extend .io-pad;
+}
+

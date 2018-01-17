@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,700");
 
 body {
   margin: 0;
@@ -6,29 +6,54 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .main {
-  height: 100%;
   background-color: #f5f9fe;
 }
+
 .dashContainer {
-  padding: 50px;
+  padding: 24px;
 }
+
 .box {
   display: flex;
-  &.center {
-    justify-content: center;
-  }
+}
 
-  &.align-center {
-    align-items: center;
-  }
-  &.start {
-    justify-content: flex-start;
-  }
+.auto {
+  flex: '1 1 auto';
+  min-width: 0;
+  min-height: 0
+}
+  
+.center {
+  justify-content: center;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-start {
+  align-items: flex-start
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.start {
+  justify-content: flex-start;
+}
+
+.end {
+  justify-content: flex-end;
 }
 
 .col {
-  @extend .box;
   flex-direction: column;
 }
 
