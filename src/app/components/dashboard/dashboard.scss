@@ -1,7 +1,94 @@
 @import "../layout.scss";
+@import '../variables.scss';
 
 .col-wrapper {
   width: 240px;
-  border: 1px solid #e0ebfc;
+  border: 1px solid $color-column-border;
   border-radius: 5px;
+  overflow: hidden;
 }
+
+.category-header {
+  background-color: $color-column-header-bg;
+  color: $color-dark-secondary;
+  height: 29px;
+  line-height: 29px;
+  border-bottom: 1px solid $color-column-header-divider;
+  padding: 0 16px 0 24px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.workouts-container {
+  overflow: auto;
+}
+
+@font-face {
+  font-family: 'fontello';
+  src: url('../card/font/fontello.eot?13696906');
+  src: url('../card/font/fontello.eot?13696906#iefix') format('embedded-opentype'),
+       url('../card/font/fontello.woff2?13696906') format('woff2'),
+       url('../card/font/fontello.woff?13696906') format('woff'),
+       url('../card/font/fontello.ttf?13696906') format('truetype'),
+       url('../card/font/fontello.svg?13696906#fontello') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'fontello';
+    src: url('../font/fontello.svg?54195224#fontello') format('svg');
+  }
+}
+*/
+ 
+ .icon-base {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: inherit;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.icon-angle-up:before { 
+  @extend .icon-base;
+  content: '\f106'; } /* '' */
+.icon-angle-down:before { 
+  @extend .icon-base;
+  content: '\f107'; } /* '' */
+   
+.icon-plus-squared:before { 
+  @extend .icon-base;
+  content: '\f0fe'; } /* '' */
+.icon-minus-squared:before { 
+  @extend .icon-base;
+  content: '\f146'; } /* '' */
+ 

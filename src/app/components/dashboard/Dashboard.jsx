@@ -33,17 +33,24 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { categories } = this.state.template;
-    // const workout = this.state.template.workouts[0].sessions[0];
     return (
       <Box className={cs(s.flex1, s.dashContainer)}>
         {
           categories.map(c => (
             <Box column className={s.colWrapper}>
-              {
-              c.workouts.map(w => (
-                <Card onSubmitRecord={this.addWorkoutResult} data={w} type={c.type} />
-              ))
-            }
+              <Box className={s.categoryHeader}>
+                {c.type}
+                <Box>
+                  <i className={cs(s.iconPlusSquared, s.iconAddWorkout)} />
+                </Box>
+              </Box>
+              <Box column className={s.workoutsContainer}>
+                {
+                  c.workouts.map(w => (
+                    <Card onSubmitRecord={this.addWorkoutResult} data={w} type={c.type} />
+                  ))
+                }
+              </Box>
             </Box>
           ))
         }

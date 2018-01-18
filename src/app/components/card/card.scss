@@ -1,8 +1,9 @@
 @import "../layout.scss";
-@import "./fontello.scss";
+@import '../variables.scss';
+@import './fontello.scss';
 
 .container {
-  background: #fff;
+  background: $color-card-bg;
   padding: 16px 16px 16px 24px;
   border-radius: 5px;
 }
@@ -10,7 +11,7 @@
   padding-bottom: 0;
 }
 .card {
-  color: #6881a9;
+  color: $color-font-card;
   font-weight: 400;
   font-size: 13px;
 }
@@ -36,7 +37,7 @@
 }
 .border {
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  border-bottom: 1px solid $color-card-divider;
 }
 .toggle-link {
   font-size: 10px;
@@ -61,7 +62,7 @@
 .btn {
   border-radius: 3px;
   font-size: 11px;
-  color: #58E4D2;
+  color: $color-card-btn-font;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
@@ -71,9 +72,9 @@
   box-sizing: border-box;
   @extend .section-item;
   padding: 4px 10px;
-  background-color: #F7FAFF;  
+  background-color: $color-card-btn-bg;  
   &:hover {
-    background-color: #080059;
+    background-color: $color-dark-secondary;
   }
 }
 .recordable {
@@ -86,19 +87,20 @@
   margin: 10px -16px 0 -24px;
   font-size:11px;
   padding: 4px 16px 4px 24px;
-  color: #5c5c5c;
-  background-color: #f5f5f5;
+  color: $color-font-record;
+  background-color: $color-background-record;
+  border-bottom: 1px solid $color-card-divider-strong;
 }
 .record-row:not(:last-child) {
   padding-bottom:4px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid $color-card-divider-light;
 }
 .record-row:not(:first-child){
   padding-top: 4px;
 }
 .label {
   font-weight: bold;
-  color: #49A3FF;
+  color: $color-font-title;
   flex: 1 0 50%;
 }
 .value {
@@ -107,9 +109,9 @@
 }
 .score-input {
   @extend .section-item;
-  border: 1px solid #e0ebfc;
+  border: 1px solid $color-column-border;
   border-radius: 2px;
-  background-color: #fff;
+  background-color: $color-score-input;
   font-size: 11px;
   max-width: 56px;
   @extend .io-pad;
