@@ -91,7 +91,7 @@ export default class Card extends React.Component {
 
     const inputRecords = (
       <Box key="footer-card" column className={c.sectionWrapper}>
-        <Box column className={c.flex1}>
+        <Box column >
           {recordables.map((r, i) => (
             <Box key={i} className={cs(c.recordable)} align="center" justify="between">
               <div>{r.label}</div>
