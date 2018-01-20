@@ -1,6 +1,6 @@
 @import "../layout.scss";
-@import '../variables.scss';
-@import './fontello.scss';
+@import "../variables.scss";
+@import "./fontello.scss";
 
 .container {
   background: $color-card-bg;
@@ -16,7 +16,7 @@
   font-size: 13px;
 }
 .card-header {
-  font-size: 16px;  
+  font-size: 16px;
   font-weight: 500;
 }
 .date {
@@ -24,16 +24,16 @@
   line-height: 16px;
 }
 .instructions {
-  margin-top:10px;
+  margin-top: 10px;
 }
 .additional:not(:first-child) {
   margin-top: 5px;
 }
 .section-wrapper {
-  padding-top:10px;
+  padding-top: 10px;
 }
 .section-item {
-  margin-left:10px;  
+  margin-left: 10px;
 }
 .border {
   padding-bottom: 10px;
@@ -42,7 +42,7 @@
 .toggle-link {
   font-size: 10px;
   font-weight: 500;
-  margin: 6px 0 6px;
+  margin: 10px 0 10px;
   display: inline-block;
   text-decoration: underline;
   cursor: pointer;
@@ -72,7 +72,7 @@
   box-sizing: border-box;
   @extend .section-item;
   padding: 4px 10px;
-  background-color: $color-card-btn-bg;  
+  background-color: $color-card-btn-bg;
   &:hover {
     background-color: $color-dark-secondary;
   }
@@ -80,22 +80,22 @@
 .recordable {
   margin-top: 4px;
   &:last-child {
-    margin-bottom:0;
+    margin-bottom: 0;
   }
 }
 .recent-record {
   margin: 10px -16px 0 -24px;
-  font-size:11px;
+  font-size: 11px;
   padding: 4px 16px 4px 24px;
   color: $color-font-record;
   background-color: $color-background-record;
   border-bottom: 1px solid $color-card-divider-strong;
 }
 .record-row:not(:last-child) {
-  padding-bottom:4px;
+  padding-bottom: 4px;
   border-bottom: 1px solid $color-card-divider-light;
 }
-.record-row:not(:first-child){
+.record-row:not(:first-child) {
   padding-top: 4px;
 }
 .label {
@@ -116,4 +116,3 @@
   max-width: 56px;
   @extend .io-pad;
 }
-

@@ -47,11 +47,14 @@ module.exports = {
         },
       },
       {
-        test: /\.(woff|woff2|eot|ttf|svg|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: {
           loader: 'file-loader',
-
         },
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader',
       },
       {
         test: /\.scss$/,
