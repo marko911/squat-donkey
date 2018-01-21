@@ -3,8 +3,6 @@
 
 .col-wrapper {
   width: 240px;
-  border: 1px solid $color-column-border;
-  border-radius: 5px;
 }
 
 .category-header {
@@ -16,10 +14,16 @@
   padding: 0 16px 0 24px;
   font-size: 22px;
   font-weight: bold;
+  border: 1px solid $color-column-border;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .workouts-container {
   overflow: auto;
+  border: 1px solid $color-column-border;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 .icon-add-workout {
   color: $color-icon-add;

@@ -9,25 +9,25 @@ export default class Tooltip extends Component {
     super();
     this.state = {
       active: false,
-      position: '',
     };
   }
 
-  componentDidMount() {
-    const containerPosition = this.container.getBoundingClientRect();
+  hoverToggle = active => ({ target }) => {
+    const pos = target.getBoundingClientRect();
     this.setState({
-      position: containerPosition,
+      active,
+      tooltipStyle: {
+        left: pos.left + pos.width / 2,
+        top: pos.top + pos.height + 32,
+        marginLeft: -1 * (this.toolEl.offsetWidth / 2),
+        marginTop: -1 * (this.toolEl.offsetHeight / 2),
+      },
     });
-  }
-
-  hoverToggle = active => () => this.setState({ active });
+  };
 
   render() {
     const { el, text } = this.props;
-    const tooltipPosition = {
-      left: this.state.position.left - 10,
-      top: this.state.position.bottom + 16,
-    };
+
     const wrappedEl = (
       <div
         className={s.elWrapper}
@@ -39,18 +39,14 @@ export default class Tooltip extends Component {
     );
     const tooltip = (
       <div
-        style={tooltipPosition}
+        style={this.state.tooltipStyle}
+        ref={y => (this.toolEl = y)}
         className={cs(s.tooltip, this.state.active && s.isActive)}
       >
         {text}
       </div>
     );
 
-    return (
-      <div className={s.tooltipWrapper} ref={x => (this.container = x)}>
-        {wrappedEl}
-        {this.state.active ? tooltip : null}
-      </div>
-    );
+    return <div className={s.tooltipWrapper}>{[wrappedEl, tooltip]}</div>;
   }
 }
