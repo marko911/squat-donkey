@@ -144,9 +144,10 @@ export default class Card extends React.Component {
         {records.length > 1 ? (this.state.showAllRecords ? caretUp : caretDown) : null}
       </Box>
     );
-
+    const highlightClass = this.props.shouldHighlight ? c.workoutHighlighted : '';
+    console.log('zz',this.props.shouldHighlight);
     return (
-      <div className={cs(c.container, c.card, c.flex1)}>
+      <div className={cs(c.container, c.card, c.flex1, highlightClass)} >
         <div className={c.cardHeader}>{name}</div>
         { [this.state.showInstructions ?
             mainText : null,

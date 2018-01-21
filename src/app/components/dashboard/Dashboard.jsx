@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import sid from 'shortid';
 import cs from 'classnames';
-import { find, findIndex, propEq } from 'ramda';
+import { find, findIndex, propEq, propOr } from 'ramda';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
 import Card from '../card/Card';
@@ -16,6 +17,7 @@ export default class Dashboard extends React.Component {
     super();
     this.state = {
       template: {},
+      idxOfHighlighted: {},
     };
   }
 
@@ -45,29 +47,45 @@ export default class Dashboard extends React.Component {
     this.setState({ template: updatedTemplate });
   };
 
+  randomize = type => () => {
+    const category = find(propEq('type', type), this.state.template.categories);
+    const randIdx = Math.round(Math.random() * (category.workouts.length - 1));
+    console.log(randIdx);
+    this.setState({ idxOfHighlighted: { [randIdx]: true } });
+  };
+
   render() {
     const { categories } = this.state.template;
     const randomizeIcon = (
       <i className={cs(font.iconShuffle, s.iconRandomize)} />
     );
+    const addWorkoutIcon = (
+      <i className={cs(font.iconPlusSquared, s.iconAddWorkout)} />
+    );
+    const minimizeColumnIcon = (
+      <i className={cs(font.iconMinusSquared, s.iconMinimizeColumn)} />
+    );
     return (
       <Box className={cs(s.flex1, s.dashContainer)}>
         {categories.map(c => (
-          <Box column className={s.colWrapper}>
+          <Box key={sid.generate()} column className={s.colWrapper}>
             <Box className={s.categoryHeader} align="center" justify="between">
               {c.type}
               <Box align="center">
-                <Tooltip el={randomizeIcon} text="Show random workout" />
-
-                <i className={cs(font.iconPlusSquared, s.iconAddWorkout)} />
-                <i
-                  className={cs(font.iconMinusSquared, s.iconMinimizeColumn)}
+                <Tooltip
+                  el={randomizeIcon}
+                  onClick={this.randomize(c.type)}
+                  text="Randomize workout"
                 />
+                <Tooltip el={addWorkoutIcon} text="Add workout" />
+                <Tooltip el={minimizeColumnIcon} text="Hide Column" />
               </Box>
             </Box>
             <Box column className={s.workoutsContainer}>
-              {c.workouts.map(w => (
+              {c.workouts.map((w, i) => (
                 <Card
+                  shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
+                  key={sid.generate()}
                   onSubmitRecord={this.addWorkoutResult}
                   data={w}
                   type={c.type}

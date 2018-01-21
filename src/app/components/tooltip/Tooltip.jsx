@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import sid from 'shortid';
 import cs from 'classnames';
-import Box from '../box/Box';
 import s from './tooltip.scss';
 
 export default class Tooltip extends Component {
@@ -30,6 +30,7 @@ export default class Tooltip extends Component {
 
     const wrappedEl = (
       <div
+        key={sid.generate()}
         className={s.elWrapper}
         onMouseEnter={this.hoverToggle(true)}
         onMouseLeave={this.hoverToggle(false)}
@@ -39,6 +40,7 @@ export default class Tooltip extends Component {
     );
     const tooltip = (
       <div
+        key={sid.generate()}
         style={this.state.tooltipStyle}
         ref={y => (this.toolEl = y)}
         className={cs(s.tooltip, this.state.active && s.isActive)}
@@ -47,6 +49,10 @@ export default class Tooltip extends Component {
       </div>
     );
 
-    return <div className={s.tooltipWrapper}>{[wrappedEl, tooltip]}</div>;
+    return (
+      <div onClick={this.props.onClick} className={s.tooltipWrapper}>
+        {[wrappedEl, tooltip]}
+      </div>
+    );
   }
 }

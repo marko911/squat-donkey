@@ -20,6 +20,25 @@
   font-size: 16px;
   font-weight: 500;
 }
+@keyframes highlightIt {
+  0% {
+    border: 2px solid;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+  }
+  50% {
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border: 2px solid #6881a980;
+  }
+  100% {
+    border: none;
+  }
+}
+
+.workout-highlighted {
+  animation: highlightIt 1s ease-in-out;
+}
 .date {
   font-weight: bold;
   line-height: 16px;
@@ -76,6 +95,7 @@
   background-color: $color-card-btn-bg;
   &:hover {
     background-color: $color-dark-secondary;
+    color: $color-card-btn-hover-font;
   }
 }
 .recordable {
