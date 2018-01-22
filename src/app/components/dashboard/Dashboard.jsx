@@ -47,6 +47,7 @@ export default class Dashboard extends React.Component {
     this.setState({ template: updatedTemplate });
   };
 
+
   randomize = type => () => {
     const category = find(propEq('type', type), this.state.template.categories);
     const categoryIdx = findIndex(
@@ -77,6 +78,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { categories } = this.state.template;
+    const c = categories[0];
     const randomizeIcon = (
       <i className={cs(font.iconShuffle, s.iconRandomize)} />
     );
@@ -88,9 +90,9 @@ export default class Dashboard extends React.Component {
     );
     return (
       <Box className={cs(s.flex1, s.dashContainer)}>
-        {categories.map(c => (
-          <Box key={sid.generate()} column className={s.colWrapper}>
-            <Box className={s.categoryHeader} align="center" justify="between">
+
+        <Box key={sid.generate()} column className={s.colWrapper}>
+          <Box className={s.categoryHeader} align="center" justify="between">
               {c.type}
               <Box align="center">
                 <Tooltip
@@ -102,7 +104,7 @@ export default class Dashboard extends React.Component {
                 <Tooltip el={minimizeColumnIcon} text="Hide Column" />
               </Box>
             </Box>
-            <Box column className={s.workoutsContainer}>
+          <Box column className={s.workoutsContainer}>
               {c.workouts.map((w, i) => (
                 <Card
                   shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
@@ -113,8 +115,8 @@ export default class Dashboard extends React.Component {
                 />
               ))}
             </Box>
-          </Box>
-        ))}
+        </Box>
+
       </Box>
     );
   }

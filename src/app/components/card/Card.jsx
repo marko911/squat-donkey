@@ -20,6 +20,7 @@ export default class Card extends React.Component {
     this.resetInputBoxes();
   }
 
+
   resetInputBoxes = () => {
     const newRecords = this.props.data.instructions.recordables.reduce(
       (acc, rec) => ({
@@ -43,7 +44,8 @@ export default class Card extends React.Component {
     this.setState({ showInstructions: !this.state.showInstructions });
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
-  submitRecord = name => () => {
+  submitRecord = name => (e) => {
+    e.preventDefault();
     const recordHasValues = values(this.state.newRecords).reduce(
       (acc, nxt) => acc || !isEmpty(nxt),
       false,
@@ -62,8 +64,8 @@ export default class Card extends React.Component {
     const {
       name,
       instructions: {
- recordables, exercises, main, additional 
-},
+        recordables, exercises, main, additional,
+      },
       records,
     } = this.props.data;
     const toggler = (
@@ -137,7 +139,7 @@ export default class Card extends React.Component {
     const recordsList = this.state.showAllRecords
       ? records
       : isEmpty(records) ? [] : [head(records)];
-    const mostRecentWithCollapse = isEmpty(recordsList) ? null : (
+    const mostRecentWithCollapse = isEmpty(recordsList) ? [] : (
       <Box className={cs(c.recentRecord)} align="start" key={sid.generate()}>
         <Box column className={c.flex1}>
           {recordsList.map((rec) => {
@@ -173,11 +175,9 @@ export default class Card extends React.Component {
           : null}
       </Box>
     );
-    const highlightClass = this.props.shouldHighlight
-      ? c.workoutHighlighted
-      : '';
+
     return (
-      <div className={cs(c.container, c.card, highlightClass)}>
+      <div className={cs(c.container, c.card, this.props.shouldHighlight && c.workoutHighlighted)}>
         <div className={c.cardHeader}>{name}</div>
         {[
           this.state.showInstructions ? mainText : null,
