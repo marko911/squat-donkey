@@ -21,24 +21,33 @@ export default class Card extends React.Component {
   }
 
   resetInputBoxes = () => {
-    const newRecords = this.props.data.instructions.recordables.reduce((acc, rec) => ({
-      ...acc,
-      [rec.label]: '',
-    }), {});
+    const newRecords = this.props.data.instructions.recordables.reduce(
+      (acc, rec) => ({
+        ...acc,
+        [rec.label]: '',
+      }),
+      {},
+    );
     this.setState({ newRecords });
-  }
+  };
 
-  handleInput = label => ({ target: { value } }) => this.setState({
-    newRecords: {
-      ...this.state.newRecords,
-      [label]: value,
-    },
-  })
+  handleInput = label => ({ target: { value } }) =>
+    this.setState({
+      newRecords: {
+        ...this.state.newRecords,
+        [label]: value,
+      },
+    });
 
-  toggleInstructions = () => this.setState({ showInstructions: !this.state.showInstructions })
-  toggleCollapse = () => this.setState({ showAllRecords: !this.state.showAllRecords })
+  toggleInstructions = () =>
+    this.setState({ showInstructions: !this.state.showInstructions });
+  toggleCollapse = () =>
+    this.setState({ showAllRecords: !this.state.showAllRecords });
   submitRecord = name => () => {
-    const recordHasValues = values(this.state.newRecords).reduce((acc, nxt) => acc || !isEmpty(nxt), false);
+    const recordHasValues = values(this.state.newRecords).reduce(
+      (acc, nxt) => acc || !isEmpty(nxt),
+      false,
+    );
     if (recordHasValues) {
       this.props.onSubmitRecord({
         type: this.props.type,
@@ -47,53 +56,61 @@ export default class Card extends React.Component {
       });
     }
     this.resetInputBoxes();
-  }
+  };
 
   render() {
     const {
-      name, instructions: {
-        recordables, exercises, main, additional,
-      }, records,
+      name,
+      instructions: {
+ recordables, exercises, main, additional 
+},
+      records,
     } = this.props.data;
     const toggler = (
       <a
         key={sid.generate()}
         className={c.toggleLink}
         onClick={this.toggleInstructions}
-      >{this.state.showInstructions ? 'Hide instructions' : 'Show instructions'}
-      </a>);
+      >
+        {this.state.showInstructions
+          ? 'Hide instructions'
+          : 'Show instructions'}
+      </a>
+    );
 
     const mainText = (
-      <div
-        key={sid.generate()}
-        className={c.instructions}
-      >{main}
-      </div>);
+      <div key={sid.generate()} className={c.instructions}>
+        {main}
+      </div>
+    );
 
     const exerciseList = (
-      <Box key={sid.generate()} column >
+      <Box key={sid.generate()} column>
         {exercises.map(e => (
           <Box className={c.exercises} justified="between" key={sid.generate()}>
             <div className={c.label}>{e.label}</div>
             <div className={c.value}>{e.value}</div>
           </Box>
-        ))
-        }
-      </Box>);
+        ))}
+      </Box>
+    );
 
     const workoutParams = (
-      <div key={sid.generate()} className={cs(c.sectionWrapper, c.border)}>{
-      additional.map(p => (
-        <div key={sid.generate()} >{p}</div>
-      ))
-    }
-      </div>);
+      <div key={sid.generate()} className={cs(c.sectionWrapper, c.border)}>
+        {additional.map(p => <div key={sid.generate()}>{p}</div>)}
+      </div>
+    );
 
     const inputRecords = (
       <Box key="footer-card" column className={c.sectionWrapper}>
-        <Box column >
+        <Box column>
           {recordables.map((r, i) => (
-            <Box key={i} className={cs(c.recordable)} align="center" justify="between">
+            <Box
+              key={i}
+              className={cs(c.recordable)}
+              align="center"
+              justify="between"
+            >
               <div>{r.label}</div>
               <input
                 type="text"
@@ -105,25 +122,36 @@ export default class Card extends React.Component {
           ))}
         </Box>
         <Box className={c.sectionWrapper} justify="end">
-          <div onClick={this.submitRecord(name)} className={c.btn}>enter</div>
+          <div onClick={this.submitRecord(name)} className={c.btn}>
+            enter
+          </div>
         </Box>
-      </Box>);
-    const caretDown = <i onClick={this.toggleCollapse} className={c.iconAngleDown} />;
-    const caretUp = <i onClick={this.toggleCollapse} className={c.iconAngleUp} />;
-    const recordsList = this.state.showAllRecords ? records : (isEmpty(records) ? [] : [head(records)]);
+      </Box>
+    );
+    const caretDown = (
+      <i onClick={this.toggleCollapse} className={c.iconAngleDown} />
+    );
+    const caretUp = (
+      <i onClick={this.toggleCollapse} className={c.iconAngleUp} />
+    );
+    const recordsList = this.state.showAllRecords
+      ? records
+      : isEmpty(records) ? [] : [head(records)];
     const mostRecentWithCollapse = isEmpty(recordsList) ? null : (
       <Box className={cs(c.recentRecord)} align="start" key={sid.generate()}>
         <Box column className={c.flex1}>
-          {
-            recordsList.map((rec) => {
+          {recordsList.map((rec) => {
             const dateOfResult = moment(rec.date).format('DD-MMM-YYYY');
             const results = isEmpty(rec) ? [] : rec.results;
             return (
               <Box className={c.recordRow} key={sid.generate()}>
                 <div className={c.date}>{dateOfResult}</div>
-                <Box className={cs(c.exerciseContainer)} key={sid.generate()} column>
-                  {
-                    keys(results).map((r) => {
+                <Box
+                  className={cs(c.exerciseContainer)}
+                  key={sid.generate()}
+                  column
+                >
+                  {keys(results).map((r) => {
                     const val = results[r];
                     return (
                       <Box
@@ -132,30 +160,32 @@ export default class Card extends React.Component {
                         align="center"
                       >
                         {`${r}: ${val}`}
-                      </Box>);
-                    })
-                  }
+                      </Box>
+                    );
+                  })}
                 </Box>
               </Box>
-              );
-            })
-          }
+            );
+          })}
         </Box>
-        {records.length > 1 ? (this.state.showAllRecords ? caretUp : caretDown) : null}
+        {records.length > 1
+          ? this.state.showAllRecords ? caretUp : caretDown
+          : null}
       </Box>
     );
-    const highlightClass = this.props.shouldHighlight ? c.workoutHighlighted : '';
-    console.log('zz',this.props.shouldHighlight);
+    const highlightClass = this.props.shouldHighlight
+      ? c.workoutHighlighted
+      : '';
     return (
-      <div className={cs(c.container, c.card, c.flex1, highlightClass)} >
+      <div className={cs(c.container, c.card, highlightClass)}>
         <div className={c.cardHeader}>{name}</div>
-        { [this.state.showInstructions ?
-            mainText : null,
-            toggler,
-            exerciseList,
-            workoutParams,
-            inputRecords,
-            mostRecentWithCollapse,
+        {[
+          this.state.showInstructions ? mainText : null,
+          toggler,
+          exerciseList,
+          workoutParams,
+          inputRecords,
+          mostRecentWithCollapse,
         ]}
       </div>
     );

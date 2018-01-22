@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
-import { find, findIndex, propEq, propOr } from 'ramda';
+import { find, findIndex, propEq, without } from 'ramda';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
 import Card from '../card/Card';
@@ -49,9 +49,30 @@ export default class Dashboard extends React.Component {
 
   randomize = type => () => {
     const category = find(propEq('type', type), this.state.template.categories);
+    const categoryIdx = findIndex(
+      propEq('type', type),
+      this.state.template.categories,
+    );
     const randIdx = Math.round(Math.random() * (category.workouts.length - 1));
-    console.log(randIdx);
-    this.setState({ idxOfHighlighted: { [randIdx]: true } });
+    const selected = category.workouts[randIdx];
+    const reorderedList = without([selected], category.workouts);
+    reorderedList.unshift(selected);
+    const updatedTemplate = { ...this.state.template };
+    updatedTemplate.categories[categoryIdx].workouts = reorderedList;
+    this.setState(state => ({
+      ...state,
+      template: updatedTemplate,
+    }));
+    this.setState(state => ({
+      ...state,
+      idxOfHighlighted: { 0: true },
+    }));
+    setTimeout((_) => {
+      this.setState(state => ({
+        ...state,
+        idxOfHighlighted: {},
+      }));
+    }, 1000);
   };
 
   render() {
