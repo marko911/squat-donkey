@@ -3,13 +3,13 @@
 
 .new-card-container {
   background: $color-background-main;
-  padding: 12px 16px 10px 16px;
+  padding: 12px 16px 16px 16px;
 }
 
 .new-card-header {
-  color: $color-font-title;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
 }
 
 .textfield-floating-label {
@@ -26,13 +26,13 @@
 .textfield-label {
   bottom: 0;
   color: $color-text-field-label;
-  font-size: 14px;
+  font-size: 12px;
   left: 4px;
   right: 0;
   pointer-events: none;
   position: absolute;
   display: block;
-  top: 23px;
+  top: 24px;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -64,8 +64,43 @@
 
 .is-focused {
   color: $color-column-header-font;
-  font-size: 12px;
+  font-size: 10px;
   top: 2px;
   left: 0;
   visibility: visible;
+}
+
+.exercise-box {
+  &:not(:first-child){
+    margin-left:4px;
+  }
+}
+
+.section-heading {
+  font-size: 14px;
+  margin: 10px 0 6px;
+}
+.section-subheading {
+  font-size: 10px;
+  margin-top:-6px;
+  margin-bottom: 6px;
+  color: $color-text-field-label;
+}
+.add {
+  margin-top:0;
+  float:right;
+}
+.submit {
+  margin-left:0;
+  background-color: $color-new-card-action;
+  color: white;
+  padding: 8px 24px;
+  width: auto;
+}
+
+.close {
+  color: $color-font-card;
+  &:hover {
+    color: $color-dark-secondary;
+  }
 }

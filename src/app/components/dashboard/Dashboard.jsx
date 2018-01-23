@@ -98,7 +98,7 @@ export default class Dashboard extends React.Component {
                 <Tooltip
                   el={randomizeIcon}
                   onClick={this.randomize(c.type)}
-                  text="Randomize workout"
+                  text="Random workout"
                 />
                 <Tooltip el={addWorkoutIcon} text="Add workout" />
                 <Tooltip el={minimizeColumnIcon} text="Hide Column" />

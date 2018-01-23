@@ -12,21 +12,21 @@
                 "exercises": [
                   {
                     "label": "Pushup",
-                    "value": ""
+                    "scheme": ""
                   },
                   {
                     "label": "Pullup",
-                    "value": ""
+                    "scheme": ""
                   },
                   {
                     "label": "Dip",
-                    "value": ""
+                    "scheme": ""
                   }
                 ],
                 "recordables": [{
                   "label": "Score"
                 }], 
-                "additional": ["Reps: AMRAP", "Time: 30 minutes"]
+                "parameters": ["Reps: AMRAP", "Time: 30 minutes"]
               },
               "records": []
             },
@@ -39,17 +39,17 @@
                 "exercises": [
                   {
                     "label": "Bench Press (@body weight)",
-                    "value": "10,9,8,7,6,5,4,3,2,1 Reps"
+                    "scheme": "10,9,8,7,6,5,4,3,2,1 Reps"
                   },
                   {
                     "label": "Burpee",
-                    "value": "1,2,3,4,5,6,7,8,9,10 Reps"
+                    "scheme": "1,2,3,4,5,6,7,8,9,10 Reps"
                   }
                 ],
                 "recordables": [{
                   "label": "Score"
                 }], 
-                "additional": ["Time: 10 to 20 minutes"],
+                "parameters": ["Time: 10 to 20 minutes"],
                 "score": ""
               },
               "records": []
@@ -63,17 +63,17 @@
                 "exercises": [
                   {
                     "label": "Dumbell Walking Lunge",
-                    "value": "5 Reps"
+                    "scheme": "5 Reps"
                   },
                   {
                     "label": "Dumbell Push Press",
-                    "value": "5 Reps"
+                    "scheme": "5 Reps"
                   }
                 ],
                 "recordables": [{
                   "label": "Score"
                 }], 
-                "additional": ["Distance: 400 meters", "Time: 25 minutes"],
+                "parameters": ["Distance: 400 meters", "Time: 25 minutes"],
                 "score": ""
               },
               "records": []

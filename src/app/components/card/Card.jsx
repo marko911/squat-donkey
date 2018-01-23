@@ -64,7 +64,7 @@ export default class Card extends React.Component {
     const {
       name,
       instructions: {
-        recordables, exercises, main, additional,
+        recordables, exercises, main, parameters,
       },
       records,
     } = this.props.data;
@@ -91,7 +91,7 @@ export default class Card extends React.Component {
         {exercises.map(e => (
           <Box className={c.exercises} justified="between" key={sid.generate()}>
             <div className={c.label}>{e.label}</div>
-            <div className={c.value}>{e.value}</div>
+            <div className={c.value}>{e.scheme}</div>
           </Box>
         ))}
       </Box>
@@ -99,7 +99,7 @@ export default class Card extends React.Component {
 
     const workoutParams = (
       <div key={sid.generate()} className={cs(c.sectionWrapper, c.border)}>
-        {additional.map(p => <div key={sid.generate()}>{p}</div>)}
+        {parameters.map(p => <div key={sid.generate()}>{p}</div>)}
       </div>
     );
 
@@ -153,7 +153,7 @@ export default class Card extends React.Component {
                     return (
                       <div
                         key={sid.generate()}
-                        className={cs(c.containWidth,c.value,c.flex1 )}
+                        className={cs(c.containWidth, c.value, c.flex1)}
                       >
                         {`${r}: ${val}`}
                       </div>

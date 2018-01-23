@@ -75,3 +75,7 @@
   @extend .icon-base;
   content: "\e800";
 } /* '' */
+
+.icon-cancel:before { 
+  @extend .icon-base;
+  content: '\e801'; } /* '' */
