@@ -70,7 +70,7 @@ export default class NewCard extends React.Component {
     );
     return (
       <div className={cs(c.newCardContainer, s.card)} >
-        <div className={s.cardHeader}>New Workout</div>
+        <div className={c.newCardHeader}>New Workout</div>
         {[name, instructions]}
       </div>);
   }
