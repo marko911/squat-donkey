@@ -4,7 +4,7 @@
 
 .container {
   background: $color-card-bg;
-  padding: 16px 16px 16px 16px;
+  padding: 16px 16px 10px 16px;
   border-radius: 5px;
 }
 .with-records {
@@ -27,25 +27,27 @@
 @keyframes highlightIt {
   0% {
     border: 2px solid;
-    padding: 14px 14px 15px 14px;
+    padding: 14px 14px 9px 14px;
   }
   50% {
     border: 2px solid;
-    padding: 14px 14px 15px 14px;
+    padding: 14px 14px 9px 14px;
   }
   100% {
     border: 2px solid transparent;
-    padding: 14px 14px 15px 14px;
+    padding: 14px 14px 9px 14px;
   }
 }
 
 .workout-highlighted {
   animation: highlightIt 1.3s ease-in-out;
+  padding-bottom: 0;
 }
 .date {
   font-weight: bold;
   line-height: 16px;
   white-space: nowrap;
+  margin-right: 8px;
 }
 .instructions {
   margin-top: 10px;
@@ -79,6 +81,7 @@
 }
 .exercise-container {
   padding-left: 16px;
+  overflow: hidden;
 }
 .io-pad {
   padding: 4px;
@@ -109,12 +112,12 @@
   }
 }
 .recent-record {
-  margin: 10px -16px 0 -16px;
+  margin-top: 10px;
+  border-radius: 2px;
   font-size: 11px;
-  padding: 4px 16px 4px 16px;
+  padding: 4px 4px 4px 10px;
   color: $color-font-record;
   background-color: $color-background-record;
-  border-bottom: 1px solid $color-card-divider-strong;
 }
 .record-row:not(:last-child) {
   padding-bottom: 4px;
@@ -123,6 +126,11 @@
 .record-row:not(:first-child) {
   padding-top: 4px;
 }
+
+.contain-width {
+  min-width: 0;
+}
+
 .label {
   font-weight: bold;
   color: $color-font-title;

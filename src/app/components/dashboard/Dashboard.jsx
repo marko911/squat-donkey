@@ -8,6 +8,7 @@ import font from '../card/fontello.scss';
 import Card from '../card/Card';
 import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
+import NewCard from '../newCard/NewCard';
 import maximus from '../../constants/maximusBody.json';
 
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
@@ -104,6 +105,7 @@ export default class Dashboard extends React.Component {
               </Box>
             </Box>
             <Box column className={s.workoutsContainer}>
+              <NewCard />
               {c.workouts.map((w, i) => (
                 <Card
                   shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}

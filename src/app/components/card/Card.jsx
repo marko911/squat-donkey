@@ -141,31 +141,24 @@ export default class Card extends React.Component {
       : isEmpty(records) ? [] : [head(records)];
     const mostRecentWithCollapse = isEmpty(recordsList) ? [] : (
       <Box className={cs(c.recentRecord)} align="start" key={sid.generate()}>
-        <Box column className={c.flex1}>
+        <Box column className={cs(c.containWidth, c.flex1)}>
           {recordsList.map((rec) => {
             const dateOfResult = moment(rec.date).format('DD-MMM-YYYY');
             const results = isEmpty(rec) ? [] : rec.results;
             return (
               <Box className={c.recordRow} key={sid.generate()}>
                 <div className={c.date}>{dateOfResult}</div>
-                <Box
-                  className={cs(c.exerciseContainer)}
-                  key={sid.generate()}
-                  column
-                >
-                  {keys(results).map((r) => {
+                {keys(results).map((r) => {
                     const val = results[r];
                     return (
-                      <Box
+                      <div
                         key={sid.generate()}
-                        justify="between"
-                        align="center"
+                        className={cs(c.containWidth,c.value,c.flex1 )}
                       >
                         {`${r}: ${val}`}
-                      </Box>
+                      </div>
                     );
                   })}
-                </Box>
               </Box>
             );
           })}

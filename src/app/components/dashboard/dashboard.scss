@@ -3,6 +3,9 @@
 
 .col-wrapper {
   width: 240px;
+  &:not(:last-child){
+    margin-right: 12px;
+  }
 }
 
 .category-header {
@@ -11,7 +14,7 @@
   height: 29px;
   line-height: 29px;
   border-bottom: 1px solid $color-column-header-divider;
-  padding: 0 16px 0 24px;
+  padding: 0 16px;
   font-size: 22px;
   font-weight: bold;
   border: 1px solid $color-column-border;
@@ -22,19 +25,29 @@
 .workouts-container {
   overflow: auto;
   border: 1px solid $color-column-border;
+  border-top:none;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 .icon-add-workout {
   color: $color-icon-add;
+  &:hover {
+    color: #34e643
+  }
 }
 
 .icon-minimize-column {
   color: $color-column-minimize;
+  &:hover {
+    color:#ffcd2a
+  }
 }
 
 .icon-randomize {
   color: $color-font-title;
+  &:hover {
+    color: #47b8ff
+  }
 }
 
 .icon-add-workout,

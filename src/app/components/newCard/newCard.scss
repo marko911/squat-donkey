@@ -1,0 +1,65 @@
+@import "../layout.scss";
+@import "../variables.scss";
+
+.new-card-container {
+  background: $color-background-main;
+  padding: 16px 16px 10px 16px;
+}
+
+.textfield-floating-label {
+  position: relative;
+  font-size: 14px;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: 100%;
+  margin: 0;
+  padding: 20px 0 5px;
+}
+
+.textfield-label {
+  bottom: 0;
+  color: $color-text-field-label;
+  font-size: 14px;
+  left: 4px;
+  right: 0;
+  pointer-events: none;
+  position: absolute;
+  display: block;
+  top: 23px;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.floating-label {
+  transition-duration: .2s;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+}
+
+.input-name {
+  background: $color-text-field-bg;
+  border: 1px solid transparent;
+  display: block;
+  font-size: 14px;
+  font-family: "Helvetica","Arial",sans-serif;
+  margin: 0;
+  padding: 4px;
+  width: 100%;
+  outline: none;
+  text-align: left;
+  resize: none;
+  &:focus {
+    border: 1px solid $color-text-field-border;    
+    background: #fff;
+  }
+}
+
+.is-focused {
+  color: $color-column-header-font;
+  font-size: 12px;
+  top: 2px;
+  left: 0;
+  visibility: visible;
+}

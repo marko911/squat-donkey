@@ -13,16 +13,18 @@ export default class Tooltip extends Component {
   }
 
   hoverToggle = active => ({ target }) => {
-    const pos = target.getBoundingClientRect();
-    this.setState({
-      active,
-      tooltipStyle: {
-        left: pos.left + pos.width / 2,
-        top: pos.top + pos.height + 32,
-        marginLeft: -1 * (this.toolEl.offsetWidth / 2),
-        marginTop: -1 * (this.toolEl.offsetHeight / 2),
-      },
-    });
+    this.setState({ active });
+    if (active) {
+      const pos = target.getBoundingClientRect();
+      this.setState({
+        tooltipStyle: {
+          left: pos.left + pos.width / 2,
+          top: pos.top + pos.height + 32,
+          marginLeft: -1 * (this.toolEl.offsetWidth / 2),
+          marginTop: -1 * (this.toolEl.offsetHeight / 2),
+        },
+      });
+    }
   };
 
   render() {
