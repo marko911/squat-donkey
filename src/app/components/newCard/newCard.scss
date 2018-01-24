@@ -4,7 +4,28 @@
 .new-card-container {
   background: $color-background-main;
   padding: 12px 16px 16px 16px;
+  transition: transform $slide-duration cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
+
+.enter {
+  transform: translateY(100vh) translateY(-127px);
+}
+
+.enter.enter-active {
+  z-index: 10;
+  transform: translate3d(0px, 0px, 0px);
+  transition: transform 1000ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.exit {
+  transform: translate3d(0px, 0px, 0px);
+}
+
+.exit.exit-active {
+  transform: translateY(100vh) translateY(-127px);
+  transition: transform $animation-ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
 
 .new-card-header {
   font-size: 16px;
@@ -42,6 +63,13 @@
 .floating-label {
   transition-duration: .2s;
   transition-timing-function: cubic-bezier(.4,0,.2,1);
+}
+
+.label-required:after {
+  content: "*";
+  color: $color-error;
+  position: absolute;
+  top:-2;
 }
 
 .input-name {
@@ -103,4 +131,12 @@
   &:hover {
     color: $color-dark-secondary;
   }
+}
+
+.highlight-input {
+  border: 1px solid $color-error;
+}
+.error {
+  color: $color-error;
+  font-size:10px;
 }

@@ -27,9 +27,15 @@ module.exports = {
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      log: ['utils', 'log'],
+    }),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      utils: path.resolve(__dirname, './src/app/utils/utils'),
+    },
   },
   module: {
     rules: [

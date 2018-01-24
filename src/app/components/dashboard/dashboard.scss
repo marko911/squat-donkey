@@ -54,8 +54,26 @@
 .icon-add-workout,
 .icon-randomize,
 .icon-minimize-column {
-  margin-left: 8px;
   &:before {
     font-size: 16px;
   }
 }
+
+.tooltip-icon {
+  margin-left:8px;
+}
+
+$animation-ms: 350ms;
+.enter {
+  transform: translateY(100vh) translateY(-127px);
+}
+
+.enter.enter-active {
+  transform: translate3d(0px, 0px, 0px);
+  transition: transform $slide-duration cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.exit {
+  transform: translate3d(0px, 0px, 0px);
+}
+

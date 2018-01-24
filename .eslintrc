@@ -18,6 +18,7 @@
   },
   "globals": {
     "document":true,
-    "localStorage": true
+    "localStorage": true,
+    "log":true
   }
 }

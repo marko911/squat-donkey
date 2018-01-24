@@ -1,17 +1,23 @@
 import React from 'react';
 import cs from 'classnames';
-import sid from 'shortid';
-import { isEmpty, head, keys, ifElse, gt, compose, prop } from 'ramda';
+import { isEmpty, head, keys, ifElse, compose, prop, T, without } from 'ramda';
 import PropTypes from 'prop-types';
 import c from './newCard.scss';
 import s from '../card/card.scss';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
 
-const InputWithLabel = ({ label, children, focused }) => (
+const InputWithLabel = ({
+  label, children, focused, required,
+}) => (
   <div className={cs(c.textfieldFloatingLabel)}>
     {children}
-    <label className={cs(c.textfieldLabel, c.floatingLabel, focused && c.isFocused)}>
+    <label className={cs(
+      c.textfieldLabel, c.floatingLabel,
+            required && c.labelRequired,
+            focused && c.isFocused,
+            )}
+    >
       {label}
     </label>
   </div>);
@@ -54,7 +60,7 @@ const initialState = {
 
 const requiredFields = [
   { prop: 'name', validator: obj => !isEmpty(obj) },
-  { prop: 'exercises', validator: compose(gt(0), prop('length')) },
+  { prop: 'exercises', validator: compose(l => l >= 1, prop('length')) },
 ];
 
 export default class NewCard extends React.Component {
@@ -76,7 +82,6 @@ export default class NewCard extends React.Component {
     return isValid;
   }
 
-  highlightInvalidFields = (obj) => { console.log('invalid'); }
   submitWorkout =() => {
     const {
       name, instructions, exercises, parameters, recordables,
@@ -94,7 +99,7 @@ export default class NewCard extends React.Component {
     const validateAndSubmit = ifElse(
       this.isValidWorkout,
       this.props.onSubmit,
-      this.highlightInvalidFields,
+      T,
     );
     validateAndSubmit(workoutObj);
   }
@@ -120,6 +125,7 @@ export default class NewCard extends React.Component {
           ...this.state.focus,
           [field]: true,
         },
+        invalidFields: [...without([field], this.state.invalidFields)],
       });
     } else {
       const newList = [...this.state.focus[field]];
@@ -129,6 +135,7 @@ export default class NewCard extends React.Component {
           ...this.state.focus,
           [field]: newList,
         },
+        invalidFields: [...without([field], this.state.invalidFields)],
       });
     }
   }
@@ -187,10 +194,11 @@ export default class NewCard extends React.Component {
       <InputWithLabel
         key="name"
         label="Workout Name"
+        required
         focused={this.state.focus.name}
       >
         <input
-          className={c.inputName}
+          className={cs(c.inputName, this.state.invalidFields.includes('name') && c.highlightInput)}
           value={this.state.name}
           onChange={this.handleChange('name')}
           onFocus={this.handleFocus('name')}
@@ -221,9 +229,13 @@ export default class NewCard extends React.Component {
         this.state.exercises.map((w, i) => (
           <Box key={`wrkt-${i}`}>
             <div className={cs(s.flex1, s.containWidth, c.exerciseBox)}>
-              <InputWithLabel label={`Exercise ${i + 1}`} focused={this.state.focus.exercises[i].label}>
+              <InputWithLabel
+                required={i === 0}
+                label={`Exercise ${i + 1}`}
+                focused={this.state.focus.exercises[i].label}
+              >
                 <input
-                  className={c.inputName}
+                  className={cs(c.inputName, i === 0 && this.state.invalidFields.includes('exercises') && c.highlightInput)}
                   value={this.state.exercises[i].label}
                   onChange={this.handleChangeArray(i, 'exercises', 'label')}
                   onFocus={this.handleFocus('exercises', i, 'label')}
@@ -318,6 +330,7 @@ export default class NewCard extends React.Component {
     );
 
     return (
+
       <div className={cs(c.newCardContainer, s.card)} >
         <Box className={c.newCardHeader} justify="between">
           <div>New Workout</div>
@@ -326,11 +339,15 @@ export default class NewCard extends React.Component {
 
         {[name, instructions, exercises, parameters, resultFields]}
         <Box className={c.sectionWrapper} justify="end">
+          <div className={c.error}>
+            {!isEmpty(this.state.invalidFields) && 'Enter required fields'}
+          </div>
           <div onClick={this.submitWorkout} className={cs(s.btn, c.submit)}>
             Submit
           </div>
         </Box>
-      </div>);
+      </div>
+    );
   }
 }
 

@@ -13,7 +13,10 @@ export default class Tooltip extends Component {
   }
 
   hoverToggle = active => ({ target }) => {
-    this.setState({ active });
+    this.setState(state => ({
+      ...state,
+      active,
+    }));
     if (active) {
       const pos = target.getBoundingClientRect();
       this.setState({
@@ -28,7 +31,7 @@ export default class Tooltip extends Component {
   };
 
   render() {
-    const { el, text } = this.props;
+    const { el, text, className } = this.props;
 
     const wrappedEl = (
       <div
@@ -52,7 +55,7 @@ export default class Tooltip extends Component {
     );
 
     return (
-      <div onClick={this.props.onClick} className={s.tooltipWrapper}>
+      <div onClick={this.props.onClick} className={cs(s.tooltipWrapper, className)}>
         {[wrappedEl, tooltip]}
       </div>
     );

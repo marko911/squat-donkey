@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { find, findIndex, propEq, without } from 'ramda';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -19,6 +20,7 @@ export default class Dashboard extends React.Component {
     this.state = {
       template: {},
       idxOfHighlighted: {},
+      newCardOpen: {},
     };
   }
 
@@ -26,50 +28,32 @@ export default class Dashboard extends React.Component {
     this.setState({ template: maximus });
   }
 
-  addWorkoutResult = ({ name, type, submission }) => {
-    const updatedTemplate = { ...this.state.template };
-    const matchingCategory = find(
-      propEq('type', type),
-      updatedTemplate.categories,
-    );
-    const matchingCategoryIdx = findIndex(
-      propEq('type', type),
-      updatedTemplate.categories,
-    );
-    const workout = find(propEq('name', name), matchingCategory.workouts);
-    workout.records.unshift(submission);
-    const workoutIdx = findIndex(
-      propEq('name', name),
-      matchingCategory.workouts,
-    );
-    updatedTemplate.categories[matchingCategoryIdx].workouts[
-      workoutIdx
-    ] = workout;
-    this.setState({ template: updatedTemplate });
-  };
-
-
-  randomize = type => () => {
-    const category = find(propEq('type', type), this.state.template.categories);
-    const categoryIdx = findIndex(
+  getCategoryAndIdx = type => ({
+    data: find(propEq('type', type), this.state.template.categories),
+    idx: findIndex(
       propEq('type', type),
       this.state.template.categories,
-    );
-    const randIdx = Math.round(Math.random() * (category.workouts.length - 1));
-    const selected = category.workouts[randIdx];
-    const reorderedList = without([selected], category.workouts);
+    ),
+  })
+
+  randomize = type => () => {
+    const { data, idx } = this.getCategoryAndIdx(type);
+    const randIdx = Math.round(Math.random() * (data.workouts.length - 1));
+    const selected = data.workouts[randIdx];
+    const reorderedList = without([selected], data.workouts);
     reorderedList.unshift(selected);
     const updatedTemplate = { ...this.state.template };
-    updatedTemplate.categories[categoryIdx].workouts = reorderedList;
+    updatedTemplate.categories[idx].workouts = reorderedList;
     this.setState(state => ({
       ...state,
       template: updatedTemplate,
     }));
+    // border highlighting
     this.setState(state => ({
       ...state,
       idxOfHighlighted: { 0: true },
     }));
-    setTimeout((_) => {
+    setTimeout(() => {
       this.setState(state => ({
         ...state,
         idxOfHighlighted: {},
@@ -77,8 +61,37 @@ export default class Dashboard extends React.Component {
     }, 1000);
   };
 
-  addWorkoutToColumn = (workout) => { console.log('submitted!', workout); }
-  closeNewCard = () => {}
+  addWorkoutResult = ({ name, type, submission }) => {
+    const updatedTemplate = { ...this.state.template };
+    const { data, idx } = this.getCategoryAndIdx(type);
+    const workout = find(propEq('name', name), data.workouts);
+    workout.records.unshift(submission);
+    const workoutIdx = findIndex(
+      propEq('name', name),
+      data.workouts,
+    );
+    updatedTemplate.categories[idx].workouts[
+      workoutIdx
+    ] = workout;
+    this.setState({ template: updatedTemplate });
+  }
+
+  addWorkoutToColumn = type => (workout) => {
+    const { data, idx } = this.getCategoryAndIdx(type);
+    const template = { ...this.state.template };
+    data.workouts.unshift(workout);
+    template.categories[idx] = data;
+    this.setState({ template });
+    this.toggleNewCardOpen(type)();
+  }
+
+  toggleNewCardOpen =type => () => this.setState({
+    newCardOpen: {
+      ...this.state.newCardOpen,
+      [type]: !this.state.newCardOpen[type],
+    },
+  })
+
   render() {
     const { categories } = this.state.template;
     const randomizeIcon = (
@@ -90,6 +103,15 @@ export default class Dashboard extends React.Component {
     const minimizeColumnIcon = (
       <i className={cs(font.iconMinusSquared, s.iconMinimizeColumn)} />
     );
+    const Slide = ({ children, ...props }) => (
+      <CSSTransition
+        {...props}
+        timeout={{ enter: 350, exit: 0 }}
+        classNames={s}
+      >
+        {children}
+      </CSSTransition>
+    );
     return (
       <Box className={cs(s.flex1, s.dashContainer)}>
         {categories.map((c, i) => (
@@ -98,16 +120,35 @@ export default class Dashboard extends React.Component {
               <div>{c.type}</div>
               <Box align="center">
                 <Tooltip
+                  className={s.tooltipIcon}
                   el={randomizeIcon}
                   onClick={this.randomize(c.type)}
                   text="Random workout"
                 />
-                <Tooltip el={addWorkoutIcon} text="Add workout" />
-                <Tooltip el={minimizeColumnIcon} text="Hide Column" />
+                <Tooltip
+                  className={s.tooltipIcon}
+                  el={addWorkoutIcon}
+                  onClick={this.toggleNewCardOpen(c.type)}
+                  text="Add workout"
+                />
+                <Tooltip className={s.tooltipIcon} el={minimizeColumnIcon} text="Hide Column" />
               </Box>
             </Box>
             <Box column className={s.workoutsContainer}>
-              <NewCard onSubmit={this.addWorkoutToColumn} close={this.closeNewCard} />
+              <TransitionGroup>
+                {this.state.newCardOpen[c.type] &&
+                <Slide key={`newcard-${c.type}`}>
+                  <NewCard
+                    in={this.state.newCardOpen[c.type]}
+                    className={s.newCardOpen}
+                    onSubmit={this.addWorkoutToColumn(c.type)}
+                    close={this.toggleNewCardOpen(c.type)}
+                  />
+                </Slide>
+
+                }
+              </TransitionGroup>
+
               {c.workouts.map((w, i) => (
                 <Card
                   shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
@@ -117,11 +158,10 @@ export default class Dashboard extends React.Component {
                   type={c.type}
                 />
               ))}
+
             </Box>
           </Box>
       ))}
-
-
       </Box>
     );
   }
