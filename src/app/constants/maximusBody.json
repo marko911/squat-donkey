@@ -6,9 +6,7 @@
           "workouts":[
             {
               "name": "Holy Trinity",
-              "instructions": {
-                "main":
-                  "Do 1 set of exercise 1, 1 set of exercise 2 , 1 set of exercise 3. Thats one round. Do asmany rounds as possible in 30 minutes. Hint: Keep your sets low, 5-10 pushups, 3-5 dips, 3-5 pullups. Aim for 150 reps.",
+              "instructions":"Do 1 set of exercise 1, 1 set of exercise 2 , 1 set of exercise 3. Thats one round. Do asmany rounds as possible in 30 minutes. Hint: Keep your sets low, 5-10 pushups, 3-5 dips, 3-5 pullups. Aim for 150 reps.",
                 "exercises": [
                   {
                     "label": "Pushup",
@@ -26,16 +24,13 @@
                 "recordables": [{
                   "label": "Score"
                 }], 
-                "parameters": ["Reps: AMRAP", "Time: 30 minutes"]
-              },
+                "parameters": ["Reps: AMRAP", "Time: 30 minutes"],
               "records": []
             },
             {
               "name": "Love/Hate",
               "type": "Circuit",          
-              "instructions": {
-                "main":
-                  "Do the bench press with your body weight loaded on the bar. If you weight 185lbs, you load the bar with 185lbs. If its too heavy, use the heaviest weight you can do 10 reps with. Do one set of the bench press then one set of the burpees with the rep scheme specified.",
+              "instructions": "Do the bench press with your body weight loaded on the bar. If you weight 185lbs, you load the bar with 185lbs. If its too heavy, use the heaviest weight you can do 10 reps with. Do one set of the bench press then one set of the burpees with the rep scheme specified.",
                 "exercises": [
                   {
                     "label": "Bench Press (@body weight)",
@@ -50,16 +45,12 @@
                   "label": "Score"
                 }], 
                 "parameters": ["Time: 10 to 20 minutes"],
-                "score": ""
-              },
               "records": []
             },
             {
               "name": "400-Meter Manslaughter",
               "type": "Circuit",          
-              "instructions": {
-                "main":
-                  "On a running track, start by doing 5 reps(each leg) of dumbell walking lunge, then immediately do 5 push presses. Repeat until you've covered 400m. Don't use heavy weights. 20lbs for most men will do.",
+              "instructions": "On a running track, start by doing 5 reps(each leg) of dumbell walking lunge, then immediately do 5 push presses. Repeat until you've covered 400m. Don't use heavy weights. 20lbs for most men will do.",
                 "exercises": [
                   {
                     "label": "Dumbell Walking Lunge",
@@ -74,8 +65,7 @@
                   "label": "Score"
                 }], 
                 "parameters": ["Distance: 400 meters", "Time: 25 minutes"],
-                "score": ""
-              },
+                "score": "",
               "records": []
             }
           ]          

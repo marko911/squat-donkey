@@ -77,6 +77,8 @@ export default class Dashboard extends React.Component {
     }, 1000);
   };
 
+  addWorkoutToColumn = (workout) => { console.log('submitted!', workout); }
+  closeNewCard = () => {}
   render() {
     const { categories } = this.state.template;
     const randomizeIcon = (
@@ -93,7 +95,7 @@ export default class Dashboard extends React.Component {
         {categories.map((c, i) => (
           <Box key={`cat-${i}`} column className={s.colWrapper}>
             <Box className={s.categoryHeader} align="center" justify="between">
-              {c.type}
+              <div>{c.type}</div>
               <Box align="center">
                 <Tooltip
                   el={randomizeIcon}
@@ -105,7 +107,7 @@ export default class Dashboard extends React.Component {
               </Box>
             </Box>
             <Box column className={s.workoutsContainer}>
-              <NewCard />
+              <NewCard onSubmit={this.addWorkoutToColumn} close={this.closeNewCard} />
               {c.workouts.map((w, i) => (
                 <Card
                   shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}

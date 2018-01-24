@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
 import sid from 'shortid';
-import { isEmpty, head, keys } from 'ramda';
+import { isEmpty, head, keys, ifElse, gt, compose, prop } from 'ramda';
 import PropTypes from 'prop-types';
 import c from './newCard.scss';
 import s from '../card/card.scss';
@@ -27,6 +27,8 @@ const initialState = {
     scheme: '',
   }],
   focus: {
+    name: false,
+    instructions: false,
     exercises: [{
       label: false,
       scheme: false,
@@ -47,7 +49,13 @@ const initialState = {
   parameters: [{
     label: '',
   }],
+  invalidFields: [],
 };
+
+const requiredFields = [
+  { prop: 'name', validator: obj => !isEmpty(obj) },
+  { prop: 'exercises', validator: compose(gt(0), prop('length')) },
+];
 
 export default class NewCard extends React.Component {
   constructor() {
@@ -55,22 +63,42 @@ export default class NewCard extends React.Component {
     this.state = initialState;
   }
 
+  isValidWorkout = (workoutObj) => {
+    const invalidFields = [];
+    const isValid = requiredFields.reduce((valid, f) => {
+      const fieldValid = f.validator(workoutObj[f.prop]);
+      if (!fieldValid) {
+        invalidFields.push(f.prop);
+      }
+      return fieldValid && valid;
+    }, true);
+    this.setState({ invalidFields });
+    return isValid;
+  }
+
+  highlightInvalidFields = (obj) => { console.log('invalid'); }
   submitWorkout =() => {
     const {
       name, instructions, exercises, parameters, recordables,
     } = this.state;
+
     const workoutObj = {
       name,
-      instructions: {
-        main: instructions,
-        exercises,
-        parameters: parameters.map(p => p.label),
-        recordables,
-      },
+      instructions,
+      exercises: exercises.filter(e => !isEmpty(e.label)),
+      parameters: parameters.map(p => p.label),
+      recordables,
       records: [],
     };
-    this.props.onSubmit(workoutObj);
+
+    const validateAndSubmit = ifElse(
+      this.isValidWorkout,
+      this.props.onSubmit,
+      this.highlightInvalidFields,
+    );
+    validateAndSubmit(workoutObj);
   }
+
 
   handleChange = field => ({ target: { value } }) => {
     this.setState({ [field]: value });
@@ -298,7 +326,7 @@ export default class NewCard extends React.Component {
 
         {[name, instructions, exercises, parameters, resultFields]}
         <Box className={c.sectionWrapper} justify="end">
-          <div onClick={this.submit} className={cs(s.btn, c.submit)}>
+          <div onClick={this.submitWorkout} className={cs(s.btn, c.submit)}>
             Submit
           </div>
         </Box>

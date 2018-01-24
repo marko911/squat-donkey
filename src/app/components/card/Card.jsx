@@ -22,7 +22,7 @@ export default class Card extends React.Component {
 
 
   resetInputBoxes = () => {
-    const newRecords = this.props.data.instructions.recordables.reduce(
+    const newRecords = this.props.data.recordables.reduce(
       (acc, rec) => ({
         ...acc,
         [rec.label]: '',
@@ -63,9 +63,10 @@ export default class Card extends React.Component {
   render() {
     const {
       name,
-      instructions: {
-        recordables, exercises, main, parameters,
-      },
+      instructions,
+      recordables,
+      exercises,
+      parameters,
       records,
     } = this.props.data;
     const toggler = (
@@ -82,7 +83,7 @@ export default class Card extends React.Component {
 
     const mainText = (
       <div key={sid.generate()} className={c.instructions}>
-        {main}
+        {instructions}
       </div>
     );
 
