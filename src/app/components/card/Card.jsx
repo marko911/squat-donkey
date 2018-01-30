@@ -5,21 +5,20 @@ import { isEmpty, head, keys, values } from 'ramda';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import c from './card.scss';
+import font from '../card/fontello.scss';
 import Box from '../box/Box';
+import Tooltip from '../tooltip/Tooltip';
 
 export default class Card extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      showInstructions: false,
-      showAllRecords: false,
-    };
-  }
+ state = {
+   showInstructions: false,
+   showAllRecords: false,
+ };
 
-  componentWillMount() {
-    this.resetInputBoxes();
-  }
 
+ componentWillMount() {
+   this.resetInputBoxes();
+ }
 
   resetInputBoxes = () => {
     const newRecords = this.props.data.recordables.reduce(
@@ -40,23 +39,22 @@ export default class Card extends React.Component {
       },
     });
 
+  checkForEnter = ({ charCode }) => {
+    if (charCode === 13) {
+      this.submitRecord(this.props.data.name)();
+    }
+  }
+
   toggleInstructions = () =>
     this.setState({ showInstructions: !this.state.showInstructions });
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
-  submitRecord = name => (e) => {
-    e.preventDefault();
-    const recordHasValues = values(this.state.newRecords).reduce(
-      (acc, nxt) => acc || !isEmpty(nxt),
-      false,
-    );
-    if (recordHasValues) {
-      this.props.onSubmitRecord({
-        type: this.props.type,
-        name,
-        submission: { date: moment(), results: this.state.newRecords },
-      });
-    }
+  submitRecord = name => () => {
+    this.props.onSubmitRecord({
+      type: this.props.type,
+      name,
+      submission: { date: moment(), results: this.state.newRecords },
+    });
     this.resetInputBoxes();
   };
 
@@ -72,7 +70,7 @@ export default class Card extends React.Component {
     const toggler = (
       <a
         key={sid.generate()}
-        className={c.toggleLink}
+        className={cs(c.toggleLink, c.lineItem)}
         onClick={this.toggleInstructions}
       >
         {this.state.showInstructions
@@ -82,13 +80,13 @@ export default class Card extends React.Component {
     );
 
     const mainText = (
-      <div key={sid.generate()} className={c.instructions}>
+      <div key={sid.generate()} className={c.lineItem}>
         {instructions}
       </div>
     );
 
     const exerciseList = (
-      <Box key={sid.generate()} column>
+      <Box key={sid.generate()} column className={c.lineItem}>
         {exercises.map(e => (
           <Box className={c.exercises} justified="between" key={sid.generate()}>
             <div className={c.label}>{e.label}</div>
@@ -99,7 +97,7 @@ export default class Card extends React.Component {
     );
 
     const workoutParams = (
-      <div key={sid.generate()} className={cs(c.sectionWrapper, c.border)}>
+      <div key={sid.generate()} className={cs(c.sectionWrapper)}>
         {parameters.map(p => <div key={sid.generate()}>{p}</div>)}
       </div>
     );
@@ -119,6 +117,7 @@ export default class Card extends React.Component {
                 type="text"
                 value={this.state.newRecords[r.label]}
                 onChange={this.handleInput(r.label)}
+                onKeyPress={this.checkForEnter}
                 className={c.scoreInput}
               />
             </Box>
@@ -137,19 +136,25 @@ export default class Card extends React.Component {
     const caretUp = (
       <i onClick={this.toggleCollapse} className={c.iconAngleUp} />
     );
+    const deleteWorkoutIcon = (
+      <i onClick={this.props.onDeleteSelf} className={cs(font.iconTrashEmpty)} />
+    );
+
     const recordsList = this.state.showAllRecords
       ? records
       : isEmpty(records) ? [] : [head(records)];
     const mostRecentWithCollapse = isEmpty(recordsList) ? [] : (
       <Box className={cs(c.recentRecord)} align="start" key={sid.generate()}>
         <Box column className={cs(c.containWidth, c.flex1)}>
-          {recordsList.map((rec) => {
-            const dateOfResult = moment(rec.date).format('DD-MMM-YYYY');
+          {recordsList.map((rec, i) => {
+            const dateOfResult = moment(rec.date).format('DDMMMYYYY');
             const results = isEmpty(rec) ? [] : rec.results;
             return (
               <Box className={c.recordRow} key={sid.generate()}>
+                {this.props.editMode && <i onClick={this.props.onDeleteRecord(i)} className={cs(font.iconTrashEmpty, font.iconTrashSmall)} />}
                 <div className={c.date}>{dateOfResult}</div>
-                {keys(results).map((r) => {
+                <Box column className={cs(c.flex1)}>
+                  {keys(results).map((r) => {
                     const val = results[r];
                     return (
                       <div
@@ -160,7 +165,11 @@ export default class Card extends React.Component {
                       </div>
                     );
                   })}
+                </Box>
+
+
               </Box>
+
             );
           })}
         </Box>
@@ -170,14 +179,18 @@ export default class Card extends React.Component {
       </Box>
     );
 
+
     return (
       <div className={cs(c.container, c.card, this.props.shouldHighlight && c.workoutHighlighted)}>
-        <div className={c.cardHeader}>{name}</div>
+        <Box justify="between">
+          <div className={c.cardHeader}>{name}</div>
+          {this.props.editMode && deleteWorkoutIcon}
+        </Box>
         {[
           this.state.showInstructions ? mainText : null,
-          toggler,
+          instructions.length ? toggler : null,
           exerciseList,
-          workoutParams,
+          parameters.length ? workoutParams : null,
           inputRecords,
           mostRecentWithCollapse,
         ]}
@@ -189,4 +202,7 @@ export default class Card extends React.Component {
 Card.propTypes = {
   data: PropTypes.object.isRequired,
   onSubmitRecord: PropTypes.func.isRequired,
+  onDeleteSelf: PropTypes.func.isRequired,
+  editMode: PropTypes.bool,
+  shouldHighlight: PropTypes.bool,
 };

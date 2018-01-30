@@ -5,11 +5,9 @@ import cs from 'classnames';
 import s from './tooltip.scss';
 
 export default class Tooltip extends Component {
-  constructor() {
-    super();
-    this.state = {
-      active: false,
-    };
+  state = {
+    active: false,
+
   }
 
   hoverToggle = active => ({ target }) => {
@@ -22,7 +20,7 @@ export default class Tooltip extends Component {
       this.setState({
         tooltipStyle: {
           left: pos.left + pos.width / 2,
-          top: pos.top + pos.height + 32,
+          top: pos.top + pos.height + 20,
           marginLeft: -1 * (this.toolEl.offsetWidth / 2),
           marginTop: -1 * (this.toolEl.offsetHeight / 2),
         },

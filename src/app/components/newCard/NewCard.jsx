@@ -1,6 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
-import { isEmpty, head, keys, ifElse, compose, prop, T, without } from 'ramda';
+import { isEmpty, head, keys, ifElse, compose, prop, T, without, clone } from 'ramda';
 import PropTypes from 'prop-types';
 import c from './newCard.scss';
 import s from '../card/card.scss';
@@ -12,9 +12,9 @@ const InputWithLabel = ({
 }) => (
   <div className={cs(c.textfieldFloatingLabel)}>
     {children}
-    <label className={cs(
-      c.textfieldLabel, c.floatingLabel,
-            required && c.labelRequired,
+    <label
+      className={cs(
+            c.textfieldLabel, c.floatingLabel, required && c.labelRequired,
             focused && c.isFocused,
             )}
     >
@@ -64,10 +64,7 @@ const requiredFields = [
 ];
 
 export default class NewCard extends React.Component {
-  constructor() {
-    super();
-    this.state = initialState;
-  }
+  state = initialState;
 
   isValidWorkout = (workoutObj) => {
     const invalidFields = [];
@@ -91,8 +88,8 @@ export default class NewCard extends React.Component {
       name,
       instructions,
       exercises: exercises.filter(e => !isEmpty(e.label)),
-      parameters: parameters.map(p => p.label),
-      recordables,
+      parameters: parameters.map(p => p.label).filter(x => !isEmpty(x)),
+      recordables: recordables.filter(r => !isEmpty(r.label)),
       records: [],
     };
 
@@ -111,7 +108,7 @@ export default class NewCard extends React.Component {
 
   handleChangeArray = (i, ...path) => ({ target: { value } }) => {
     const propName = path.shift();
-    const newList = [...this.state[propName]];
+    const newList = clone(this.state[propName]);
     newList[i][path.shift()] = value;
     this.setState({
       [propName]: newList,
@@ -338,7 +335,7 @@ export default class NewCard extends React.Component {
         </Box>
 
         {[name, instructions, exercises, parameters, resultFields]}
-        <Box className={c.sectionWrapper} justify="end">
+        <Box className={s.sectionWrapper} justify="end">
           <div className={c.error}>
             {!isEmpty(this.state.invalidFields) && 'Enter required fields'}
           </div>

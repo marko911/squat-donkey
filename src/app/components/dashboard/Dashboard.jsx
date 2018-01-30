@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { find, findIndex, propEq, without } from 'ramda';
+import { find, findIndex, propEq, without, isNil } from 'ramda';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
 import Card from '../card/Card';
@@ -12,20 +12,33 @@ import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import maximus from '../../constants/maximusBody.json';
 
+// import TemplateIcon from '../icons/TemplateIcon';
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
+const Slide = ({ children, ...props }) => (
+  <CSSTransition
+    {...props}
+    timeout={{ enter: 350, exit: 0 }}
+    classNames={s}
+  >
+    {children}
+  </CSSTransition>
+);
 
 export default class Dashboard extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      template: {},
-      idxOfHighlighted: {},
-      newCardOpen: {},
-    };
+  state = {
+    template: {},
+    idxOfHighlighted: {},
+    newCardOpen: {},
+    editMode: {},
   }
 
   componentWillMount() {
-    this.setState({ template: maximus });
+    const storedTemplate = JSON.parse(localStorage.getItem('currentTemplate'));
+    if (!isNil(storedTemplate)) {
+      this.setState({ template: storedTemplate });
+    } else {
+      this.setState({ template: maximus });
+    }
   }
 
   getCategoryAndIdx = type => ({
@@ -36,6 +49,15 @@ export default class Dashboard extends React.Component {
     ),
   })
 
+  updateCurrentTemplate = (template) => {
+    this.setState(state => ({
+      ...state,
+      template,
+    }));
+    localStorage.setItem('currentTemplate', JSON.stringify(template));
+    // get script: const config = JSON.parse(localStorage.getItem('gdConfig'));
+  }
+
   randomize = type => () => {
     const { data, idx } = this.getCategoryAndIdx(type);
     const randIdx = Math.round(Math.random() * (data.workouts.length - 1));
@@ -44,10 +66,7 @@ export default class Dashboard extends React.Component {
     reorderedList.unshift(selected);
     const updatedTemplate = { ...this.state.template };
     updatedTemplate.categories[idx].workouts = reorderedList;
-    this.setState(state => ({
-      ...state,
-      template: updatedTemplate,
-    }));
+    this.updateCurrentTemplate(updatedTemplate);
     // border highlighting
     this.setState(state => ({
       ...state,
@@ -73,7 +92,7 @@ export default class Dashboard extends React.Component {
     updatedTemplate.categories[idx].workouts[
       workoutIdx
     ] = workout;
-    this.setState({ template: updatedTemplate });
+    this.updateCurrentTemplate(updatedTemplate);
   }
 
   addWorkoutToColumn = type => (workout) => {
@@ -81,37 +100,48 @@ export default class Dashboard extends React.Component {
     const template = { ...this.state.template };
     data.workouts.unshift(workout);
     template.categories[idx] = data;
-    this.setState({ template });
-    this.toggleNewCardOpen(type)();
+    this.updateCurrentTemplate(template);
+    this.toggleColumnState(type, 'newCardOpen')();
   }
 
-  toggleNewCardOpen =type => () => this.setState({
-    newCardOpen: {
-      ...this.state.newCardOpen,
-      [type]: !this.state.newCardOpen[type],
+  deleteWorkout = (type, idx) => () => {
+    const { data, idx: idxCategory } = this.getCategoryAndIdx(type);
+    const template = { ...this.state.template };
+    const workoutToDelete = data.workouts[idx];
+    const restOfWorkouts = without([workoutToDelete], data.workouts);
+    template.categories[idxCategory].workouts = restOfWorkouts;
+    this.updateCurrentTemplate(template);
+  }
+
+  deleteRecord = (type, idx) => rIdx => () => {
+    const { data, idx: catIdx } = this.getCategoryAndIdx(type);
+    const template = { ...this.state.template };
+    const workout = data.workouts[idx];
+    const recordToDel = workout.records[rIdx];
+    template.categories[catIdx].workouts[idx].records = without([recordToDel], workout.records);
+    this.updateCurrentTemplate(template);
+  }
+
+  toggleColumnState =(type, prop) => () => this.setState({
+    [prop]: {
+      ...this.state[prop],
+      [type]: !this.state[prop][type],
     },
   })
+
 
   render() {
     const { categories } = this.state.template;
     const randomizeIcon = (
-      <i className={cs(font.iconShuffle, s.iconRandomize)} />
+      <i className={cs(font.iconShuffle, font.iconShuffleColor)} />
     );
     const addWorkoutIcon = (
-      <i className={cs(font.iconPlusSquared, s.iconAddWorkout)} />
+      <i className={cs(font.iconPlusSquared, font.iconPlusSquaredColor)} />
     );
-    const minimizeColumnIcon = (
-      <i className={cs(font.iconMinusSquared, s.iconMinimizeColumn)} />
+    const editColumnIcon = (
+      <i className={cs(font.iconEdit, font.iconEditColor)} />
     );
-    const Slide = ({ children, ...props }) => (
-      <CSSTransition
-        {...props}
-        timeout={{ enter: 350, exit: 0 }}
-        classNames={s}
-      >
-        {children}
-      </CSSTransition>
-    );
+
     return (
       <Box className={cs(s.flex1, s.dashContainer)}>
         {categories.map((c, i) => (
@@ -120,18 +150,23 @@ export default class Dashboard extends React.Component {
               <div>{c.type}</div>
               <Box align="center">
                 <Tooltip
-                  className={s.tooltipIcon}
+                  className={font.tooltipIcon}
                   el={randomizeIcon}
                   onClick={this.randomize(c.type)}
                   text="Random workout"
                 />
                 <Tooltip
-                  className={s.tooltipIcon}
+                  className={font.tooltipIcon}
                   el={addWorkoutIcon}
-                  onClick={this.toggleNewCardOpen(c.type)}
+                  onClick={this.toggleColumnState(c.type, 'newCardOpen')}
                   text="Add workout"
                 />
-                <Tooltip className={s.tooltipIcon} el={minimizeColumnIcon} text="Hide Column" />
+                <Tooltip
+                  className={font.tooltipIcon}
+                  el={editColumnIcon}
+                  onClick={this.toggleColumnState(c.type, 'editMode')}
+                  text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
+                />
               </Box>
             </Box>
             <Box column className={s.workoutsContainer}>
@@ -139,10 +174,11 @@ export default class Dashboard extends React.Component {
                 {this.state.newCardOpen[c.type] &&
                 <Slide key={`newcard-${c.type}`}>
                   <NewCard
+                    key={sid.generate()}
                     in={this.state.newCardOpen[c.type]}
                     className={s.newCardOpen}
                     onSubmit={this.addWorkoutToColumn(c.type)}
-                    close={this.toggleNewCardOpen(c.type)}
+                    close={this.toggleColumnState(c.type, 'newCardOpen')}
                   />
                 </Slide>
 
@@ -154,8 +190,11 @@ export default class Dashboard extends React.Component {
                   shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
                   key={sid.generate()}
                   onSubmitRecord={this.addWorkoutResult}
+                  onDeleteSelf={this.deleteWorkout(c.type, i)}
+                  onDeleteRecord={this.deleteRecord(c.type, i)}
                   data={w}
                   type={c.type}
+                  editMode={!!this.state.editMode[c.type]}
                 />
               ))}
 
@@ -166,3 +205,11 @@ export default class Dashboard extends React.Component {
     );
   }
 }
+
+Dashboard.propTypes = {
+  template: PropTypes.object,
+};
+
+Slide.propTypes = {
+  children: PropTypes.node.isRequired,
+};

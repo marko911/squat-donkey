@@ -13,55 +13,21 @@
   color: $color-column-header-font;
   height: 29px;
   line-height: 29px;
-  border-bottom: 1px solid $color-column-header-divider;
   padding: 0 16px;
   font-size: 22px;
   font-weight: bold;
   border: 1px solid $color-column-border;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  flex: 1 0 auto;
+  border-radius: 5px;
+  flex: 0 0 auto;
 }
 
 .workouts-container {
   overflow: auto;
   border: 1px solid $color-column-border;
-  border-top:none;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-.icon-add-workout {
-  color: $color-icon-add;
-  &:hover {
-    color: #34e643
-  }
+  border-radius: 5px;
+  margin-top: 10px;
 }
 
-.icon-minimize-column {
-  color: $color-column-minimize;
-  &:hover {
-    color:#ffcd2a
-  }
-}
-
-.icon-randomize {
-  color: $color-font-title;
-  &:hover {
-    color: #47b8ff
-  }
-}
-
-.icon-add-workout,
-.icon-randomize,
-.icon-minimize-column {
-  &:before {
-    font-size: 16px;
-  }
-}
-
-.tooltip-icon {
-  margin-left:8px;
-}
 
 $animation-ms: 350ms;
 .enter {

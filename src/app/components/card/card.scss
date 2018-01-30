@@ -48,9 +48,11 @@
   white-space: nowrap;
   margin-right: 8px;
 }
-.instructions {
+
+.line-item {
   margin-top: 10px;
 }
+
 .additional:not(:first-child) {
   margin-top: 5px;
 }
@@ -67,7 +69,6 @@
 .toggle-link {
   font-size: 10px;
   font-weight: 500;
-  margin: 10px 0 10px;
   display: inline-block;
   text-decoration: underline;
   cursor: pointer;
@@ -113,8 +114,8 @@
 .recent-record {
   margin-top: 10px;
   border-radius: 2px;
-  font-size: 11px;
-  padding: 4px 4px 4px 10px;
+  font-size: 10px;
+  padding: 4px 4px 4px 8px;;
   color: $color-font-record;
   background-color: $color-background-record;
 }
@@ -129,6 +130,7 @@
 .contain-width {
   min-width: 0;
 }
+
 
 .label {
   font-weight: bold;

@@ -1,3 +1,6 @@
+
+@import '../variables.scss';
+
 @font-face {
   font-family: "fontello";
   src: url("./font/fontello.eot?13696906");
@@ -49,6 +52,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
+  &:before {
+      font-size: 16px;
+    }
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
@@ -65,7 +71,16 @@
 .icon-plus-squared:before {
   @extend .icon-base;
   content: "\f0fe";
+  
 } /* '' */
+
+.icon-plus-squared-color {
+  color: $color-icon-add;
+  &:hover {
+    color: #2fa139
+  }
+}
+
 .icon-minus-squared:before {
   @extend .icon-base;
   content: "\f146";
@@ -74,8 +89,47 @@
 .icon-shuffle:before {
   @extend .icon-base;
   content: "\e800";
+  
 } /* '' */
+
+.icon-shuffle-color {
+  color: $color-font-title;
+  &:hover {
+    color: #226791
+  }
+}
 
 .icon-cancel:before { 
   @extend .icon-base;
-  content: '\e801'; } /* '' */
+  content: '\e801'; 
+} /* '' */
+
+.icon-edit:before { 
+  @extend .icon-base;
+  content: '\e802'; 
+ 
+} /* '' */
+
+.icon-edit-color {
+  color: $color-new-card-action;
+  &:hover {
+    color:#4e49b1
+  }
+}
+
+.icon-trash-empty:before {
+  @extend .icon-base;
+  content: '\e803';
+  color: $color-light-grey;
+} /* '' */
+
+.icon-trash-small:before {
+  font-size: 14px;
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+  
+.tooltip-icon {
+    margin-left:8px;
+}
