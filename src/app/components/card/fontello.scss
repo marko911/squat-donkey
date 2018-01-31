@@ -110,6 +110,27 @@
  
 } /* '' */
 
+.icon-doc-add:before { 
+  @extend .icon-base;
+  content: '\e804'; } /* '' */
+
+.icon-th-large:before {
+  @extend .icon-base;
+   content: '\e805'; } /* '' */
+
+.icon-up:before { 
+  @extend .icon-base;
+  content: '\f176'; } /* '' */
+
+.icon-header{
+  color: $color-icon-header;
+  &:hover {
+    color: $color-font-card;
+  }
+  &:before {
+    font-size: 24px;
+  }
+}
 .icon-edit-color {
   color: $color-new-card-action;
   &:hover {
@@ -129,7 +150,8 @@
   margin-left: 0;
 }
 
-  
+
+
 .tooltip-icon {
     margin-left:8px;
 }

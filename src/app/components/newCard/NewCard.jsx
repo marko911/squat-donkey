@@ -339,7 +339,7 @@ export default class NewCard extends React.Component {
           <div className={c.error}>
             {!isEmpty(this.state.invalidFields) && 'Enter required fields'}
           </div>
-          <div onClick={this.submitWorkout} className={cs(s.btn, c.submit)}>
+          <div onClick={this.submitWorkout} className={cs(c.btn, c.submit)}>
             Submit
           </div>
         </Box>

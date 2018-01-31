@@ -4,12 +4,14 @@ import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { find, findIndex, propEq, without, isNil } from 'ramda';
+import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
 import Card from '../card/Card';
 import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
+import Header from '../header/Header';
 import maximus from '../../constants/maximusBody.json';
 
 // import TemplateIcon from '../icons/TemplateIcon';
@@ -24,12 +26,15 @@ const Slide = ({ children, ...props }) => (
   </CSSTransition>
 );
 
+
 export default class Dashboard extends React.Component {
   state = {
     template: {},
     idxOfHighlighted: {},
     newCardOpen: {},
     editMode: {},
+    newColumnName: '',
+    addingColumnActive: false,
   }
 
   componentWillMount() {
@@ -129,6 +134,23 @@ export default class Dashboard extends React.Component {
     },
   })
 
+  handleChange = prop => ({ target: { value } }) => {
+    this.setState({ [prop]: value });
+  }
+
+  showAddColumn = () => this.setState({ addingColumnActive: !this.state.addingColumnActive })
+  addColumnToTemplate = () => {
+    const template = { ...this.state.template };
+    template.categories.unshift({
+      type: this.state.newColumnName,
+      workouts: [],
+    });
+    this.updateCurrentTemplate(template);
+    this.setState({
+      newColumnName: '',
+      addingColumnActive: false,
+    });
+  }
 
   render() {
     const { categories } = this.state.template;
@@ -141,67 +163,105 @@ export default class Dashboard extends React.Component {
     const editColumnIcon = (
       <i className={cs(font.iconEdit, font.iconEditColor)} />
     );
+    const NewColumn = (
+      <Box key="new-col-wrap" column className={s.colWrapper}>
+
+        <Box className={s.categoryHeader} justify="between" align="center">
+          <input
+            className={cs(form.inputName, s.newColumnInput)}
+            placeholder="Enter column name"
+            value={this.state.newColumnName}
+            onChange={this.handleChange('newColumnName')}
+          />
+          <div onClick={this.addColumnToTemplate} className={cs(s.btn, s.addCol)}>
+            Add
+          </div>
+        </Box>
+      </Box>
+    );
 
     return (
-      <Box className={cs(s.flex1, s.dashContainer)}>
-        {categories.map((c, i) => (
-          <Box key={`cat-${i}`} column className={s.colWrapper}>
-            <Box className={s.categoryHeader} align="center" justify="between">
-              <div>{c.type}</div>
-              <Box align="center">
-                <Tooltip
-                  className={font.tooltipIcon}
-                  el={randomizeIcon}
-                  onClick={this.randomize(c.type)}
-                  text="Random workout"
-                />
-                <Tooltip
-                  className={font.tooltipIcon}
-                  el={addWorkoutIcon}
-                  onClick={this.toggleColumnState(c.type, 'newCardOpen')}
-                  text="Add workout"
-                />
-                <Tooltip
-                  className={font.tooltipIcon}
-                  el={editColumnIcon}
-                  onClick={this.toggleColumnState(c.type, 'editMode')}
-                  text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
-                />
-              </Box>
-            </Box>
-            <Box column className={s.workoutsContainer}>
-              <TransitionGroup>
-                {this.state.newCardOpen[c.type] &&
-                <Slide key={`newcard-${c.type}`}>
-                  <NewCard
-                    key={sid.generate()}
-                    in={this.state.newCardOpen[c.type]}
-                    className={s.newCardOpen}
-                    onSubmit={this.addWorkoutToColumn(c.type)}
-                    close={this.toggleColumnState(c.type, 'newCardOpen')}
+      <Box className={cs(s.auto, s.dashWrapper)} column >
+        <Header addColumn={this.showAddColumn} />
+        <Box className={cs(s.dashContainer)}>
+          {this.state.addingColumnActive && NewColumn}
+          {categories.map((c, i) => (
+            <Box key={`cat-${i}`} column className={s.colWrapper}>
+              <Box className={s.categoryHeader} align="center" justify="between">
+                <div>{c.type}</div>
+                <Box align="center">
+                  <Tooltip
+                    className={font.tooltipIcon}
+                    el={randomizeIcon}
+                    onClick={this.randomize(c.type)}
+                    text="Random workout"
                   />
-                </Slide>
+                  <Tooltip
+                    className={font.tooltipIcon}
+                    el={addWorkoutIcon}
+                    onClick={this.toggleColumnState(c.type, 'newCardOpen')}
+                    text="Add workout"
+                  />
+                  <Tooltip
+                    className={font.tooltipIcon}
+                    el={editColumnIcon}
+                    onClick={this.toggleColumnState(c.type, 'editMode')}
+                    text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
+                  />
+                </Box>
+              </Box>
+              <Box column className={s.workoutsContainer}>
+                <TransitionGroup>
+                  {this.state.newCardOpen[c.type] &&
+                  <Slide key={`newcard-${c.type}`}>
+                    <NewCard
+                      key={sid.generate()}
+                      in={this.state.newCardOpen[c.type]}
+                      className={s.newCardOpen}
+                      onSubmit={this.addWorkoutToColumn(c.type)}
+                      close={this.toggleColumnState(c.type, 'newCardOpen')}
+                    />
+                  </Slide>
 
                 }
-              </TransitionGroup>
+                </TransitionGroup>
 
-              {c.workouts.map((w, i) => (
-                <Card
-                  shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
-                  key={sid.generate()}
-                  onSubmitRecord={this.addWorkoutResult}
-                  onDeleteSelf={this.deleteWorkout(c.type, i)}
-                  onDeleteRecord={this.deleteRecord(c.type, i)}
-                  data={w}
-                  type={c.type}
-                  editMode={!!this.state.editMode[c.type]}
-                />
-              ))}
+                {c.workouts.length ? c.workouts.map((w, i) => (
+                  <Card
+                    shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
+                    key={sid.generate()}
+                    onSubmitRecord={this.addWorkoutResult}
+                    onDeleteSelf={this.deleteWorkout(c.type, i)}
+                    onDeleteRecord={this.deleteRecord(c.type, i)}
+                    data={w}
+                    type={c.type}
+                    editMode={!!this.state.editMode[c.type]}
+                  />
+              )) :
+                <Card key={sid.generate()}>
+                  <Box
+                    className={s.flex1}
+                    justify="center"
+                    align="center"
+                  >
+                    <div
+                      onClick={this.toggleColumnState(c.type, 'newCardOpen')}
+                      className={cs(s.btn, s.addWorkoutBtn)}
+                    >
+                  + Add New Workout
+                    </div>
+                  </Box>
 
+
+                </Card>
+            }
+
+              </Box>
             </Box>
-          </Box>
       ))}
+        </Box>
       </Box>
+
     );
   }
 }

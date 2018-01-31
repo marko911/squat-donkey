@@ -12,7 +12,6 @@
   background-color: $color-column-header-bg;
   color: $color-column-header-font;
   height: 29px;
-  line-height: 29px;
   padding: 0 16px;
   font-size: 22px;
   font-weight: bold;
@@ -43,3 +42,32 @@ $animation-ms: 350ms;
   transform: translate3d(0px, 0px, 0px);
 }
 
+*.new-column-input {
+  height: 23px;
+  background-color: inherit;
+  border-radius: 1px;
+  color: $color-text-field-label;
+  font-size: 12px;
+  &:focus {
+    color: initial;
+    border: 1px solid transparent;
+  }
+}
+::placeholder {
+  color: $color-text-field-label;
+}
+
+
+.add-col {
+  color: #fff;
+  background-color: $color-new-card-action;
+}
+.add-workout-btn {
+  width: auto;
+  font-size: 18px;
+  border: 1px solid $color-column-border;
+  white-space: nowrap;
+  margin:0;
+  background-color: $color-text-field-border;
+  color: white;
+}

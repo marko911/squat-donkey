@@ -14,6 +14,8 @@ body {
   padding: 16px 24px;
   position: relative;
   box-sizing: border-box;
+}
+.dash-wrapper {
   height: 100vh;
 }
 
@@ -22,7 +24,7 @@ body {
 }
 
 .auto {
-  flex: "1 1 auto";
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
 }
@@ -74,3 +76,24 @@ body {
 .flex4 {
   flex: 4;
 }
+
+.btn {
+  border-radius: 3px;
+  font-size: 11px;
+  color: $color-card-btn-font;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 56px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  padding: 4px 10px;
+  background-color: $color-card-btn-bg;
+  &:hover {
+    background-color: $color-dark-secondary;
+    color: $color-card-btn-hover-font;
+  }
+}
+

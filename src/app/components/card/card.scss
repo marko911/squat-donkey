@@ -86,25 +86,7 @@
 .io-pad {
   padding: 4px;
 }
-.btn {
-  border-radius: 3px;
-  font-size: 11px;
-  color: $color-card-btn-font;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  width: 56px;
-  box-sizing: border-box;
-  @extend .section-item;
-  padding: 4px 10px;
-  background-color: $color-card-btn-bg;
-  &:hover {
-    background-color: $color-dark-secondary;
-    color: $color-card-btn-hover-font;
-  }
-}
+
 .recordable {
   margin-top: 4px;
   &:last-child {
@@ -150,4 +132,14 @@
   font-size: 11px;
   max-width: 56px;
   @extend .io-pad;
+}
+
+.empty-column {
+  background-color: inherit;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 500;
 }

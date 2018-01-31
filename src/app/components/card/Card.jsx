@@ -21,13 +21,13 @@ export default class Card extends React.Component {
  }
 
   resetInputBoxes = () => {
-    const newRecords = this.props.data.recordables.reduce(
+    const newRecords = this.props.data ? this.props.data.recordables.reduce(
       (acc, rec) => ({
         ...acc,
         [rec.label]: '',
       }),
       {},
-    );
+    ) : [];
     this.setState({ newRecords });
   };
 
@@ -59,14 +59,15 @@ export default class Card extends React.Component {
   };
 
   render() {
+    const data = this.props.data || {};
     const {
       name,
-      instructions,
-      recordables,
-      exercises,
-      parameters,
-      records,
-    } = this.props.data;
+      instructions = '',
+      recordables = [],
+      exercises = [],
+      parameters = [],
+      records = [],
+    } = data;
     const toggler = (
       <a
         key={sid.generate()}
@@ -181,28 +182,31 @@ export default class Card extends React.Component {
 
 
     return (
-      <div className={cs(c.container, c.card, this.props.shouldHighlight && c.workoutHighlighted)}>
-        <Box justify="between">
+      <div className={cs(c.container, c.card, this.props.shouldHighlight && c.workoutHighlighted, isEmpty(data) && c.emptyColumn)}>
+        {!isEmpty(data) ?
+        <><Box justify="between">
           <div className={c.cardHeader}>{name}</div>
           {this.props.editMode && deleteWorkoutIcon}
-        </Box>
-        {[
+          </Box>{[
           this.state.showInstructions ? mainText : null,
           instructions.length ? toggler : null,
           exerciseList,
           parameters.length ? workoutParams : null,
           inputRecords,
           mostRecentWithCollapse,
-        ]}
+        ]}</>
+      :
+        this.props.children
+      }
       </div>
     );
   }
 }
 
 Card.propTypes = {
-  data: PropTypes.object.isRequired,
-  onSubmitRecord: PropTypes.func.isRequired,
-  onDeleteSelf: PropTypes.func.isRequired,
+  data: PropTypes.object,
+  onSubmitRecord: PropTypes.func,
+  onDeleteSelf: PropTypes.func,
   editMode: PropTypes.bool,
   shouldHighlight: PropTypes.bool,
 };

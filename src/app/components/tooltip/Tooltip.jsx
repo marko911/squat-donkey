@@ -7,7 +7,6 @@ import s from './tooltip.scss';
 export default class Tooltip extends Component {
   state = {
     active: false,
-
   }
 
   hoverToggle = active => ({ target }) => {
@@ -17,11 +16,14 @@ export default class Tooltip extends Component {
     }));
     if (active) {
       const pos = target.getBoundingClientRect();
+      const tooltipOverflow = document.documentElement.clientWidth - ((pos.left + pos.width / 2) + this.toolEl.offsetWidth / 2);
+      const marginLeft = tooltipOverflow < 24 ? -1 * (24 - 1 * tooltipOverflow + this.toolEl.offsetWidth / 2) : -1 * (this.toolEl.offsetWidth / 2);
+
       this.setState({
         tooltipStyle: {
           left: pos.left + pos.width / 2,
           top: pos.top + pos.height + 20,
-          marginLeft: -1 * (this.toolEl.offsetWidth / 2),
+          marginLeft,
           marginTop: -1 * (this.toolEl.offsetHeight / 2),
         },
       });
