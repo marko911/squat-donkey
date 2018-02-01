@@ -1,0 +1,18 @@
+
+.DayPickerInput input {
+  border: 1px solid #e0ebfc;
+  border-radius: 2px;
+  background-color: #fff;
+  font-size: 11px;
+  padding: 4px;
+  line-height: normal;
+  width: 80px;
+}
+
+.DayPickerInput input:focus {
+  outline:none;
+}
+.DayPickerInput-OverlayWrapper {
+  position: fixed;
+}
+

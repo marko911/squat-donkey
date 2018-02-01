@@ -97,7 +97,7 @@
   margin-top: 10px;
   border-radius: 2px;
   font-size: 10px;
-  padding: 4px 4px 4px 8px;;
+  padding: 4px 8px;
   color: $color-font-record;
   background-color: $color-background-record;
 }
@@ -113,7 +113,7 @@
   min-width: 0;
 }
 
-
+.today {margin:0}
 .label {
   font-weight: bold;
   color: $color-font-title;
@@ -132,6 +132,9 @@
   font-size: 11px;
   max-width: 56px;
   @extend .io-pad;
+  &:focus {
+    outline: none;
+  }
 }
 
 .empty-column {
@@ -143,3 +146,8 @@
   font-size: 22px;
   font-weight: 500;
 }
+
+.spacer {
+  margin: 0 10px;
+}
+

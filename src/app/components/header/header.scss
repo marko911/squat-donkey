@@ -13,3 +13,19 @@
   position: relative;
   box-sizing: border-box;
 }
+
+.icon-button {
+  position: relative;
+  z-index: 1000;
+  width: 30px;
+  height: 30px;
+  margin-left: 12px;
+  background: $color-column-header-bg;
+  border: 1px solid $color-column-border;
+  box-sizing: border-box;
+  display: inline-block;
+  text-align: center;
+  line-height: 24px;
+  color: #9B9B9B;
+  border-radius: 2px;
+}

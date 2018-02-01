@@ -1,24 +1,34 @@
 import React from 'react';
 import cs from 'classnames';
 import sid from 'shortid';
-import { isEmpty, head, keys, values } from 'ramda';
+import { isEmpty, head, keys } from 'ramda';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
 import c from './card.scss';
+import './datepicker.css';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
-import Tooltip from '../tooltip/Tooltip';
 
 export default class Card extends React.Component {
  state = {
    showInstructions: false,
    showAllRecords: false,
+   date: '',
  };
-
 
  componentWillMount() {
    this.resetInputBoxes();
  }
+
+  onChangeDate = (date) => {
+    this.submitRecord(
+      this.props.data.name,
+      { date, results: this.state.newRecords },
+    )();
+    setTimeout(() => this.datepicker.setState({ value: '' }), 800);
+  }
 
   resetInputBoxes = () => {
     const newRecords = this.props.data ? this.props.data.recordables.reduce(
@@ -49,14 +59,16 @@ export default class Card extends React.Component {
     this.setState({ showInstructions: !this.state.showInstructions });
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
-  submitRecord = name => () => {
+
+  submitRecord = (name, submission) => () => {
     this.props.onSubmitRecord({
       type: this.props.type,
       name,
-      submission: { date: moment(), results: this.state.newRecords },
+      submission,
     });
     this.resetInputBoxes();
   };
+
 
   render() {
     const data = this.props.data || {};
@@ -124,10 +136,18 @@ export default class Card extends React.Component {
             </Box>
           ))}
         </Box>
-        <Box className={c.sectionWrapper} justify="end">
-          <div onClick={this.submitRecord(name)} className={c.btn}>
-            enter
+        <Box className={c.sectionWrapper} justify="between" align="center">
+          <div onClick={this.submitRecord(name, { date: moment(), results: this.state.newRecords })} className={cs(c.btn, c.today)}>
+            today
           </div>
+          <div className={c.spacer}> or </div>
+          <DayPickerInput
+            ref={x => this.datepicker = x}
+            value={this.state.date}
+            placeholder="Choose date"
+            onDayChange={this.onChangeDate}
+          />
+
         </Box>
       </Box>
     );
@@ -145,24 +165,24 @@ export default class Card extends React.Component {
       ? records
       : isEmpty(records) ? [] : [head(records)];
     const mostRecentWithCollapse = isEmpty(recordsList) ? [] : (
-      <Box className={cs(c.recentRecord)} align="start" key={sid.generate()}>
+      <Box className={cs(c.recentRecord)} align="start" key={data.name ? `records-${name}` : 'somekey'}>
         <Box column className={cs(c.containWidth, c.flex1)}>
           {recordsList.map((rec, i) => {
             const dateOfResult = moment(rec.date).format('DDMMMYYYY');
             const results = isEmpty(rec) ? [] : rec.results;
             return (
-              <Box className={c.recordRow} key={sid.generate()}>
+              <Box className={c.recordRow} key={`reclis-${i}`}>
                 {this.props.editMode && <i onClick={this.props.onDeleteRecord(i)} className={cs(font.iconTrashEmpty, font.iconTrashSmall)} />}
                 <div className={c.date}>{dateOfResult}</div>
                 <Box column className={cs(c.flex1)}>
-                  {keys(results).map((r) => {
+                  {keys(results).map((r, j) => {
                     const val = results[r];
                     return (
                       <div
-                        key={sid.generate()}
+                        key={`rec-${j}`}
                         className={cs(c.containWidth, c.value, c.flex1)}
                       >
-                        {`${r}: ${val}`}
+                        {!isEmpty(val) ? `${r}: ${val}` : '(completed)'}
                       </div>
                     );
                   })}
@@ -187,17 +207,20 @@ export default class Card extends React.Component {
         <><Box justify="between">
           <div className={c.cardHeader}>{name}</div>
           {this.props.editMode && deleteWorkoutIcon}
-          </Box>{[
+        </Box>{
+            [
           this.state.showInstructions ? mainText : null,
           instructions.length ? toggler : null,
           exerciseList,
           parameters.length ? workoutParams : null,
           inputRecords,
           mostRecentWithCollapse,
-        ]}</>
+        ]
+      }</>
       :
         this.props.children
       }
+
       </div>
     );
   }

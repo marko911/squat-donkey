@@ -294,7 +294,6 @@ export default class NewCard extends React.Component {
         </Box>
       </div>
     );
-
     const resultFields = (
       <div key="resfields">
         <div className={c.sectionHeading}>Result Fields</div>

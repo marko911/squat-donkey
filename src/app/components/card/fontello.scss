@@ -71,8 +71,17 @@
 .icon-plus-squared:before {
   @extend .icon-base;
   content: "\f0fe";
-  
 } /* '' */
+
+.icon-plus:before {
+  @extend .icon-base;
+  content: '\e806'; 
+} /* '' */
+
+.icon-calendar-plus-o:before { 
+  @extend .icon-base;
+  content: '\f271'; 
+} /* '' */
 
 .icon-plus-squared-color {
   color: $color-icon-add;
@@ -122,7 +131,16 @@
   @extend .icon-base;
   content: '\f176'; } /* '' */
 
+.icon-header:before{
+    margin-left: 0;
+ }
+ 
 .icon-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-top: 1px;
   color: $color-icon-header;
   &:hover {
     color: $color-font-card;
@@ -149,7 +167,6 @@
   margin-right: 8px;
   margin-left: 0;
 }
-
 
 
 .tooltip-icon {

@@ -32,7 +32,7 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.css'],
     alias: {
       utils: path.resolve(__dirname, './src/app/utils/utils'),
     },
@@ -63,7 +63,18 @@ module.exports = {
         loader: 'svg-inline-loader',
       },
       {
-        test: /\.scss$/,
+        test: /(\.css$)/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+        ],
+      },
+      {
+        test: /^((?!\.global).)*\.scss$/,
         include: [path.join(__dirname, './src')],
         use: [
           {

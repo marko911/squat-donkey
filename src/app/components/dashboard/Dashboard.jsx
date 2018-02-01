@@ -182,7 +182,7 @@ export default class Dashboard extends React.Component {
 
     return (
       <Box className={cs(s.auto, s.dashWrapper)} column >
-        <Header addColumn={this.showAddColumn} />
+        <Header addColumn={this.showAddColumn} addIsActive={this.state.addingColumnActive} />
         <Box className={cs(s.dashContainer)}>
           {this.state.addingColumnActive && NewColumn}
           {categories.map((c, i) => (
@@ -229,7 +229,7 @@ export default class Dashboard extends React.Component {
                 {c.workouts.length ? c.workouts.map((w, i) => (
                   <Card
                     shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
-                    key={sid.generate()}
+                    key={`card-x-${i}`}
                     onSubmitRecord={this.addWorkoutResult}
                     onDeleteSelf={this.deleteWorkout(c.type, i)}
                     onDeleteRecord={this.deleteRecord(c.type, i)}

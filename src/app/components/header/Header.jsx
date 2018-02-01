@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import sid from 'shortid';
 import cs from 'classnames';
 import Box from '../box/Box';
 import s from './header.scss';
@@ -11,9 +10,11 @@ export default class Header extends Component {
   state={};
 
   render() {
-    const { addColumn } = this.props;
-    const addColumnIcon = (
-      <i className={cs(font.iconDocAdd, font.iconHeader)} />
+    const { addColumn, addIsActive } = this.props;
+    const headerIcon = el => (
+      <div className={s.iconButton}>
+        {el}
+      </div>
     );
     return (
       <Box className={s.header}>
@@ -24,9 +25,13 @@ export default class Header extends Component {
         >
           <Tooltip
             onClick={addColumn}
-            className={font.tooltipIcon}
-            el={addColumnIcon}
-            text="Add new column"
+            el={headerIcon(<i className={cs(!addIsActive && font.iconPlus, addIsActive && font.iconCancel, font.iconHeader)} />)}
+            text={addIsActive ? 'Cancel add column' : 'Add new column'}
+          />
+          <Tooltip
+            onClick={() => 1}
+            el={headerIcon(<i className={cs(font.iconThLarge, font.iconHeader)} />)}
+            text="Template options"
           />
 
         </Box>
