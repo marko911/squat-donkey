@@ -21,7 +21,7 @@ const Box = ({
     [className]: className,
   });
   return (
-    <div className={classes} >
+    <div className={classes} {...props} >
       {children}
     </div>);
 };

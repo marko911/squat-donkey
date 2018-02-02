@@ -28,7 +28,6 @@
 }
 
 
-$animation-ms: 350ms;
 .enter {
   transform: translateY(100vh) translateY(-127px);
 }
@@ -40,6 +39,11 @@ $animation-ms: 350ms;
 
 .exit {
   transform: translate3d(0px, 0px, 0px);
+}
+
+.exit.exit-active{
+  transform: translateY(100vh) translateY(-127px);
+  transition: transform $slide-duration cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 
 *.new-column-input {

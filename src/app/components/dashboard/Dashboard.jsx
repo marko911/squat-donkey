@@ -7,20 +7,19 @@ import { find, findIndex, propEq, without, isNil } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
+import o from '../modal/modal.scss';
 import Card from '../card/Card';
 import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
 import maximus from '../../constants/maximusBody.json';
+import Modal from '../modal/Modal';
 
-// import TemplateIcon from '../icons/TemplateIcon';
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
 const Slide = ({ children, ...props }) => (
   <CSSTransition
     {...props}
-    timeout={{ enter: 350, exit: 0 }}
-    classNames={s}
   >
     {children}
   </CSSTransition>
@@ -35,6 +34,7 @@ export default class Dashboard extends React.Component {
     editMode: {},
     newColumnName: '',
     addingColumnActive: false,
+    showOptionsModal: false,
   }
 
   componentWillMount() {
@@ -60,7 +60,6 @@ export default class Dashboard extends React.Component {
       template,
     }));
     localStorage.setItem('currentTemplate', JSON.stringify(template));
-    // get script: const config = JSON.parse(localStorage.getItem('gdConfig'));
   }
 
   randomize = type => () => {
@@ -138,7 +137,7 @@ export default class Dashboard extends React.Component {
     this.setState({ [prop]: value });
   }
 
-  showAddColumn = () => this.setState({ addingColumnActive: !this.state.addingColumnActive })
+  toggleField = field => () => this.setState({ [field]: !this.state[field] })
   addColumnToTemplate = () => {
     const template = { ...this.state.template };
     template.categories.unshift({
@@ -150,6 +149,13 @@ export default class Dashboard extends React.Component {
       newColumnName: '',
       addingColumnActive: false,
     });
+  }
+
+  stopProp = (e) => {
+    log(e.target);
+
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
   }
 
   render() {
@@ -165,7 +171,6 @@ export default class Dashboard extends React.Component {
     );
     const NewColumn = (
       <Box key="new-col-wrap" column className={s.colWrapper}>
-
         <Box className={s.categoryHeader} justify="between" align="center">
           <input
             className={cs(form.inputName, s.newColumnInput)}
@@ -180,9 +185,35 @@ export default class Dashboard extends React.Component {
       </Box>
     );
 
+    const TemplateOptions = (
+      <TransitionGroup
+        onClick={this.toggleField('showOptionsModal')}
+        className={cs(o.invisWrapper, this.state.showOptionsModal && o.active)}
+      >
+        {
+            this.state.showOptionsModal &&
+            <Slide
+              timeout={225}
+              in={this.state.showOptionsModal}
+              key="optModal"
+              classNames={s}
+            >
+              <Modal key="templateOptions" onClick={this.stopProp} >
+                Hi
+              </Modal>
+            </Slide>
+          }
+      </TransitionGroup>);
+
     return (
       <Box className={cs(s.auto, s.dashWrapper)} column >
-        <Header addColumn={this.showAddColumn} addIsActive={this.state.addingColumnActive} />
+        {TemplateOptions}
+
+        <Header
+          addColumn={this.toggleField('addingColumnActive')}
+          toggleOptionsModal={this.toggleField('showOptionsModal')}
+          addIsActive={this.state.addingColumnActive}
+        />
         <Box className={cs(s.dashContainer)}>
           {this.state.addingColumnActive && NewColumn}
           {categories.map((c, i) => (
@@ -213,10 +244,13 @@ export default class Dashboard extends React.Component {
               <Box column className={s.workoutsContainer}>
                 <TransitionGroup>
                   {this.state.newCardOpen[c.type] &&
-                  <Slide key={`newcard-${c.type}`}>
+                  <Slide
+                    timeout={{ enter: 350, exit: 0 }}
+                    classNames={s}
+                    key={`newcard-${c.type}`}
+                  >
                     <NewCard
                       key={sid.generate()}
-                      in={this.state.newCardOpen[c.type]}
                       className={s.newCardOpen}
                       onSubmit={this.addWorkoutToColumn(c.type)}
                       close={this.toggleColumnState(c.type, 'newCardOpen')}

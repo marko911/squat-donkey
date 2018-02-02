@@ -10,7 +10,7 @@ export default class Header extends Component {
   state={};
 
   render() {
-    const { addColumn, addIsActive } = this.props;
+    const { addColumn, addIsActive, toggleOptionsModal } = this.props;
     const headerIcon = el => (
       <div className={s.iconButton}>
         {el}
@@ -29,7 +29,7 @@ export default class Header extends Component {
             text={addIsActive ? 'Cancel add column' : 'Add new column'}
           />
           <Tooltip
-            onClick={() => 1}
+            onClick={toggleOptionsModal}
             el={headerIcon(<i className={cs(font.iconThLarge, font.iconHeader)} />)}
             text="Template options"
           />

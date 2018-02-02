@@ -12,32 +12,34 @@ import font from '../card/fontello.scss';
 import Box from '../box/Box';
 
 export default class Card extends React.Component {
- state = {
-   showInstructions: false,
-   showAllRecords: false,
-   date: '',
- };
+  state = {
+    showInstructions: false,
+    showAllRecords: false,
+    date: '',
+  };
 
- componentWillMount() {
-   this.resetInputBoxes();
- }
-
-  onChangeDate = (date) => {
-    this.submitRecord(
-      this.props.data.name,
-      { date, results: this.state.newRecords },
-    )();
-    setTimeout(() => this.datepicker.setState({ value: '' }), 800);
+  componentWillMount() {
+    this.resetInputBoxes();
   }
 
+  onChangeDate = (date) => {
+    this.submitRecord(this.props.data.name, {
+      date,
+      results: this.state.newRecords,
+    })();
+    this.datepicker.setState({ value: '' });
+  };
+
   resetInputBoxes = () => {
-    const newRecords = this.props.data ? this.props.data.recordables.reduce(
-      (acc, rec) => ({
-        ...acc,
-        [rec.label]: '',
-      }),
-      {},
-    ) : [];
+    const newRecords = this.props.data
+      ? this.props.data.recordables.reduce(
+        (acc, rec) => ({
+          ...acc,
+          [rec.label]: '',
+        }),
+        {},
+      )
+      : [];
     this.setState({ newRecords });
   };
 
@@ -53,7 +55,7 @@ export default class Card extends React.Component {
     if (charCode === 13) {
       this.submitRecord(this.props.data.name)();
     }
-  }
+  };
 
   toggleInstructions = () =>
     this.setState({ showInstructions: !this.state.showInstructions });
@@ -68,7 +70,6 @@ export default class Card extends React.Component {
     });
     this.resetInputBoxes();
   };
-
 
   render() {
     const data = this.props.data || {};
@@ -137,17 +138,22 @@ export default class Card extends React.Component {
           ))}
         </Box>
         <Box className={c.sectionWrapper} justify="between" align="center">
-          <div onClick={this.submitRecord(name, { date: moment(), results: this.state.newRecords })} className={cs(c.btn, c.today)}>
+          <div
+            onClick={this.submitRecord(name, {
+              date: moment(),
+              results: this.state.newRecords,
+            })}
+            className={cs(c.btn, c.today)}
+          >
             today
           </div>
           <div className={c.spacer}> or </div>
           <DayPickerInput
-            ref={x => this.datepicker = x}
+            ref={x => (this.datepicker = x)}
             value={this.state.date}
             placeholder="Choose date"
             onDayChange={this.onChangeDate}
           />
-
         </Box>
       </Box>
     );
@@ -158,21 +164,35 @@ export default class Card extends React.Component {
       <i onClick={this.toggleCollapse} className={c.iconAngleUp} />
     );
     const deleteWorkoutIcon = (
-      <i onClick={this.props.onDeleteSelf} className={cs(font.iconTrashEmpty)} />
+      <i
+        onClick={this.props.onDeleteSelf}
+        className={cs(font.iconTrashEmpty)}
+      />
     );
 
     const recordsList = this.state.showAllRecords
       ? records
       : isEmpty(records) ? [] : [head(records)];
-    const mostRecentWithCollapse = isEmpty(recordsList) ? [] : (
-      <Box className={cs(c.recentRecord)} align="start" key={data.name ? `records-${name}` : 'somekey'}>
+    const mostRecentWithCollapse = isEmpty(recordsList) ? (
+      []
+    ) : (
+      <Box
+        className={cs(c.recentRecord)}
+        align="start"
+        key={data.name ? `records-${name}` : 'somekey'}
+      >
         <Box column className={cs(c.containWidth, c.flex1)}>
           {recordsList.map((rec, i) => {
             const dateOfResult = moment(rec.date).format('DDMMMYYYY');
             const results = isEmpty(rec) ? [] : rec.results;
             return (
               <Box className={c.recordRow} key={`reclis-${i}`}>
-                {this.props.editMode && <i onClick={this.props.onDeleteRecord(i)} className={cs(font.iconTrashEmpty, font.iconTrashSmall)} />}
+                {this.props.editMode && (
+                  <i
+                    onClick={this.props.onDeleteRecord(i)}
+                    className={cs(font.iconTrashEmpty, font.iconTrashSmall)}
+                  />
+                )}
                 <div className={c.date}>{dateOfResult}</div>
                 <Box column className={cs(c.flex1)}>
                   {keys(results).map((r, j) => {
@@ -187,10 +207,7 @@ export default class Card extends React.Component {
                     );
                   })}
                 </Box>
-
-
               </Box>
-
             );
           })}
         </Box>
@@ -200,27 +217,30 @@ export default class Card extends React.Component {
       </Box>
     );
 
-
     return (
-      <div className={cs(c.container, c.card, this.props.shouldHighlight && c.workoutHighlighted, isEmpty(data) && c.emptyColumn)}>
-        {!isEmpty(data) ?
-        <><Box justify="between">
-          <div className={c.cardHeader}>{name}</div>
-          {this.props.editMode && deleteWorkoutIcon}
-        </Box>{
-            [
-          this.state.showInstructions ? mainText : null,
-          instructions.length ? toggler : null,
-          exerciseList,
-          parameters.length ? workoutParams : null,
-          inputRecords,
-          mostRecentWithCollapse,
-        ]
-      }</>
-      :
-        this.props.children
-      }
-
+      <div
+        className={cs(
+          c.container,
+          c.card,
+          this.props.shouldHighlight && c.workoutHighlighted,
+          isEmpty(data) && c.emptyColumn,
+        )}
+      >
+        {!isEmpty(data) ? (
+          <><Box justify="between">
+            <div className={c.cardHeader}>{name}</div>
+            {this.props.editMode && deleteWorkoutIcon}
+          </Box>{[
+              this.state.showInstructions ? mainText : null,
+              instructions.length ? toggler : null,
+              exerciseList,
+              parameters.length ? workoutParams : null,
+              inputRecords,
+              mostRecentWithCollapse,
+            ]}</>
+        ) : (
+          this.props.children
+        )}
       </div>
     );
   }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import sid from 'shortid';
 import cs from 'classnames';
 import s from './tooltip.scss';
 
@@ -35,7 +34,7 @@ export default class Tooltip extends Component {
 
     const wrappedEl = (
       <div
-        key={sid.generate()}
+        key="wrappedEl"
         className={s.elWrapper}
         onMouseEnter={this.hoverToggle(true)}
         onMouseLeave={this.hoverToggle(false)}
@@ -45,7 +44,7 @@ export default class Tooltip extends Component {
     );
     const tooltip = (
       <div
-        key={sid.generate()}
+        key="tooltip-text"
         style={this.state.tooltipStyle}
         ref={y => (this.toolEl = y)}
         className={cs(s.tooltip, this.state.active && s.isActive)}
