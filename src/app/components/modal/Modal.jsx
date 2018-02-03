@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import cs from 'classnames';
 import s from './modal.scss';
 import Box from '../box/Box';
 
-const Modal = ({ children, onClick }) => (
+const Modal = ({ children, className, ...props }) => (
   <Box
     key="modal"
-    onClick={onClick}
+    {...props}
     column
-    className={s.modalDialog}
+    className={cs(s.modalDialog, className)}
   >
     {children}
   </Box>

@@ -27,7 +27,6 @@
   margin-top: 10px;
 }
 
-
 .enter {
   transform: translateY(100vh) translateY(-127px);
 }
@@ -57,15 +56,16 @@
     border: 1px solid transparent;
   }
 }
+
 ::placeholder {
   color: $color-text-field-label;
 }
-
 
 .add-col {
   color: #fff;
   background-color: $color-new-card-action;
 }
+
 .add-workout-btn {
   width: auto;
   font-size: 18px;
@@ -74,4 +74,22 @@
   margin:0;
   background-color: $color-text-field-border;
   color: white;
+}
+
+.template-options {
+  width: 400px;
+  & input {
+    font-size: 22px;
+    background-color: inherit;
+    width: auto;
+    color:$color-column-header-font;
+    margin-right: 10px;
+    margin-left: -4px;
+    border-radius: 2px;
+  }
+}
+
+.template-modal-header {
+  color:$color-column-header-font;
+  font-weight: bold;
 }

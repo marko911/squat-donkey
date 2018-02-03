@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { find, findIndex, propEq, without, isNil } from 'ramda';
+import { find, findIndex, propEq, without, isNil, isEmpty } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
+import t from '../input/toggle.scss';
 import o from '../modal/modal.scss';
 import Card from '../card/Card';
 import Tooltip from '../tooltip/Tooltip';
@@ -33,17 +34,21 @@ export default class Dashboard extends React.Component {
     newCardOpen: {},
     editMode: {},
     newColumnName: '',
+    templateName: '',
     addingColumnActive: false,
     showOptionsModal: false,
   }
 
   componentWillMount() {
     const storedTemplate = JSON.parse(localStorage.getItem('currentTemplate'));
-    if (!isNil(storedTemplate)) {
-      this.setState({ template: storedTemplate });
-    } else {
-      this.setState({ template: maximus });
-    }
+    const template = !isNil(storedTemplate) ? storedTemplate : maximus;
+    const categoryToggles = template.categories.reduce((acc, nxt) => ({
+      [`${nxt.type}-hidden`]: false,
+    }), {});
+    this.setState({
+      template,
+      ...categoryToggles,
+    });
   }
 
   getCategoryAndIdx = type => ({
@@ -133,11 +138,19 @@ export default class Dashboard extends React.Component {
     },
   })
 
-  handleChange = prop => ({ target: { value } }) => {
+  handleChange = prop => ({ target }) => {
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     this.setState({ [prop]: value });
   }
 
+  handleChangeTemplate = ({ target: { value } }) => {
+    const template = { ...this.state.template };
+    template.templateName = value;
+    this.setState({ template });
+  }
+
   toggleField = field => () => this.setState({ [field]: !this.state[field] })
+
   addColumnToTemplate = () => {
     const template = { ...this.state.template };
     template.categories.unshift({
@@ -151,9 +164,15 @@ export default class Dashboard extends React.Component {
     });
   }
 
-  stopProp = (e) => {
-    log(e.target);
+  removeColumnFromTemplate = type => () => {
+    const { data, idx } = this.getCategoryAndIdx(type);
+    const template = { ...this.state.template };
+    template.categories = without([template.categories[idx]], template.categories);
+    log(idx, template.categories);
+    this.updateCurrentTemplate(template);
+  }
 
+  stopProp = (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   }
@@ -198,8 +217,65 @@ export default class Dashboard extends React.Component {
               key="optModal"
               classNames={s}
             >
-              <Modal key="templateOptions" onClick={this.stopProp} >
-                Hi
+              <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
+                <Box justify="end">
+                  <i
+                    onClick={this.toggleField('showOptionsModal')}
+                    className={cs(font.iconCancel, form.close)}
+                  />
+                </Box>
+                <Box
+                  justify="between"
+                  align="start"
+                  className={s.templateModalHeader}
+                >
+                  <input
+                    className={cs(form.inputName)}
+                    placeholder="Template Name"
+                    value={this.state.template.templateName}
+                    onChange={this.handleChangeTemplate}
+                  />
+                </Box>
+                <Box justify="between" className={o.tableHeader}>
+                  <div>Column</div>
+                  <Box>
+                    Remove
+                    <div className={o.actionDivider}>Show/Hide</div>
+                  </Box>
+                </Box>
+                {categories.map((c, i) => (
+                  <Box
+                    align="center"
+                    justify="between"
+                    key={`toggler-${i}`}
+                  >
+                    {c.type}
+                    <Box align="center">
+                      <i
+                        onClick={this.removeColumnFromTemplate(c.type)}
+                        className={cs(font.iconTrashEmpty)}
+                      />
+                      <Box
+                        justify="end"
+                        className={o.actionDivider}
+                      ><input
+                        type="checkbox"
+                        id="id-togg"
+                        checked={this.state[`${c.type}-hidden`]}
+                        onChange={this.handleChange(`${c.type}-hidden`)}
+                        className={t.switchInput}
+                      />
+                        <label
+                          htmlFor="id-togg"
+                          className={cs(t.switchLabel)}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  ))
+                }
+
               </Modal>
             </Slide>
           }
@@ -216,7 +292,8 @@ export default class Dashboard extends React.Component {
         />
         <Box className={cs(s.dashContainer)}>
           {this.state.addingColumnActive && NewColumn}
-          {categories.map((c, i) => (
+          {categories.map((c, i) => (!this.state[`${c.type}-hidden`] ?
+          (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
               <Box className={s.categoryHeader} align="center" justify="between">
                 <div>{c.type}</div>
@@ -292,7 +369,7 @@ export default class Dashboard extends React.Component {
 
               </Box>
             </Box>
-      ))}
+      ) : null))}
         </Box>
       </Box>
 

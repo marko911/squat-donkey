@@ -6,21 +6,21 @@ import c from './newCard.scss';
 import s from '../card/card.scss';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
-
-const InputWithLabel = ({
-  label, children, focused, required,
-}) => (
-  <div className={cs(c.textfieldFloatingLabel)}>
-    {children}
-    <label
-      className={cs(
-            c.textfieldLabel, c.floatingLabel, required && c.labelRequired,
-            focused && c.isFocused,
-            )}
-    >
-      {label}
-    </label>
-  </div>);
+import InputWithLabel from '../input/InputWithLabel';
+// const InputWithLabel = ({
+//   label, children, focused, required,
+// }) => (
+//   <div className={cs(c.textfieldFloatingLabel)}>
+//     {children}
+//     <label
+//       className={cs(
+//             c.textfieldLabel, c.floatingLabel, required && c.labelRequired,
+//             focused && c.isFocused,
+//             )}
+//     >
+//       {label}
+//     </label>
+//   </div>);
 
 const initialState = {
   name: '',
@@ -353,9 +353,3 @@ NewCard.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-
-InputWithLabel.propTypes = {
-  label: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
-  focused: PropTypes.bool.isRequired,
-};
