@@ -146,7 +146,7 @@ export default class Dashboard extends React.Component {
   handleChangeTemplate = ({ target: { value } }) => {
     const template = { ...this.state.template };
     template.templateName = value;
-    this.setState({ template });
+    this.updateCurrentTemplate(template);
   }
 
   toggleField = field => () => this.setState({ [field]: !this.state[field] })
