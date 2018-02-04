@@ -3,6 +3,7 @@
       "categories": [
         {
           "type": "Circuit",
+          "show": true,
           "workouts":[
             {
               "name": "Holy Trinity",

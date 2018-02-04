@@ -42,12 +42,8 @@ export default class Dashboard extends React.Component {
   componentWillMount() {
     const storedTemplate = JSON.parse(localStorage.getItem('currentTemplate'));
     const template = !isNil(storedTemplate) ? storedTemplate : maximus;
-    const categoryToggles = template.categories.reduce((acc, nxt) => ({
-      [`${nxt.type}-hidden`]: false,
-    }), {});
     this.setState({
       template,
-      ...categoryToggles,
     });
   }
 
@@ -138,9 +134,14 @@ export default class Dashboard extends React.Component {
     },
   })
 
-  handleChange = prop => ({ target }) => {
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    this.setState({ [prop]: value });
+  handleChange = prop => ({ target: { value } }) => this.setState({ [prop]: value });
+
+
+  handleHideToggle = type => ({ target: { checked } }) => {
+    const { idx } = this.getCategoryAndIdx(type);
+    const template = { ...this.state.template };
+    template.categories[idx].show = checked;
+    this.updateCurrentTemplate(template);
   }
 
   handleChangeTemplate = ({ target: { value } }) => {
@@ -155,6 +156,7 @@ export default class Dashboard extends React.Component {
     const template = { ...this.state.template };
     template.categories.unshift({
       type: this.state.newColumnName,
+      show: true,
       workouts: [],
     });
     this.updateCurrentTemplate(template);
@@ -165,10 +167,9 @@ export default class Dashboard extends React.Component {
   }
 
   removeColumnFromTemplate = type => () => {
-    const { data, idx } = this.getCategoryAndIdx(type);
+    const { idx } = this.getCategoryAndIdx(type);
     const template = { ...this.state.template };
     template.categories = without([template.categories[idx]], template.categories);
-    log(idx, template.categories);
     this.updateCurrentTemplate(template);
   }
 
@@ -240,16 +241,19 @@ export default class Dashboard extends React.Component {
                   <div>Column</div>
                   <Box>
                     Remove
-                    <div className={o.actionDivider}>Show/Hide</div>
+                    <div className={o.actionDivider}>Hide/Show</div>
                   </Box>
                 </Box>
                 {categories.map((c, i) => (
                   <Box
+
                     align="center"
                     justify="between"
                     key={`toggler-${i}`}
                   >
-                    {c.type}
+                    <div className={s.templateModalRow} >
+                      {c.type}
+                    </div>
                     <Box align="center">
                       <i
                         onClick={this.removeColumnFromTemplate(c.type)}
@@ -260,13 +264,13 @@ export default class Dashboard extends React.Component {
                         className={o.actionDivider}
                       ><input
                         type="checkbox"
-                        id="id-togg"
-                        checked={this.state[`${c.type}-hidden`]}
-                        onChange={this.handleChange(`${c.type}-hidden`)}
+                        id={`id-togg${i}`}
+                        checked={this.state.template.categories[i].show}
+                        onChange={this.handleHideToggle(c.type)}
                         className={t.switchInput}
                       />
                         <label
-                          htmlFor="id-togg"
+                          htmlFor={`id-togg${i}`}
                           className={cs(t.switchLabel)}
                         />
                       </Box>
@@ -292,7 +296,7 @@ export default class Dashboard extends React.Component {
         />
         <Box className={cs(s.dashContainer)}>
           {this.state.addingColumnActive && NewColumn}
-          {categories.map((c, i) => (!this.state[`${c.type}-hidden`] ?
+          {categories.map((c, i) => (c.show ?
           (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
               <Box className={s.categoryHeader} align="center" justify="between">
