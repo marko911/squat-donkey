@@ -150,6 +150,12 @@ export default class Dashboard extends React.Component {
     this.updateCurrentTemplate(template);
   }
 
+  handleChangeColumnName = i => ({ target: { value } }) => {
+    const template = { ...this.state.template };
+    template.categories[i].type = value;
+    this.updateCurrentTemplate(template);
+  }
+
   toggleField = field => () => this.setState({ [field]: !this.state[field] })
 
   addColumnToTemplate = () => {
@@ -205,7 +211,7 @@ export default class Dashboard extends React.Component {
       </Box>
     );
 
-    const TemplateOptions = (
+    const TemplateOptionsModal = (
       <TransitionGroup
         onClick={this.toggleField('showOptionsModal')}
         className={cs(o.invisWrapper, this.state.showOptionsModal && o.active)}
@@ -219,12 +225,6 @@ export default class Dashboard extends React.Component {
               classNames={s}
             >
               <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
-                <Box justify="end">
-                  <i
-                    onClick={this.toggleField('showOptionsModal')}
-                    className={cs(font.iconCancel, form.close)}
-                  />
-                </Box>
                 <Box
                   justify="between"
                   align="start"
@@ -232,12 +232,15 @@ export default class Dashboard extends React.Component {
                 >
                   <input
                     className={cs(form.inputName)}
-                    placeholder="Template Name"
+                    placeholder="Template name"
                     value={this.state.template.templateName}
                     onChange={this.handleChangeTemplate}
                   />
+                  <i
+                    className={cs(font.iconPencil)}
+                  />
                 </Box>
-                <Box justify="between" className={o.tableHeader}>
+                <Box justify="between" className={cs(o.tableHeader, o.spaceTop)}>
                   <div>Column</div>
                   <Box>
                     Remove
@@ -246,14 +249,25 @@ export default class Dashboard extends React.Component {
                 </Box>
                 {categories.map((c, i) => (
                   <Box
-
                     align="center"
                     justify="between"
                     key={`toggler-${i}`}
                   >
-                    <div className={s.templateModalRow} >
-                      {c.type}
-                    </div>
+                    <Box
+                      justify="between"
+                      align="start"
+                      className={s.templateModalListItem}
+                    >
+                      <input
+                        className={cs(form.inputName, s.templateOptionsColumnInput)}
+                        placeholder="Column name"
+                        value={c.type}
+                        onChange={this.handleChangeColumnName(i)}
+                      />
+                      <i
+                        className={cs(font.iconPencil)}
+                      />
+                    </Box>
                     <Box align="center">
                       <i
                         onClick={this.removeColumnFromTemplate(c.type)}
@@ -279,6 +293,14 @@ export default class Dashboard extends React.Component {
 
                   ))
                 }
+                <Box justify="end">
+                  <div
+                    onClick={this.toggleField('showOptionsModal')}
+                    className={cs(o.btnClose, o.spaceTop)}
+                  >
+            Close
+                  </div>
+                </Box>
 
               </Modal>
             </Slide>
@@ -287,7 +309,7 @@ export default class Dashboard extends React.Component {
 
     return (
       <Box className={cs(s.auto, s.dashWrapper)} column >
-        {TemplateOptions}
+        {TemplateOptionsModal}
 
         <Header
           addColumn={this.toggleField('addingColumnActive')}
@@ -295,12 +317,11 @@ export default class Dashboard extends React.Component {
           addIsActive={this.state.addingColumnActive}
         />
         <Box className={cs(s.dashContainer)}>
-          {this.state.addingColumnActive && NewColumn}
           {categories.map((c, i) => (c.show ?
           (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
               <Box className={s.categoryHeader} align="center" justify="between">
-                <div>{c.type}</div>
+                <div className={s.cardName}>{c.type}</div>
                 <Box align="center">
                   <Tooltip
                     className={font.tooltipIcon}
@@ -374,6 +395,8 @@ export default class Dashboard extends React.Component {
               </Box>
             </Box>
       ) : null))}
+          {this.state.addingColumnActive && NewColumn}
+
         </Box>
       </Box>
 

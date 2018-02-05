@@ -11,13 +11,25 @@
 .category-header {
   background-color: $color-column-header-bg;
   color: $color-column-header-font;
-  height: 29px;
-  padding: 0 16px;
-  font-size: 22px;
+  height: 33px;
+  box-sizing: border-box;
+  padding: 4px 16px;
+  font-size: 18px;
   font-weight: bold;
   border: 1px solid $color-column-border;
   border-radius: 5px;
-  flex: 0 0 auto;
+  & * {
+    min-width: 0;
+    &:not(:first-child){
+      flex-shrink: 0;
+    }
+  }
+}
+
+.card-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .workouts-container {
@@ -79,22 +91,61 @@
 .template-options {
   width: 400px;
   & input {
-    font-size: 22px;
+    color: rgba(0,0,0,0.87);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    box-shadow: 0 -1px 0 #e0e0e0 inset;
     background-color: inherit;
     width: auto;
+    min-width: 0;
+    padding-right:26px;
     color:$color-column-header-font;
-    margin-right: 10px;
     margin-left: -4px;
     border-radius: 2px;
+    &:focus {
+      border:1px solid transparent;
+      box-shadow: 0 -2px 0 $color-card-btn-hover-font inset, 0 0 0 1px #e0e0e0 inset;
+    }
+    
   }
-  
 }
 
-.template-modal-row {
+.edit-icon-position {
+  & i{
+    position: absolute;
+    right: 8;
+    top:8;
+    display:none;
+    color: $color-light-grey;
+  }
+  & i:before {
+    cursor: text;
+  }
+  &:hover {
+    & i{display:block}
+  }
+  & input:focus+i {
+    display: none;
+  }
+}
+
+input.template-options-column-input {
   color: $color-font-title;
+  font-size:14px;
+}
+
+.template-modal-list-item {
+  position: relative;
+  align-self: baseline;
+  @extend .edit-icon-position;
 }
 
 .template-modal-header {
   color:$color-column-header-font;
   font-weight: bold;
+  position: relative;
+  max-width: 50%;
+  align-self: baseline;
+  @extend .edit-icon-position;
 }

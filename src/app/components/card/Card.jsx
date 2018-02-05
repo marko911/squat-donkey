@@ -34,7 +34,6 @@ export default class Card extends React.Component {
   };
 
   setDatePickerPosition = () => {
-    log('setting');
     const {
       top, left,
     } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
@@ -43,7 +42,7 @@ export default class Card extends React.Component {
       top: top - 48,
     };
     if (document.documentElement.clientHeight - top < (265)) {
-      datePickerPosition.top = top - 293;
+      datePickerPosition.top = top - 280;
     }
     this.setState({
       datePickerPosition,
@@ -92,7 +91,6 @@ export default class Card extends React.Component {
   };
 
   controlDatePicker = () => {
-    log('control');
     this.setDatePickerPosition();
     this.datepicker.setState({ showOverlay: true });
   }
@@ -180,7 +178,7 @@ export default class Card extends React.Component {
             ref={x => this.datepicker = x}
             value={this.state.date}
             placeholder="Choose date"
-            inputProps={{ onClick: this.controlDatePicker }}
+            inputProps={{ onClick: this.controlDatePicker, onFocus: this.controlDatePicker }}
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
           />
@@ -259,7 +257,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-          </Box>{[
+            </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

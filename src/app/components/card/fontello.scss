@@ -90,6 +90,11 @@
   }
 }
 
+.icon-pencil:before { 
+  @extend .icon-base;
+  content: '\e807'; } /* '' */
+
+
 .icon-minus-squared:before {
   @extend .icon-base;
   content: "\f146";
