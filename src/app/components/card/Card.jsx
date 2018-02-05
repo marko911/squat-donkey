@@ -11,15 +11,7 @@ import c from './card.scss';
 import './datepicker.css';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
-
-const CustomOverlay = style => ({ classNames, selectedDay, children }) => (
-  <div className={classNames.overlayWrapper} >
-    <div className={classNames.overlay} style={style}>
-      {children}
-    </div>
-  </div>
-);
-
+import CustomOverlay from './CustomOverlay';
 
 export default class Card extends React.Component {
   state = {
@@ -33,11 +25,6 @@ export default class Card extends React.Component {
     this.setState({ datepickerId: sid.generate() });
   }
 
-  // componentDidMount() {
-  //   this.setDatePickerPosition();
-  // }
-
-
   onChangeDate = (date) => {
     this.submitRecord(this.props.data.name, {
       date,
@@ -45,7 +32,9 @@ export default class Card extends React.Component {
     })();
     this.datepicker.setState({ value: '' });
   };
+
   setDatePickerPosition = () => {
+    log('setting');
     const {
       top, left,
     } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
@@ -53,11 +42,9 @@ export default class Card extends React.Component {
       left: left + 92,
       top: top - 48,
     };
-
     if (document.documentElement.clientHeight - top < (265)) {
       datePickerPosition.top = top - 293;
     }
-    log(top, datePickerPosition.top);
     this.setState({
       datePickerPosition,
     });
@@ -105,6 +92,7 @@ export default class Card extends React.Component {
   };
 
   controlDatePicker = () => {
+    log('control');
     this.setDatePickerPosition();
     this.datepicker.setState({ showOverlay: true });
   }

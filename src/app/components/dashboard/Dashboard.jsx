@@ -154,7 +154,7 @@ export default class Dashboard extends React.Component {
 
   addColumnToTemplate = () => {
     const template = { ...this.state.template };
-    template.categories.unshift({
+    template.categories.push({
       type: this.state.newColumnName,
       show: true,
       workouts: [],
@@ -341,13 +341,13 @@ export default class Dashboard extends React.Component {
                 }
                 </TransitionGroup>
 
-                {c.workouts.length ? c.workouts.map((w, i) => (
+                {c.workouts.length ? c.workouts.map((w, j) => (
                   <Card
                     shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
-                    key={`card-x-${i}`}
+                    key={`card-${i}-${j}`}
                     onSubmitRecord={this.addWorkoutResult}
-                    onDeleteSelf={this.deleteWorkout(c.type, i)}
-                    onDeleteRecord={this.deleteRecord(c.type, i)}
+                    onDeleteSelf={this.deleteWorkout(c.type, j)}
+                    onDeleteRecord={this.deleteRecord(c.type, j)}
                     data={w}
                     type={c.type}
                     editMode={!!this.state.editMode[c.type]}
