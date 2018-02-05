@@ -7,16 +7,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: $color-background-main;
-  & *{
-    box-sizing: border-box;
-  }
 }
-
 
 .dashContainer {
   padding: 16px 24px;
-  position: relative;
   box-sizing: border-box;
+  position: relative;
 }
 .dash-wrapper {
   height: 100vh;

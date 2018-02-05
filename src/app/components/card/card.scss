@@ -42,6 +42,7 @@
   animation: highlightIt 1.3s ease-in-out;
   padding-bottom: 0;
 }
+
 .date {
   font-weight: bold;
   line-height: 16px;
@@ -149,5 +150,9 @@
 
 .spacer {
   margin: 0 10px;
+}
+
+.wrapper {
+  position: relative;
 }
 

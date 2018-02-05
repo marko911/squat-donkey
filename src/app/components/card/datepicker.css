@@ -17,5 +17,14 @@
   outline: none;
 }
 .DayPickerInput-OverlayWrapper {
-  position: fixed;
+  position: static;
+}
+
+.DayPickerInput-Overlay{
+  left: 247px;
+    z-index: 1;
+    position: absolute;
+    background: white;
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }

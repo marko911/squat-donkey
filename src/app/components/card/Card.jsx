@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import cs from 'classnames';
 import sid from 'shortid';
 import { isEmpty, head, keys } from 'ramda';
@@ -11,6 +12,15 @@ import './datepicker.css';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
 
+const CustomOverlay = style => ({ classNames, selectedDay, children }) => (
+  <div className={classNames.overlayWrapper} >
+    <div className={classNames.overlay} style={style}>
+      {children}
+    </div>
+  </div>
+);
+
+
 export default class Card extends React.Component {
   state = {
     showInstructions: false,
@@ -20,7 +30,13 @@ export default class Card extends React.Component {
 
   componentWillMount() {
     this.resetInputBoxes();
+    this.setState({ datepickerId: sid.generate() });
   }
+
+  // componentDidMount() {
+  //   this.setDatePickerPosition();
+  // }
+
 
   onChangeDate = (date) => {
     this.submitRecord(this.props.data.name, {
@@ -29,6 +45,23 @@ export default class Card extends React.Component {
     })();
     this.datepicker.setState({ value: '' });
   };
+  setDatePickerPosition = () => {
+    const {
+      top, left,
+    } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
+    const datePickerPosition = {
+      left: left + 92,
+      top: top - 48,
+    };
+
+    if (document.documentElement.clientHeight - top < (265)) {
+      datePickerPosition.top = top - 293;
+    }
+    log(top, datePickerPosition.top);
+    this.setState({
+      datePickerPosition,
+    });
+  }
 
   resetInputBoxes = () => {
     const newRecords = this.props.data
@@ -70,6 +103,11 @@ export default class Card extends React.Component {
     });
     this.resetInputBoxes();
   };
+
+  controlDatePicker = () => {
+    this.setDatePickerPosition();
+    this.datepicker.setState({ showOverlay: true });
+  }
 
   render() {
     const data = this.props.data || {};
@@ -116,6 +154,7 @@ export default class Card extends React.Component {
       </div>
     );
 
+
     const inputRecords = (
       <Box key="footer-card" column className={c.sectionWrapper}>
         <Box column>
@@ -149,10 +188,13 @@ export default class Card extends React.Component {
           </div>
           <div className={c.spacer}> or </div>
           <DayPickerInput
-            ref={x => (this.datepicker = x)}
+            key={this.state.datepickerId}
+            ref={x => this.datepicker = x}
             value={this.state.date}
             placeholder="Choose date"
+            inputProps={{ onClick: this.controlDatePicker }}
             onDayChange={this.onChangeDate}
+            overlayComponent={CustomOverlay(this.state.datePickerPosition)}
           />
         </Box>
       </Box>
@@ -169,7 +211,6 @@ export default class Card extends React.Component {
         className={cs(font.iconTrashEmpty)}
       />
     );
-
     const recordsList = this.state.showAllRecords
       ? records
       : isEmpty(records) ? [] : [head(records)];
