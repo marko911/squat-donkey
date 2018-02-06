@@ -347,7 +347,7 @@ export default class Dashboard extends React.Component {
                 <TransitionGroup>
                   {this.state.newCardOpen[c.type] &&
                   <Slide
-                    timeout={{ enter: 350, exit: 0 }}
+                    timeout={{ enter: 200, exit: 0 }}
                     classNames={s}
                     key={`newcard-${c.type}`}
                   >

@@ -10,12 +10,12 @@
   
 .category-header {
   background-color: $color-column-header-bg;
-  color: $color-column-header-font;
+  color: $color-font-card;
   height: 33px;
   box-sizing: border-box;
   padding: 4px 16px;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
   border: 1px solid $color-column-border;
   border-radius: 5px;
   & * {
@@ -36,7 +36,7 @@
   overflow: auto;
   border: 1px solid $color-column-border;
   border-radius: 5px;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .enter {

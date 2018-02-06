@@ -22,7 +22,11 @@ export default class Card extends React.Component {
 
   componentWillMount() {
     this.resetInputBoxes();
-    this.setState({ datepickerId: sid.generate() });
+    this.setState({ datepickerId: 'datepickerkey' });
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setDatePickerPosition(), 100);
   }
 
   onChangeDate = (date) => {
@@ -30,7 +34,6 @@ export default class Card extends React.Component {
       date,
       results: this.state.newRecords,
     })();
-    this.datepicker.setState({ value: '' });
   };
 
   setDatePickerPosition = () => {
@@ -47,6 +50,7 @@ export default class Card extends React.Component {
     this.setState({
       datePickerPosition,
     });
+    log('pos set');
   }
 
   resetInputBoxes = () => {
@@ -90,9 +94,9 @@ export default class Card extends React.Component {
     this.resetInputBoxes();
   };
 
-  controlDatePicker = () => {
-    this.setDatePickerPosition();
-    this.datepicker.setState({ showOverlay: true });
+
+  focusDatePicker= () => {
+    this.controlDatePicker();
   }
 
   render() {
@@ -178,9 +182,9 @@ export default class Card extends React.Component {
             ref={x => this.datepicker = x}
             value={this.state.date}
             placeholder="Choose date"
-            inputProps={{ onClick: this.controlDatePicker, onFocus: this.controlDatePicker }}
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
+
           />
         </Box>
       </Box>
@@ -222,7 +226,7 @@ export default class Card extends React.Component {
                 )}
                 <div className={c.date}>{dateOfResult}</div>
                 <Box column className={cs(c.flex1)}>
-                  {keys(results).map((r, j) => {
+                  {keys(results).length ? keys(results).map((r, j) => {
                     const val = results[r];
                     return (
                       <div
@@ -232,7 +236,7 @@ export default class Card extends React.Component {
                         {!isEmpty(val) ? `${r}: ${val}` : '(completed)'}
                       </div>
                     );
-                  })}
+                  }) : '(completed)'}
                 </Box>
               </Box>
             );
@@ -257,7 +261,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-            </Box>{[
+          </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,
