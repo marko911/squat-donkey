@@ -1,6 +1,7 @@
 {
   "name": "reactwebpackminimal",
   "version": "1.0.0",
+  "homepage": "https://marko911.github.io/squat-donkey/",
   "description": "A react, webpack with HMR starterkit",
   "main": "index.js",
   "scripts": {
