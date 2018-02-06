@@ -225,6 +225,9 @@ export default class Dashboard extends React.Component {
               classNames={s}
             >
               <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
+                <Box justify="between" className={cs(o.tableHeader)}>
+                  <div>Template</div>
+                </Box>
                 <Box
                   justify="between"
                   align="start"
@@ -232,7 +235,6 @@ export default class Dashboard extends React.Component {
                 >
                   <input
                     className={cs(form.inputName)}
-                    placeholder="Template name"
                     value={this.state.template.templateName}
                     onChange={this.handleChangeTemplate}
                   />

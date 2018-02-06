@@ -10,12 +10,13 @@
   
 .category-header {
   background-color: $color-column-header-bg;
-  color: $color-font-card;
-  height: 33px;
+  color: #374c6d;
+  height: 30px;
+  min-height: 30px;
   box-sizing: border-box;
   padding: 4px 16px;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 700;
   border: 1px solid $color-column-border;
   border-radius: 5px;
   & * {
@@ -133,11 +134,14 @@
 input.template-options-column-input {
   color: $color-font-title;
   font-size:14px;
+  flex:1;
 }
 
 .template-modal-list-item {
   position: relative;
   align-self: baseline;
+  flex: 1;
+  max-width: 60%;
   @extend .edit-icon-position;
 }
 
@@ -145,7 +149,7 @@ input.template-options-column-input {
   color:$color-column-header-font;
   font-weight: bold;
   position: relative;
-  max-width: 50%;
+  max-width: 60%;
   align-self: baseline;
   @extend .edit-icon-position;
 }

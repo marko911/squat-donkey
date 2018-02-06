@@ -25,15 +25,13 @@ export default class Card extends React.Component {
     this.setState({ datepickerId: 'datepickerkey' });
   }
 
-  componentDidMount() {
-    setTimeout(() => this.setDatePickerPosition(), 100);
-  }
-
   onChangeDate = (date) => {
     this.submitRecord(this.props.data.name, {
       date,
       results: this.state.newRecords,
     })();
+    this.setState(state => ({ date: 'Date added!' }));
+    setTimeout(() => this.setState({ date: '' }), 1000);
   };
 
   setDatePickerPosition = () => {
@@ -45,12 +43,11 @@ export default class Card extends React.Component {
       top: top - 48,
     };
     if (document.documentElement.clientHeight - top < (265)) {
-      datePickerPosition.top = top - 280;
+      datePickerPosition.top = top - 292;
     }
     this.setState({
       datePickerPosition,
     });
-    log('pos set');
   }
 
   resetInputBoxes = () => {
@@ -184,7 +181,7 @@ export default class Card extends React.Component {
             placeholder="Choose date"
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
-
+            inputProps={{ onFocus: this.setDatePickerPosition }}
           />
         </Box>
       </Box>
