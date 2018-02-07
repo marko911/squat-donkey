@@ -10,7 +10,7 @@
   
 .category-header {
   background-color: $color-column-header-bg;
-  color: #374c6d;
+  color: $color-contrast-dark;
   height: 30px;
   min-height: 30px;
   box-sizing: border-box;
@@ -152,4 +152,11 @@ input.template-options-column-input {
   max-width: 60%;
   align-self: baseline;
   @extend .edit-icon-position;
+}
+
+.menu-open {
+  -webkit-transition-delay: 0s;
+    transition-delay: 0s;
+    -webkit-transform: translate3d(0,90px,0);
+    transform: translate3d(0,90px,0);
 }

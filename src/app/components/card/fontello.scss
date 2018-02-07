@@ -139,7 +139,22 @@
 .icon-header:before{
     margin-left: 0;
  }
- 
+
+.icon-cog-alt:before { 
+  @extend .icon-base;
+  content: '\e808';
+ } 
+
+.icon-menu:before { 
+  @extend .icon-base;
+  content: '\f0c9'; 
+}
+
+.icon-sliders:before {
+  @extend .icon-base;
+  content: '\f1de'; 
+} 
+
 .icon-header{
   display: flex;
   align-items: center;

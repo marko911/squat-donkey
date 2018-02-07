@@ -9,6 +9,7 @@ import s from './dashboard.scss';
 import font from '../card/fontello.scss';
 import t from '../input/toggle.scss';
 import o from '../modal/modal.scss';
+import h from '../header/header.scss';
 import Card from '../card/Card';
 import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
@@ -37,6 +38,7 @@ export default class Dashboard extends React.Component {
     templateName: '',
     addingColumnActive: false,
     showOptionsModal: false,
+    showMenu: false,
   }
 
   componentWillMount() {
@@ -310,15 +312,27 @@ export default class Dashboard extends React.Component {
       </TransitionGroup>);
 
     return (
-      <Box className={cs(s.auto, s.dashWrapper)} column >
+      <div className={cs(s.auto)} >
+        <i
+          onClick={this.toggleField('showMenu')}
+          className={cs(font.iconMenu, h.iconMenu)}
+        />
         {TemplateOptionsModal}
 
-        <Header
-          addColumn={this.toggleField('addingColumnActive')}
-          toggleOptionsModal={this.toggleField('showOptionsModal')}
-          addIsActive={this.state.addingColumnActive}
-        />
-        <Box className={cs(s.dashContainer)}>
+        <Slide
+          timeout={400}
+          in={this.state.showMenu}
+          key="menuTop"
+          classNames={h}
+        >
+          <Header
+            addColumn={this.toggleField('addingColumnActive')}
+            toggleOptionsModal={this.toggleField('showOptionsModal')}
+            addIsActive={this.state.addingColumnActive}
+            showMenu={this.state.showMenu}
+          />
+        </Slide>
+        <Box className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}>
           {categories.map((c, i) => (c.show ?
           (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
@@ -400,7 +414,7 @@ export default class Dashboard extends React.Component {
           {this.state.addingColumnActive && NewColumn}
 
         </Box>
-      </Box>
+      </div>
 
     );
   }

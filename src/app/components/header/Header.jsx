@@ -7,34 +7,46 @@ import font from '../card/fontello.scss';
 import Tooltip from '../tooltip/Tooltip';
 
 export default class Header extends Component {
-  state={};
+ renderHeaderIcon = el => (
+   <div className={s.iconButton}>
+     {el}
+   </div>
+ )
+ render() {
+   const {
+     addColumn, addIsActive, toggleOptionsModal, showMenu,
+   } = this.props;
 
-  render() {
-    const { addColumn, addIsActive, toggleOptionsModal } = this.props;
-    const headerIcon = el => (
-      <div className={s.iconButton}>
-        {el}
-      </div>
-    );
-    return (
-      <Box className={s.header}>
-        <Box
-          align="center"
-          justify="end"
-          className={cs(s.container, s.flex1)}
-        >
-          <Tooltip
-            onClick={addColumn}
-            el={headerIcon(<i className={cs(!addIsActive && font.iconPlus, addIsActive && font.iconCancel, font.iconHeader)} />)}
-            text={addIsActive ? 'Cancel add column' : 'Add new column'}
-          />
-          <Tooltip
-            onClick={toggleOptionsModal}
-            el={headerIcon(<i className={cs(font.iconThLarge, font.iconHeader)} />)}
-            text="Template options"
-          />
 
-        </Box>
-      </Box>);
-  }
+   return (
+     <div className={showMenu ? s.open : ''} >
+       <div className={cs(s.menuWrap)}>
+         <div className={s.menu}>
+           <div className={s.iconList}>
+             <Tooltip
+               onClick={addColumn}
+               el={this.renderHeaderIcon(<i className={cs(!addIsActive && font.iconPlus, addIsActive && font.iconCancel, font.iconHeader)} />)}
+               text={addIsActive ? 'Cancel add column' : 'Add new column'}
+             />
+             <Tooltip
+               onClick={toggleOptionsModal}
+               el={this.renderHeaderIcon(<i className={cs(font.iconThLarge, font.iconHeader)} />)}
+               text="Template options"
+             />
+           </div>
+         </div>
+       </div>
+     </div>);
+ }
 }
+
+Header.propTypes = {
+  addColumn: PropTypes.func.isRequired,
+  addIsActive: PropTypes.bool,
+  toggleOptionsModal: PropTypes.func.isRequired,
+};
+
+{ /* <i
+         onClick={this.toggleMenu}
+         className={cs(font.iconMenu, s.iconMenu)}
+       /> */ }

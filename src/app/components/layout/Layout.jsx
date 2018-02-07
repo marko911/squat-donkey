@@ -6,7 +6,7 @@ import rootStyle from '../root.scss';
 import Box from '../box/Box';
 
 const Layout = ({ children }) => (
-  <Box className={cs(s.main)}>
+  <Box className={cs(s.dashWrapper)}>
     {children}
   </Box>
 );

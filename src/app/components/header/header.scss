@@ -2,16 +2,14 @@
 @import "../variables.scss";
 
 .header {
-  background-color: $color-card-bg;
-  min-height: 48px;
-  border-bottom: 1px solid $color-card-divider;  
+  min-height: 48px;  
 }
 
 .container {
-  height: 48px;
-  padding: 8px 24px;
   position: relative;
   box-sizing: border-box;
+  width:100%;
+  min-height: 48px;
 }
 
 .icon-button {
@@ -29,3 +27,91 @@
   color: #9B9B9B;
   border-radius: 2px;
 }
+
+.icon-menu {
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  color: $color-contrast-dark;
+  &:before {
+    font-size: 24px;
+    margin: 0;
+  }
+}
+
+.icon-menu, .menu-wrap {
+  position: fixed;
+  width: 24px;  
+  height: 24px;
+  -webkit-transform: translate3d(calc(100vw - 3em),1em,0);
+  transform: translate3d(calc(100vw - 3em),1em,0);
+}
+
+.menu-wrap {
+  z-index: 999;
+  transition: width 0.4s, height 0.4s, transform 0.4s, background-color 0.4s;
+  transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+  background-color: transparent;
+}
+
+
+.open .menu-wrap{
+  width: 100%;
+  height: 96px;
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  -webkit-transition-delay: 0s;
+  transition-delay: 0s;
+  border-bottom: 1px solid $color-card-divider;
+  background-color: $color-card-bg;
+
+}
+
+.menu {
+  height: 100%;
+	overflow: hidden;
+}
+
+.icon-list {
+  padding:2.5em 2em 0 6em;
+  float:right;
+}
+
+.icon-list div {
+  opacity: 0;
+	display: inline-block;
+	padding: 0 0.2em;
+	margin: 0 15px;
+  text-align: center;
+  .open & {
+    opacity: 1;
+    -webkit-transition: opacity 0.4s 0.4s;
+    transition: opacity 0.4s 0.4s;
+  }
+}
+
+.open .icon-list div:nth-child(2) {
+	-webkit-transition-delay: 0.42s;
+	transition-delay: 0.42s;
+}
+
+.open .icon-list div:nth-child(3) {
+	-webkit-transition-delay: 0.44s;
+	transition-delay: 0.44s;
+}
+
+.open .icon-list div:nth-child(4) {
+	-webkit-transition-delay: 0.46s;
+	transition-delay: 0.46s;
+}
+
+.open .icon-list div:nth-child(5) {
+	-webkit-transition-delay: 0.48s;
+	transition-delay: 0.48s;
+}
+
+.open .icon-list div:nth-child(6) {
+	-webkit-transition-delay: 0.5s;
+	transition-delay: 0.5s;
+}
+
