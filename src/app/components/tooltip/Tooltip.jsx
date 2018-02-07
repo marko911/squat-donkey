@@ -4,6 +4,10 @@ import cs from 'classnames';
 import s from './tooltip.scss';
 
 export default class Tooltip extends Component {
+  static defaultProps = {
+    positionShift: 0,
+  };
+
   state = {
     active: false,
   }
@@ -21,7 +25,7 @@ export default class Tooltip extends Component {
       this.setState({
         tooltipStyle: {
           left: pos.left + pos.width / 2,
-          top: pos.top + pos.height + 20,
+          top: pos.top + pos.height + 20 - this.props.positionShift,
           marginLeft,
           marginTop: -1 * (this.toolEl.offsetHeight / 2),
         },
@@ -60,3 +64,10 @@ export default class Tooltip extends Component {
     );
   }
 }
+
+Tooltip.propTypes = {
+  el: PropTypes.node.isRequired,
+  text: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  positionShift: PropTypes.number,
+};

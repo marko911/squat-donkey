@@ -39,6 +39,7 @@ export default class Dashboard extends React.Component {
     addingColumnActive: false,
     showOptionsModal: false,
     showMenu: false,
+    modalTab: 1,
   }
 
   componentWillMount() {
@@ -185,6 +186,12 @@ export default class Dashboard extends React.Component {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   }
+  closeOnOutside = () => {
+    if (this.state.showMenu) {
+      this.toggleField('showMenu')();
+    }
+  }
+  setModalTab = tab => () => this.setState({ modalTab: tab })
 
   render() {
     const { categories } = this.state.template;
@@ -213,6 +220,78 @@ export default class Dashboard extends React.Component {
       </Box>
     );
 
+    const current = (
+      <React.Fragment>
+        <Box justify="between" className={cs(o.tableHeader)}>
+          <div>Template</div>
+        </Box>
+        <Box
+          justify="between"
+          align="start"
+          className={s.templateModalHeader}
+        >
+          <input
+            className={cs(form.inputName)}
+            value={this.state.template.templateName}
+            onChange={this.handleChangeTemplate}
+          />
+          <i
+            className={cs(font.iconPencil)}
+          />
+        </Box>
+        <Box justify="between" className={cs(o.tableHeader, o.spaceTop)}>
+          <div>Column</div>
+          <Box>
+      Remove
+            <div className={o.actionDivider}>Hide/Show</div>
+          </Box>
+        </Box>
+        {categories.map((c, i) => (
+          <Box
+            align="center"
+            justify="between"
+            key={`toggler-${i}`}
+          >
+            <Box
+              justify="between"
+              align="start"
+              className={s.templateModalListItem}
+            >
+              <input
+                className={cs(form.inputName, s.templateOptionsColumnInput)}
+                placeholder="Column name"
+                value={c.type}
+                onChange={this.handleChangeColumnName(i)}
+              />
+              <i
+                className={cs(font.iconPencil)}
+              />
+            </Box>
+            <Box align="center">
+              <i
+                onClick={this.removeColumnFromTemplate(c.type)}
+                className={cs(font.iconTrashEmpty)}
+              />
+              <Box
+                justify="end"
+                className={o.actionDivider}
+              ><input
+                type="checkbox"
+                id={`id-togg${i}`}
+                checked={this.state.template.categories[i].show}
+                onChange={this.handleHideToggle(c.type)}
+                className={t.switchInput}
+              />
+                <label
+                  htmlFor={`id-togg${i}`}
+                  className={cs(t.switchLabel)}
+                />
+              </Box>
+            </Box>
+          </Box>))}
+      </React.Fragment>);
+
+
     const TemplateOptionsModal = (
       <TransitionGroup
         onClick={this.toggleField('showOptionsModal')}
@@ -227,82 +306,41 @@ export default class Dashboard extends React.Component {
               classNames={s}
             >
               <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
-                <Box justify="between" className={cs(o.tableHeader)}>
-                  <div>Template</div>
-                </Box>
                 <Box
-                  justify="between"
+                  className={s.tabBar}
+                  justify="center"
+                  content="between"
                   align="start"
-                  className={s.templateModalHeader}
                 >
-                  <input
-                    className={cs(form.inputName)}
-                    value={this.state.template.templateName}
-                    onChange={this.handleChangeTemplate}
-                  />
-                  <i
-                    className={cs(font.iconPencil)}
-                  />
-                </Box>
-                <Box justify="between" className={cs(o.tableHeader, o.spaceTop)}>
-                  <div>Column</div>
-                  <Box>
-                    Remove
-                    <div className={o.actionDivider}>Hide/Show</div>
-                  </Box>
-                </Box>
-                {categories.map((c, i) => (
-                  <Box
-                    align="center"
-                    justify="between"
-                    key={`toggler-${i}`}
+                  <a
+                    onClick={this.setModalTab(1)}
+                    className={cs(s.tab, this.state.modalTab === 1 && s.isActive)}
+                    href="#"
                   >
-                    <Box
-                      justify="between"
-                      align="start"
-                      className={s.templateModalListItem}
-                    >
-                      <input
-                        className={cs(form.inputName, s.templateOptionsColumnInput)}
-                        placeholder="Column name"
-                        value={c.type}
-                        onChange={this.handleChangeColumnName(i)}
-                      />
-                      <i
-                        className={cs(font.iconPencil)}
-                      />
-                    </Box>
-                    <Box align="center">
-                      <i
-                        onClick={this.removeColumnFromTemplate(c.type)}
-                        className={cs(font.iconTrashEmpty)}
-                      />
-                      <Box
-                        justify="end"
-                        className={o.actionDivider}
-                      ><input
-                        type="checkbox"
-                        id={`id-togg${i}`}
-                        checked={this.state.template.categories[i].show}
-                        onChange={this.handleHideToggle(c.type)}
-                        className={t.switchInput}
-                      />
-                        <label
-                          htmlFor={`id-togg${i}`}
-                          className={cs(t.switchLabel)}
-                        />
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  ))
-                }
+                   Current
+                  </a>
+                  <a
+                    onClick={this.setModalTab(2)}
+                    className={cs(s.tab, this.state.modalTab === 2 && s.isActive)}
+                    href="#"
+                  >
+                    Load
+                  </a>
+                  <a
+                    onClick={this.setModalTab(3)}
+                    className={cs(s.tab, this.state.modalTab === 3 && s.isActive)}
+                    href="#"
+                  >
+                  Create
+                  </a>
+                </Box>
+                {current}
                 <Box justify="end">
                   <div
                     onClick={this.toggleField('showOptionsModal')}
                     className={cs(o.btnClose, o.spaceTop)}
                   >
-            Close
+                  Close
                   </div>
                 </Box>
 
@@ -318,21 +356,16 @@ export default class Dashboard extends React.Component {
           className={cs(font.iconMenu, h.iconMenu)}
         />
         {TemplateOptionsModal}
-
-        <Slide
-          timeout={400}
-          in={this.state.showMenu}
-          key="menuTop"
-          classNames={h}
+        <Header
+          addColumn={this.toggleField('addingColumnActive')}
+          toggleOptionsModal={this.toggleField('showOptionsModal')}
+          addIsActive={this.state.addingColumnActive}
+          showMenu={this.state.showMenu}
+        />
+        <Box
+          onClick={this.closeOnOutside}
+          className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
         >
-          <Header
-            addColumn={this.toggleField('addingColumnActive')}
-            toggleOptionsModal={this.toggleField('showOptionsModal')}
-            addIsActive={this.state.addingColumnActive}
-            showMenu={this.state.showMenu}
-          />
-        </Slide>
-        <Box className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}>
           {categories.map((c, i) => (c.show ?
           (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
@@ -340,6 +373,7 @@ export default class Dashboard extends React.Component {
                 <div className={s.cardName}>{c.type}</div>
                 <Box align="center">
                   <Tooltip
+                    positionShift={this.state.showMenu ? 64 : null}
                     className={font.tooltipIcon}
                     el={randomizeIcon}
                     onClick={this.randomize(c.type)}
@@ -347,12 +381,14 @@ export default class Dashboard extends React.Component {
                   />
                   <Tooltip
                     className={font.tooltipIcon}
+                    positionShift={this.state.showMenu ? 64 : null}
                     el={addWorkoutIcon}
                     onClick={this.toggleColumnState(c.type, 'newCardOpen')}
                     text="Add workout"
                   />
                   <Tooltip
                     className={font.tooltipIcon}
+                    positionShift={this.state.showMenu ? 64 : null}
                     el={editColumnIcon}
                     onClick={this.toggleColumnState(c.type, 'editMode')}
                     text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}

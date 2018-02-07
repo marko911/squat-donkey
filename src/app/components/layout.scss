@@ -13,7 +13,7 @@ body {
   padding: 54px 24px 16px;
   box-sizing: border-box;
   position: relative;
-  height: calc(100% - 48px);
+  height: 100%;
   transition: transform 0.4s;
   -webkit-transition-timing-function: cubic-bezier(0.7,0,0.3,1);
   transition-timing-function: cubic-bezier(0.7,0,0.3,1);
@@ -43,6 +43,14 @@ body {
 
 .align-center {
   align-items: center;
+}
+
+.content-center {
+  align-content: center;
+}
+
+.content-between {
+  align-content: space-between;
 }
 
 .align-start {
@@ -100,4 +108,6 @@ body {
     color: $color-card-btn-hover-font;
   }
 }
+
+
 

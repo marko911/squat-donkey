@@ -17,23 +17,27 @@ export default class Header extends Component {
      addColumn, addIsActive, toggleOptionsModal, showMenu,
    } = this.props;
 
-
    return (
      <div className={showMenu ? s.open : ''} >
        <div className={cs(s.menuWrap)}>
          <div className={s.menu}>
-           <div className={s.iconList}>
-             <Tooltip
+           <Box className={s.iconList}>
+             <a
+               href="#"
                onClick={addColumn}
-               el={this.renderHeaderIcon(<i className={cs(!addIsActive && font.iconPlus, addIsActive && font.iconCancel, font.iconHeader)} />)}
-               text={addIsActive ? 'Cancel add column' : 'Add new column'}
-             />
-             <Tooltip
+               className={s.wideOne}
+             >
+               <i className={cs(!addIsActive && font.iconPlus, addIsActive && font.iconCancel, font.iconHeader)} />
+               <span>{addIsActive ? 'Cancel add column' : 'Add column'}</span>
+             </a>
+             <a
+               href="#"
                onClick={toggleOptionsModal}
-               el={this.renderHeaderIcon(<i className={cs(font.iconThLarge, font.iconHeader)} />)}
-               text="Template options"
-             />
-           </div>
+             >
+               <i className={cs(font.iconSliders, font.iconHeader)} />
+               <span>Template Settings</span>
+             </a>
+           </Box>
          </div>
        </div>
      </div>);
@@ -45,8 +49,3 @@ Header.propTypes = {
   addIsActive: PropTypes.bool,
   toggleOptionsModal: PropTypes.func.isRequired,
 };
-
-{ /* <i
-         onClick={this.toggleMenu}
-         className={cs(font.iconMenu, s.iconMenu)}
-       /> */ }

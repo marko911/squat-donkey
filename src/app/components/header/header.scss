@@ -52,12 +52,13 @@
   transition: width 0.4s, height 0.4s, transform 0.4s, background-color 0.4s;
   transition-timing-function: cubic-bezier(0.7,0,0.3,1);
   background-color: transparent;
+
 }
 
 
 .open .menu-wrap{
   width: 100%;
-  height: 96px;
+  height: 64px;
   -webkit-transform: translate3d(0,0,0);
   transform: translate3d(0,0,0);
   -webkit-transition-delay: 0s;
@@ -69,49 +70,89 @@
 
 .menu {
   height: 100%;
-	overflow: hidden;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 24px;
+  margin-right: 3em;
 }
 
-.icon-list {
-  padding:2.5em 2em 0 6em;
-  float:right;
-}
-
-.icon-list div {
-  opacity: 0;
-	display: inline-block;
-	padding: 0 0.2em;
-	margin: 0 15px;
-  text-align: center;
-  .open & {
-    opacity: 1;
-    -webkit-transition: opacity 0.4s 0.4s;
-    transition: opacity 0.4s 0.4s;
+.menu-wrap a {
+  color: $color-icon-header;
+  text-decoration: none;
+  &:hover {
+    color: $color-icon-header-hover;
+    & i {
+      color: $color-icon-header-hover;
+    }
   }
 }
 
-.open .icon-list div:nth-child(2) {
-	-webkit-transition-delay: 0.42s;
-	transition-delay: 0.42s;
+
+
+@media screen and (max-width: 50em) {
+	.icon-list a {
+		padding: 0.5em 0em;
+		margin: 0 5px;
+		font-size: 1em;
+	}
+	.icon-list a span {
+		display: none;
+	}
 }
 
-.open .icon-list div:nth-child(3) {
-	-webkit-transition-delay: 0.44s;
-	transition-delay: 0.44s;
+
+.icon-list a {
+  opacity: 0;
+	display: inline-block;
+	padding: 0 0.2em;
+	&:not(:last-child){
+    margin-right: 16px;
+  }
+  text-align: center;
+  .open & {
+    opacity: 1;
+    -webkit-transition: opacity 0.2s 0.2s;
+    transition: opacity 0.2s 0.2s;
+  }
 }
 
-.open .icon-list div:nth-child(4) {
-	-webkit-transition-delay: 0.46s;
-	transition-delay: 0.46s;
+.icon-list a span {
+	display: block;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 0.5em;
+	font-weight: 700;
+	padding-top: 0.5em;
 }
 
-.open .icon-list div:nth-child(5) {
-	-webkit-transition-delay: 0.48s;
-	transition-delay: 0.48s;
+.wide-one {
+  min-width: 120px;
+
+}
+.open .icon-list a:nth-child(2) {
+	-webkit-transition-delay: 0.22s;
+	transition-delay: 0.22s;
 }
 
-.open .icon-list div:nth-child(6) {
-	-webkit-transition-delay: 0.5s;
-	transition-delay: 0.5s;
+.open .icon-list a:nth-child(3) {
+	-webkit-transition-delay: 0.24s;
+	transition-delay: 0.24s;
+}
+
+.open .icon-list a:nth-child(4) {
+	-webkit-transition-delay: 0.26s;
+	transition-delay: 0.26s;
+}
+
+.open .icon-list a:nth-child(5) {
+	-webkit-transition-delay: 0.28s;
+	transition-delay: 0.28s;
+}
+
+.open .icon-list a:nth-child(6) {
+	-webkit-transition-delay: 0.3s;
+	transition-delay: 0.3s;
 }
 
