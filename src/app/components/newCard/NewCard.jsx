@@ -7,20 +7,6 @@ import s from '../card/card.scss';
 import font from '../card/fontello.scss';
 import Box from '../box/Box';
 import InputWithLabel from '../input/InputWithLabel';
-// const InputWithLabel = ({
-//   label, children, focused, required,
-// }) => (
-//   <div className={cs(c.textfieldFloatingLabel)}>
-//     {children}
-//     <label
-//       className={cs(
-//             c.textfieldLabel, c.floatingLabel, required && c.labelRequired,
-//             focused && c.isFocused,
-//             )}
-//     >
-//       {label}
-//     </label>
-//   </div>);
 
 const initialState = {
   name: '',

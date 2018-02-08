@@ -82,12 +82,8 @@ export default class Card extends React.Component {
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
 
-  submitRecord = (name, submission) => () => {
-    this.props.onSubmitRecord({
-      type: this.props.type,
-      name,
-      submission,
-    });
+  submitRecord = submission => () => {
+    this.props.onSubmitRecord(submission);
     this.resetInputBoxes();
   };
 
@@ -165,7 +161,7 @@ export default class Card extends React.Component {
         </Box>
         <Box className={c.sectionWrapper} justify="between" align="center">
           <div
-            onClick={this.submitRecord(name, {
+            onClick={this.submitRecord({
               date: moment(),
               results: this.state.newRecords,
             })}
@@ -258,7 +254,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-          </Box>{[
+            </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

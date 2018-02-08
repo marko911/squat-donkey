@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { find, findIndex, propEq, without, isNil, isEmpty } from 'ramda';
+import { propEq, without, isNil, remove, lensPath, prepend, append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -50,21 +50,10 @@ export default class Dashboard extends React.Component {
     });
   }
 
-  getCategoryAndIdx = type => ({
-    data: find(propEq('type', type), this.state.template.categories),
-    idx: findIndex(
-      propEq('type', type),
-      this.state.template.categories,
-    ),
-  })
-
-  updateCurrentTemplate = (template) => {
-    this.setState(state => ({
-      ...state,
-      template,
-    }));
-    localStorage.setItem('currentTemplate', JSON.stringify(template));
-  }
+  updateProp = (path, functor) => this.setState(
+    over(path, functor),
+    () => localStorage.setItem('currentTemplate', JSON.stringify(this.state.template)),
+  )
 
   randomize = type => () => {
     const { data, idx } = this.getCategoryAndIdx(type);
@@ -88,110 +77,103 @@ export default class Dashboard extends React.Component {
     }, 1000);
   };
 
-  addWorkoutResult = ({ name, type, submission }) => {
-    const updatedTemplate = { ...this.state.template };
-    const { data, idx } = this.getCategoryAndIdx(type);
-    const workout = find(propEq('name', name), data.workouts);
-    workout.records.unshift(submission);
-    const workoutIdx = findIndex(
-      propEq('name', name),
-      data.workouts,
-    );
-    updatedTemplate.categories[idx].workouts[
-      workoutIdx
-    ] = workout;
-    this.updateCurrentTemplate(updatedTemplate);
+  addWorkoutResult = (catIdx, woIdx) => (submission) => {
+    const workoutResults = lensPath([
+      'template',
+      'categories',
+      catIdx,
+      'workouts',
+      woIdx,
+      'records',
+    ]);
+    this.updateProp(workoutResults, prepend(submission));
   }
 
-  addWorkoutToColumn = type => (workout) => {
-    const { data, idx } = this.getCategoryAndIdx(type);
-    const template = { ...this.state.template };
-    data.workouts.unshift(workout);
-    template.categories[idx] = data;
-    this.updateCurrentTemplate(template);
-    this.toggleColumnState(type, 'newCardOpen')();
+
+  addWorkoutToColumn = idx => (workout) => {
+    const workouts = lensPath([
+      'template',
+      'categories',
+      idx,
+      'workouts',
+    ]);
+    this.updateProp(workouts, prepend(workout));
+    this.updateProp(lensPath([
+      'newCardOpen',
+      [idx],
+    ]), not);
   }
 
-  deleteWorkout = (type, idx) => () => {
-    const { data, idx: idxCategory } = this.getCategoryAndIdx(type);
-    const template = { ...this.state.template };
-    const workoutToDelete = data.workouts[idx];
-    const restOfWorkouts = without([workoutToDelete], data.workouts);
-    template.categories[idxCategory].workouts = restOfWorkouts;
-    this.updateCurrentTemplate(template);
-  }
+  deleteFromList = (path, i) => this.updateProp(path, remove(i, 1))
 
-  deleteRecord = (type, idx) => rIdx => () => {
-    const { data, idx: catIdx } = this.getCategoryAndIdx(type);
-    const template = { ...this.state.template };
-    const workout = data.workouts[idx];
-    const recordToDel = workout.records[rIdx];
-    template.categories[catIdx].workouts[idx].records = without([recordToDel], workout.records);
-    this.updateCurrentTemplate(template);
-  }
+  deleteWorkout = (catIdx, woIdx) => () => this.deleteFromList(lensPath([
+    'template',
+    'categories',
+    catIdx,
+    'workouts',
+  ]), woIdx);
 
-  toggleColumnState =(type, prop) => () => this.setState({
-    [prop]: {
-      ...this.state[prop],
-      [type]: !this.state[prop][type],
-    },
-  })
+
+  deleteRecord = (catIdx, woIdx) => rIdx => () => this.deleteFromList(lensPath([
+    'template',
+    'categories',
+    catIdx,
+    'workouts',
+    woIdx,
+    'records',
+  ]), rIdx);
 
   handleChange = prop => ({ target: { value } }) => this.setState({ [prop]: value });
 
+  handleHideToggle = idx => ({ target: { checked } }) => this.updateProp(lensPath(['template', 'categories', idx, 'show']), () => checked);
 
-  handleHideToggle = type => ({ target: { checked } }) => {
-    const { idx } = this.getCategoryAndIdx(type);
-    const template = { ...this.state.template };
-    template.categories[idx].show = checked;
-    this.updateCurrentTemplate(template);
-  }
-
-  handleChangeTemplate = ({ target: { value } }) => {
-    const template = { ...this.state.template };
-    template.templateName = value;
-    this.updateCurrentTemplate(template);
-  }
+  changeTemplateName = ({ target: { value } }) => this.updateProp(lensPath(['template', 'templateName']), () => value);
 
   handleChangeColumnName = i => ({ target: { value } }) => {
-    const template = { ...this.state.template };
-    template.categories[i].type = value;
-    this.updateCurrentTemplate(template);
+    const column = lensPath([
+      'template',
+      'categories',
+      i,
+      'type',
+    ]);
+    this.updateProp(column, () => value);
   }
 
   toggleField = field => () => this.setState({ [field]: !this.state[field] })
 
   addColumnToTemplate = () => {
-    const template = { ...this.state.template };
-    template.categories.push({
-      type: this.state.newColumnName,
-      show: true,
-      workouts: [],
-    });
-    this.updateCurrentTemplate(template);
+    this.updateProp(
+      lensPath([
+        'template',
+        'categories',
+      ]),
+      append({
+        type: this.state.newColumnName,
+        show: true,
+        workouts: [],
+      }),
+    );
     this.setState({
       newColumnName: '',
       addingColumnActive: false,
     });
   }
 
-  removeColumnFromTemplate = type => () => {
-    const { idx } = this.getCategoryAndIdx(type);
-    const template = { ...this.state.template };
-    template.categories = without([template.categories[idx]], template.categories);
-    this.updateCurrentTemplate(template);
-  }
+  removeColumnFromTemplate = i => () => this.deleteFromList(lensPath([
+    'template',
+    'categories',
+  ]), i)
 
   stopProp = (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
   }
+
   closeOnOutside = () => {
     if (this.state.showMenu) {
       this.toggleField('showMenu')();
     }
   }
-  setModalTab = tab => () => this.setState({ modalTab: tab })
 
   render() {
     const { categories } = this.state.template;
@@ -233,7 +215,7 @@ export default class Dashboard extends React.Component {
           <input
             className={cs(form.inputName)}
             value={this.state.template.templateName}
-            onChange={this.handleChangeTemplate}
+            onChange={this.changeTemplateName}
           />
           <i
             className={cs(font.iconPencil)}
@@ -269,7 +251,7 @@ export default class Dashboard extends React.Component {
             </Box>
             <Box align="center">
               <i
-                onClick={this.removeColumnFromTemplate(c.type)}
+                onClick={this.removeColumnFromTemplate(i)}
                 className={cs(font.iconTrashEmpty)}
               />
               <Box
@@ -279,7 +261,7 @@ export default class Dashboard extends React.Component {
                 type="checkbox"
                 id={`id-togg${i}`}
                 checked={this.state.template.categories[i].show}
-                onChange={this.handleHideToggle(c.type)}
+                onChange={this.handleHideToggle(i)}
                 className={t.switchInput}
               />
                 <label
@@ -294,7 +276,7 @@ export default class Dashboard extends React.Component {
 
     const TemplateOptionsModal = (
       <TransitionGroup
-        onClick={this.toggleField('showOptionsModal')}
+        onClick={() => this.updateProp(lensPath(['showOptionsModal']), not)}
         className={cs(o.invisWrapper, this.state.showOptionsModal && o.active)}
       >
         {
@@ -313,21 +295,21 @@ export default class Dashboard extends React.Component {
                   align="start"
                 >
                   <a
-                    onClick={this.setModalTab(1)}
+                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 1)}
                     className={cs(s.tab, this.state.modalTab === 1 && s.isActive)}
                     href="#"
                   >
                    Current
                   </a>
                   <a
-                    onClick={this.setModalTab(2)}
+                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 2)}
                     className={cs(s.tab, this.state.modalTab === 2 && s.isActive)}
                     href="#"
                   >
                     Load
                   </a>
                   <a
-                    onClick={this.setModalTab(3)}
+                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 3)}
                     className={cs(s.tab, this.state.modalTab === 3 && s.isActive)}
                     href="#"
                   >
@@ -383,21 +365,27 @@ export default class Dashboard extends React.Component {
                     className={font.tooltipIcon}
                     positionShift={this.state.showMenu ? 64 : null}
                     el={addWorkoutIcon}
-                    onClick={this.toggleColumnState(c.type, 'newCardOpen')}
+                    onClick={() => this.updateProp(lensPath([
+                      'newCardOpen',
+                      [i],
+                    ]), not)}
                     text="Add workout"
                   />
                   <Tooltip
                     className={font.tooltipIcon}
                     positionShift={this.state.showMenu ? 64 : null}
                     el={editColumnIcon}
-                    onClick={this.toggleColumnState(c.type, 'editMode')}
+                    onClick={() => this.updateProp(lensPath([
+                      'editMode',
+                      [c.type],
+                    ]), not)}
                     text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
                   />
                 </Box>
               </Box>
               <Box column className={s.workoutsContainer}>
                 <TransitionGroup>
-                  {this.state.newCardOpen[c.type] &&
+                  {this.state.newCardOpen[i] &&
                   <Slide
                     timeout={{ enter: 200, exit: 0 }}
                     classNames={s}
@@ -406,8 +394,8 @@ export default class Dashboard extends React.Component {
                     <NewCard
                       key={sid.generate()}
                       className={s.newCardOpen}
-                      onSubmit={this.addWorkoutToColumn(c.type)}
-                      close={this.toggleColumnState(c.type, 'newCardOpen')}
+                      onSubmit={this.addWorkoutToColumn(i)}
+                      close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}
                     />
                   </Slide>
 
@@ -418,9 +406,9 @@ export default class Dashboard extends React.Component {
                   <Card
                     shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
                     key={`card-${i}-${j}`}
-                    onSubmitRecord={this.addWorkoutResult}
-                    onDeleteSelf={this.deleteWorkout(c.type, j)}
-                    onDeleteRecord={this.deleteRecord(c.type, j)}
+                    onSubmitRecord={this.addWorkoutResult(i, j)}
+                    onDeleteSelf={this.deleteWorkout(i, j)}
+                    onDeleteRecord={this.deleteRecord(i, j)}
                     data={w}
                     type={c.type}
                     editMode={!!this.state.editMode[c.type]}
@@ -433,7 +421,10 @@ export default class Dashboard extends React.Component {
                     align="center"
                   >
                     <div
-                      onClick={this.toggleColumnState(c.type, 'newCardOpen')}
+                      onClick={() => this.updateProp(lensPath([
+                        'newCardOpen',
+                        [i],
+                      ]), not)}
                       className={cs(s.btn, s.addWorkoutBtn)}
                     >
                   + Add New Workout
