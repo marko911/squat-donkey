@@ -92,7 +92,6 @@
 .template-options {
   width: 400px;
   & input {
-    color: rgba(0,0,0,0.87);
     font-size: 16px;
     font-weight: 400;
     line-height: 20px;
@@ -160,8 +159,18 @@ input.template-options-column-input {
     -webkit-transform: translate3d(0,64px,0);
     transform: translate3d(0,64px,0);
 }
+@keyframes border-expand {
+  0% {
+    opacity: 0;
+    width: 0; }
+  100% {
+    opacity: 1;
+    width: 100%; } }
 
 .tab-bar {
+  padding: 16px 16px 0;
+  margin: -16px;
+  background: #f1f4f9;
   height: 48px;
   border-bottom: 1px solid $color-card-divider;
 }
@@ -193,8 +202,8 @@ input.template-options-column-input {
         left: 0;
         position: absolute;
         background: $color-dark-secondary;
-        -webkit-animation: border-expand .2s cubic-bezier(.4,0,.4,1).01s alternate forwards;
-        animation: border-expand .2s cubic-bezier(.4,0,.4,1).01s alternate forwards;
+        -webkit-animation: border-expand .25s cubic-bezier(.4,0,.4,1).01s alternate forwards;
+        animation: border-expand .25s cubic-bezier(.4,0,.4,1).01s alternate forwards;
         transition: all 1s cubic-bezier(.4,0,1,1);
       }
     }

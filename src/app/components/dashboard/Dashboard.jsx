@@ -223,7 +223,7 @@ export default class Dashboard extends React.Component {
     const current = (
       <React.Fragment>
         <Box justify="between" className={cs(o.tableHeader)}>
-          <div>Template</div>
+          <div>Name</div>
         </Box>
         <Box
           justify="between"
@@ -331,7 +331,7 @@ export default class Dashboard extends React.Component {
                     className={cs(s.tab, this.state.modalTab === 3 && s.isActive)}
                     href="#"
                   >
-                  Create
+                  New
                   </a>
                 </Box>
                 {current}
