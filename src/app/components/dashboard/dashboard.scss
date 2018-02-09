@@ -168,6 +168,7 @@ input.template-options-column-input {
     width: 100%; } }
 
 .tab-bar {
+  position: relative;
   padding: 16px 16px 0;
   margin: -16px;
   background: #f1f4f9;
@@ -193,19 +194,15 @@ input.template-options-column-input {
     overflow: hidden;
     &.is-active {
       color: rgba(0,0,0,.87);
-      &:after {
-        height: 2px;
-        width: 100%;
-        display: block;
-        content: " ";
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        background: $color-dark-secondary;
-        -webkit-animation: border-expand .25s cubic-bezier(.4,0,.4,1).01s alternate forwards;
-        animation: border-expand .25s cubic-bezier(.4,0,.4,1).01s alternate forwards;
-        transition: all 1s cubic-bezier(.4,0,1,1);
-      }
     }
+}
+
+.ink-bar {
+  color:$color-dark-secondary;;
+  background: $color-dark-secondary;;
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  transition: all 0.15s;
 }
 

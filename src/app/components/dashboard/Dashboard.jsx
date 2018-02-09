@@ -1,9 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { propEq, without, isNil, remove, lensPath, prepend, append, not, over } from 'ramda';
+import { propEq, isNil, remove, lensPath, prepend, append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -26,7 +27,6 @@ const Slide = ({ children, ...props }) => (
     {children}
   </CSSTransition>
 );
-
 
 export default class Dashboard extends React.Component {
   state = {
@@ -55,28 +55,6 @@ export default class Dashboard extends React.Component {
     () => localStorage.setItem('currentTemplate', JSON.stringify(this.state.template)),
   )
 
-  randomize = type => () => {
-    const { data, idx } = this.getCategoryAndIdx(type);
-    const randIdx = Math.round(Math.random() * (data.workouts.length - 1));
-    const selected = data.workouts[randIdx];
-    const reorderedList = without([selected], data.workouts);
-    reorderedList.unshift(selected);
-    const updatedTemplate = { ...this.state.template };
-    updatedTemplate.categories[idx].workouts = reorderedList;
-    this.updateCurrentTemplate(updatedTemplate);
-    // border highlighting
-    this.setState(state => ({
-      ...state,
-      idxOfHighlighted: { 0: true },
-    }));
-    setTimeout(() => {
-      this.setState(state => ({
-        ...state,
-        idxOfHighlighted: {},
-      }));
-    }, 1000);
-  };
-
   addWorkoutResult = (catIdx, woIdx) => (submission) => {
     const workoutResults = lensPath([
       'template',
@@ -88,7 +66,6 @@ export default class Dashboard extends React.Component {
     ]);
     this.updateProp(workoutResults, prepend(submission));
   }
-
 
   addWorkoutToColumn = idx => (workout) => {
     const workouts = lensPath([
@@ -112,7 +89,6 @@ export default class Dashboard extends React.Component {
     catIdx,
     'workouts',
   ]), woIdx);
-
 
   deleteRecord = (catIdx, woIdx) => rIdx => () => this.deleteFromList(lensPath([
     'template',
@@ -175,6 +151,22 @@ export default class Dashboard extends React.Component {
     }
   }
 
+  setInkbar = () => this.setState({
+    inkBarStyle: {
+      left: 16,
+      width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
+    },
+  });
+
+  handleTabChange = i => ({ target }) => {
+    this.updateProp(lensPath(['modalTab']), () => i);
+    const { offsetLeft } = target;
+    this.updateProp(lensPath([
+      'inkBarStyle',
+      'left',
+    ]), () => offsetLeft);
+  }
+
   render() {
     const { categories } = this.state.template;
     const randomizeIcon = (
@@ -224,7 +216,7 @@ export default class Dashboard extends React.Component {
         <Box justify="between" className={cs(o.tableHeader, o.spaceTop)}>
           <div>Column</div>
           <Box>
-      Remove
+            Remove
             <div className={o.actionDivider}>Hide/Show</div>
           </Box>
         </Box>
@@ -286,6 +278,7 @@ export default class Dashboard extends React.Component {
               in={this.state.showOptionsModal}
               key="optModal"
               classNames={s}
+              onEnter={this.setInkbar}
             >
               <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
                 <Box
@@ -295,26 +288,28 @@ export default class Dashboard extends React.Component {
                   align="start"
                 >
                   <a
-                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 1)}
+                    ref={x => this.firstTab = x}
+                    onClick={this.handleTabChange(1)}
                     className={cs(s.tab, this.state.modalTab === 1 && s.isActive)}
                     href="#"
                   >
                    Current
                   </a>
                   <a
-                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 2)}
+                    onClick={this.handleTabChange(2)}
                     className={cs(s.tab, this.state.modalTab === 2 && s.isActive)}
                     href="#"
                   >
                     Load
                   </a>
                   <a
-                    onClick={() => this.updateProp(lensPath(['modalTab']), () => 3)}
+                    onClick={this.handleTabChange(3)}
                     className={cs(s.tab, this.state.modalTab === 3 && s.isActive)}
                     href="#"
                   >
                   New
                   </a>
+                  <div className={s.inkBar} style={this.state.inkBarStyle} />
                 </Box>
                 {current}
                 <Box justify="end">
@@ -354,13 +349,13 @@ export default class Dashboard extends React.Component {
               <Box className={s.categoryHeader} align="center" justify="between">
                 <div className={s.cardName}>{c.type}</div>
                 <Box align="center">
-                  <Tooltip
+                  {/* <Tooltip
                     positionShift={this.state.showMenu ? 64 : null}
                     className={font.tooltipIcon}
                     el={randomizeIcon}
                     onClick={this.randomize(c.type)}
                     text="Random workout"
-                  />
+                  /> */}
                   <Tooltip
                     className={font.tooltipIcon}
                     positionShift={this.state.showMenu ? 64 : null}
@@ -430,10 +425,8 @@ export default class Dashboard extends React.Component {
                   + Add New Workout
                     </div>
                   </Box>
-
-
                 </Card>
-            }
+              }
 
               </Box>
             </Box>
