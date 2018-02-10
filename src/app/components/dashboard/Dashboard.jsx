@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { propEq, isNil, remove, lensPath, prepend, append, not, over } from 'ramda';
+import { propEq, assoc,
+  isNil, remove, lensPath,
+  lensProp, prepend, map, append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -50,10 +52,35 @@ export default class Dashboard extends React.Component {
     });
   }
 
+  setInkbar = () => this.setState({
+    inkBarStyle: {
+      left: 16,
+      width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
+    },
+  });
+
+
+  createBlankTemplate = (current) => {
+    const records = over(lensProp('records'), () => []);
+    const workouts = over(lensProp('workouts'), map(records));
+    const blankTemplate = over(lensProp('categories'), map(workouts));
+    let blanks = JSON.parse(localStorage.getItem('blankTemplates'));
+    blanks = blanks || {};
+    const blank = blankTemplate(current);
+    const newBlanks = assoc(blank.templateName, blank);
+    return newBlanks(blanks);
+  }
+
+
   updateProp = (path, functor) => this.setState(
     over(path, functor),
-    () => localStorage.setItem('currentTemplate', JSON.stringify(this.state.template)),
+    () => this.updateLocalStorage(),
   )
+
+  updateLocalStorage=() => {
+    localStorage.setItem('currentTemplate', JSON.stringify(this.state.template));
+    localStorage.setItem('blankTemplates', JSON.stringify(this.createBlankTemplate(this.state.template)));
+  }
 
   addWorkoutResult = (catIdx, woIdx) => (submission) => {
     const workoutResults = lensPath([
@@ -151,12 +178,6 @@ export default class Dashboard extends React.Component {
     }
   }
 
-  setInkbar = () => this.setState({
-    inkBarStyle: {
-      left: 16,
-      width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
-    },
-  });
 
   handleTabChange = i => ({ target }) => {
     this.updateProp(lensPath(['modalTab']), () => i);
@@ -166,6 +187,12 @@ export default class Dashboard extends React.Component {
       'left',
     ]), () => offsetLeft);
   }
+
+  checkForEnter = ({ charCode }) => {
+    if (charCode === 13) {
+      this.addColumnToTemplate();
+    }
+  };
 
   render() {
     const { categories } = this.state.template;
@@ -182,9 +209,11 @@ export default class Dashboard extends React.Component {
       <Box key="new-col-wrap" column className={s.colWrapper}>
         <Box className={s.categoryHeader} justify="between" align="center">
           <input
+            ref={c => this.newColumnInput = c}
             className={cs(form.inputName, s.newColumnInput)}
             placeholder="Enter column name"
             value={this.state.newColumnName}
+            onKeyPress={this.checkForEnter}
             onChange={this.handleChange('newColumnName')}
           />
           <div onClick={this.addColumnToTemplate} className={cs(s.btn, s.addCol)}>

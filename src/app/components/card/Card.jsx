@@ -40,7 +40,7 @@ export default class Card extends React.Component {
     } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
     const datePickerPosition = {
       left: left + 92,
-      top: top - 48,
+      top,
     };
     if (document.documentElement.clientHeight - top < (265)) {
       datePickerPosition.top = top - 292;
@@ -177,7 +177,7 @@ export default class Card extends React.Component {
             placeholder="Choose date"
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
-            inputProps={{ onFocus: this.setDatePickerPosition }}
+            inputProps={{ onClick: this.setDatePickerPosition }}
           />
         </Box>
       </Box>
