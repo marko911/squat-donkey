@@ -12,6 +12,7 @@ import { propEq, merge,
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
+import c from '../card/card.scss';
 import t from '../input/toggle.scss';
 import o from '../modal/modal.scss';
 import h from '../header/header.scss';
@@ -22,6 +23,7 @@ import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
 import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
+import InputWithLabel from '../input/InputWithLabel';
 
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
 const Slide = ({ children, ...props }) => (
@@ -37,6 +39,7 @@ export default class Dashboard extends React.Component {
     template: {},
     newTemplate: {
       templateName: '',
+      categories: [{ type: '', show: true, workouts: [] }],
     },
     idxOfHighlighted: {},
     newCardOpen: {},
@@ -48,15 +51,23 @@ export default class Dashboard extends React.Component {
     showMenu: false,
     modalTabSelected: 1,
     saveBlankDisabled: false,
+    focus: {
+      newTemplateName: false,
+      categories: [false],
+    },
+    invalidFields: [],
   }
 
   componentWillMount() {
     let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
     const blankTemplates = JSON.parse(localStorage.getItem('blankTemplates')) || {};
+    const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
+
     template = !isEmpty(template) ? template : maximus;
     this.setState({
       template,
       blankTemplates,
+      recentTemplates,
       stockTemplates: [maximus],
     });
   }
@@ -73,8 +84,7 @@ export default class Dashboard extends React.Component {
     const records = over(lensProp('records'), always([]));
     const workouts = over(lensProp('workouts'), map(records));
     const blankTemplate = over(lensProp('categories'), map(workouts));
-    let blanks = JSON.parse(localStorage.getItem('blankTemplates'));
-    blanks = blanks || {};
+    const blanks = JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const blank = blankTemplate(current);
     return merge(blanks, { [blank.templateName]: blank });
   }
@@ -107,10 +117,39 @@ export default class Dashboard extends React.Component {
     saveBlankDisabled: true,
   }), () => localStorage.setItem('blankTemplates', JSON.stringify(this.state.blankTemplates)))
 
-  loadBlank = template => () => {
+  saveCurrentTemplate = () => {
+    const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
+    const addedToRecents = merge(recentTemplates, { [this.state.template.templateName]: this.state.template });
+    this.setState({ recentTemplates: addedToRecents });
+    localStorage.setItem('recentTemplates', JSON.stringify(addedToRecents));
+  }
+
+  loadTemplate = template => () => {
+    this.saveCurrentTemplate();
     this.updateProp(lensProp('template'), always(template));
     this.closeOptionsModal();
     this.toggleField('showMenu')();
+  }
+
+  createTemplate = () => {
+    if (!this.state.newTemplate.templateName) {
+      this.updateProp(lensProp('invalidFields'), append('newTemplateName'));
+      return;
+    }
+    if (!this.state.newTemplate.categories[0].type.length) {
+      const noCategory = over(lensProp(['categories']), always([]));
+      this.loadTemplate(noCategory(this.state.newTemplate))();
+    } else {
+      this.loadTemplate(this.state.newTemplate)();
+    }
+    this.updateProp(lensProp('newTemplate'), always({
+      templateName: '',
+      categories: [{ type: '', show: true, workouts: [] }],
+    }));
+    this.updateProp(lensProp('focus'), always({
+      newTemplateName: false,
+      categories: [false],
+    }));
   }
 
   addWorkoutToColumn = idx => (workout) => {
@@ -150,7 +189,14 @@ export default class Dashboard extends React.Component {
   handleHideToggle = idx => ({ target: { checked } }) => this.updateProp(lensPath(['template', 'categories', idx, 'show']), always(checked));
 
   changeTemplateName = ({ target: { value } }) => this.updateProp(lensPath(['template', 'templateName']), always(value));
-  changeNewTemplateName = ({ target: { value } }) => this.updateProp(lensPath(['newTemplate', 'templateName']), always(value));
+
+  changeNewTemplate = path => ({ target: { value } }) => {
+    this.updateProp(lensPath(['newTemplate', ...path]), always(value));
+    if (path.includes('templateName')) {
+      this.setState({ invalidFields: [] });
+    }
+  };
+
   handleChangeColumnName = i => ({ target: { value } }) => {
     const column = lensPath([
       'template',
@@ -221,6 +267,35 @@ export default class Dashboard extends React.Component {
     this.setState({ modalTabSelected: 1 });
   };
 
+  appendColumnToNewTemplate = () => {
+    this.updateProp(lensPath(['newTemplate', 'categories']), append({ type: '', show: true, workouts: [] }));
+    this.updateProp(lensPath(['focus', 'categories']), append(false));
+  }
+
+  renderOptionsFooter = () => {
+    const saveBlank = (
+      <button
+        disabled={this.state.saveBlankDisabled}
+        onClick={this.updateBlanks}
+        className={cs(o.btnModal, o.spaceTop, o.btnSave, this.state.saveBlankDisabled && o.btnDisabled)}
+      >
+        {this.state.saveBlankDisabled ? 'Saved' : 'Save Blank'}
+      </button>);
+    const createNew = (
+      <button
+        disabled={this.state.saveBlankDisabled}
+        onClick={this.createTemplate}
+        className={cs(o.btnModal, o.spaceTop, o.btnSave)}
+      >
+        Create
+      </button>);
+    const footerContent = cond([
+      [equals(1), always(saveBlank)],
+      [equals(3), always(createNew)],
+    ]);
+    return footerContent(this.state.modalTabSelected);
+  }
+
 
   renderTabContent = (first, second, third) => cond([
     [equals(1), always(first)],
@@ -231,9 +306,9 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { categories } = this.state.template;
-    const randomizeIcon = (
-      <i className={cs(font.iconShuffle, font.iconShuffleColor)} />
-    );
+    // const randomizeIcon = (
+    //   <i className={cs(font.iconShuffle, font.iconShuffleColor)} />
+    // );
     const addWorkoutIcon = (
       <i className={cs(font.iconPlusSquared, font.iconPlusSquaredColor)} />
     );
@@ -260,7 +335,7 @@ export default class Dashboard extends React.Component {
 
     const current = (
       <React.Fragment>
-        <Box justify="between" className={cs(o.tableHeader)}>
+        <Box key="curre" justify="between" className={cs(o.tableHeader)}>
           <div>Name</div>
         </Box>
         <Box
@@ -329,25 +404,30 @@ export default class Dashboard extends React.Component {
           </Box>))}
       </React.Fragment>);
     const load = (
-      <Box column className={cs(o.tableHeader)}>
+      <Box
+        key="load"
+        column
+        className={cs(o.tableHeader)}
+      >
 
         {!isEmpty(this.state.blankTemplates) &&
         <Box column className={o.table}>
           <Box justify="between" >
-            <div>Saved Templates</div>
+            <div>My Blank Templates</div>
           </Box>
 
           <Box column>{keys(this.state.blankTemplates).map(name => (
             <Box
+              key={name}
               justify="between"
               align="start"
               className={cs(s.loadTabItem, o.contentMain)}
             >{name}
               <div
-                onClick={this.loadBlank(this.state.blankTemplates[name])}
+                onClick={this.loadTemplate(this.state.blankTemplates[name])}
                 className={cs(s.btn, o.btnModal, o.btnModalLoad)}
               >
-        Load
+              Load
               </div>
             </Box>
         ))}
@@ -355,7 +435,7 @@ export default class Dashboard extends React.Component {
         </Box>
         }
 
-        <Box column classname={o.table}>
+        <Box column className={o.table}>
           <Box justify="between" >
             <div>Stock Templates</div>
           </Box>
@@ -363,14 +443,38 @@ export default class Dashboard extends React.Component {
           <Box column>{this.state.stockTemplates.map(stock => (
             <Box
               justify="between"
+              key={stock.templateName}
               align="start"
               className={cs(s.loadTabItem, o.contentMain)}
             >{stock.templateName}
               <div
-                onClick={this.loadBlank(stock)}
+                onClick={this.loadTemplate(stock)}
                 className={cs(s.btn, o.btnModal, o.btnModalLoad)}
               >
-        Load
+              Load
+              </div>
+            </Box>
+        ))}
+          </Box>
+        </Box>
+
+        <Box column className={o.table}>
+          <Box justify="between" >
+            <div>My Recent Plans</div>
+          </Box>
+
+          <Box column>{keys(this.state.recentTemplates).map(recent => (
+            <Box
+              justify="between"
+              key={recent}
+              align="start"
+              className={cs(s.loadTabItem, o.contentMain)}
+            >{recent}
+              <div
+                onClick={this.loadTemplate(this.state.recentTemplates[recent])}
+                className={cs(s.btn, o.btnModal, o.btnModalLoad)}
+              >
+              Load
               </div>
             </Box>
         ))}
@@ -380,23 +484,74 @@ export default class Dashboard extends React.Component {
     );
 
     const createNew = (
-      <Box column className={o.table}>
-        <Box justify="between" className={cs(o.tableHeader)}>
-          <div>Name</div>
-        </Box>
+      <Box key="createnew" column className={cs(o.tableHeader)}>
+        <div className={o.heading}>Create new template</div>
         <Box
           justify="between"
           align="start"
-          className={s.templateModalHeader}
+          className={cs(s.templateModalListItem, s.floatingI, o.spaceTop)}
         >
-          <input
-            className={cs(o.contentMain, form.inputName)}
-            value={this.state.newTemplate.templateName}
-            onChange={this.changeNewTemplateName}
-          />
-          <i
-            className={cs(font.iconPencil)}
-          />
+          <InputWithLabel
+            key="name"
+            label="Template Name"
+            required
+            labelClass={o.movingLabel}
+            focused={this.state.focus.newTemplateName}
+          >
+            <Box justify="between">
+              <input
+                className={cs(form.inputName, o.contentMain, this.state.invalidFields.includes('newTemplateName') && form.highlightInput)}
+                value={this.state.newTemplate.templateName}
+                onChange={this.changeNewTemplate(['templateName'])}
+                onFocus={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
+                onBlur={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
+              />
+              <i
+                className={cs(font.iconPencil)}
+              />
+            </Box>
+          </InputWithLabel>
+        </Box>
+        <Box
+          className={s.templateModalListItem}
+          column
+          id="cols"
+        >
+          {this.state.newTemplate.categories.map((col, i) => (
+            <Box
+              key={`tempcat-col${i}`}
+              justify="between"
+              align="start"
+              className={cs(s.floatingI, s.templateModalInput)}
+            >
+              <InputWithLabel
+                key="col"
+                label={`Column ${i + 1}`}
+                labelClass={o.movingLabel}
+                focused={this.state.focus.categories[i]}
+              >
+                <Box justify="between" className={o.inputWrapper}>
+                  <input
+                    className={cs(form.inputName, o.contentMain)}
+                    value={this.state.newTemplate.categories[i].type}
+                    onChange={this.changeNewTemplate(['categories', i, 'type'])}
+                    onFocus={() => (!this.state.newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
+                    onBlur={() => (!this.state.newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
+                  />
+                  <i
+                    className={cs(font.iconPencil)}
+                  />
+                </Box>
+              </InputWithLabel>
+            </Box>
+        ))}
+          <Box justify="end">
+            <a
+              onClick={this.appendColumnToNewTemplate}
+              className={cs(c.toggleLink, form.add)}
+            >Add
+            </a>
+          </Box>
         </Box>
       </Box>);
 
@@ -404,7 +559,7 @@ export default class Dashboard extends React.Component {
 
     const TemplateOptionsModal = (
       <TransitionGroup
-        onClick={() => this.updateProp(lensPath(['showOptionsModal']), not)}
+        onClick={this.closeOptionsModal}
         className={cs(o.invisWrapper, this.state.showOptionsModal && o.active)}
       >
         {
@@ -449,15 +604,7 @@ export default class Dashboard extends React.Component {
                 </Box>
                 {tabContent(this.state.modalTabSelected)}
                 <Box justify="end" className={o.spaceTop}>
-                  {this.state.modalTabSelected === 1 &&
-                    <button
-                      disabled={this.state.saveBlankDisabled}
-                      onClick={this.updateBlanks}
-                      className={cs(o.btnModal, o.spaceTop, o.btnSave, this.state.saveBlankDisabled && o.btnDisabled)}
-                    >
-                      {this.state.saveBlankDisabled ? 'Saved' : 'Save Blank'}
-                    </button>
-                }
+                  {this.renderOptionsFooter()}
                   <button
                     onClick={this.closeOptionsModal}
                     className={cs(o.btnClose, o.spaceTop)}
@@ -542,7 +689,7 @@ export default class Dashboard extends React.Component {
                 }
                 </TransitionGroup>
 
-                {c.workouts.length ? c.workouts.map((w, j) => (
+                {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (
                   <Card
                     shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
                     key={`card-${i}-${j}`}
@@ -565,7 +712,7 @@ export default class Dashboard extends React.Component {
                         'newCardOpen',
                         [i],
                       ]), not)}
-                      className={cs(s.btn, s.addWorkoutBtn)}
+                      className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
                     >
                   + Add New Workout
                     </div>

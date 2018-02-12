@@ -177,7 +177,7 @@ export default class Card extends React.Component {
             placeholder="Choose date"
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
-            inputProps={{ onClick: this.setDatePickerPosition }}
+            inputProps={{ onClick: this.setDatePickerPosition, onFocus: this.setDatePickerPosition }}
           />
         </Box>
       </Box>
@@ -254,7 +254,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-            </Box>{[
+          </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

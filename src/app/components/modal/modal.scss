@@ -13,7 +13,7 @@
   z-index: 1301;
   flex:1 0 auto;
   top:100px;
-  color:$color-font-card;
+  color:$color-column-header-font;
 }
 
 .invis-wrapper {
@@ -64,7 +64,10 @@ input.content-main, .content-main {
 }
 
 .table {
-  margin-bottom: 24px;
+  &:not(:last-child){
+    margin-bottom: 24px;
+
+  }
 }
 
 .btn-modal {
@@ -120,4 +123,17 @@ input.content-main, .content-main {
 
 .space-top {
   margin-top: 24px;
+}
+
+.moving-label {
+  top: 30px;
+  left: 4px;
+}
+
+.heading {
+  font-size: 14px;
+}
+
+.input-wrapper {
+  margin-bottom:10px;
 }
