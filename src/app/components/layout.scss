@@ -7,6 +7,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: $color-background-main;
+  & button {
+    font-family: "Roboto Mono", "sans-serif";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 .dashContainer {
@@ -101,12 +106,15 @@ body {
   width: 56px;
   box-sizing: border-box;
   margin-left: 10px;
-  padding: 4px 10px;
   background-color: $color-card-btn-bg;
   &:hover {
     background-color: $color-dark-secondary;
     color: $color-card-btn-hover-font;
   }
+}
+
+.btn-secondary {
+  padding: 4px 10px;
 }
 
 

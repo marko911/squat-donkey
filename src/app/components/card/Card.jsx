@@ -26,7 +26,7 @@ export default class Card extends React.Component {
   }
 
   onChangeDate = (date) => {
-    this.submitRecord(this.props.data.name, {
+    this.submitRecord({
       date,
       results: this.state.newRecords,
     })();
@@ -165,7 +165,7 @@ export default class Card extends React.Component {
               date: moment(),
               results: this.state.newRecords,
             })}
-            className={cs(c.btn, c.today)}
+            className={cs(c.btn, c.btnSecondary, c.today)}
           >
             today
           </div>
