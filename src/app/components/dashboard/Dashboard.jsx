@@ -72,6 +72,7 @@ export default class Dashboard extends React.Component {
     });
   }
 
+
   setInkbar = () => this.setState({
     inkBarStyle: {
       left: 16,
@@ -267,6 +268,16 @@ export default class Dashboard extends React.Component {
     this.setState({ modalTabSelected: 1 });
   };
 
+  addNewColumn = () => {
+    this.setState({ addingColumnActive: !this.state.addingColumnActive }, () => {
+      if (this.state.addingColumnActive) {
+        const parent = this.dashElement.parentElement;
+        const diff = this.dashContainer.offsetWidth - document.documentElement.clientWidth;
+        parent.scrollLeft = diff;
+      }
+    });
+  }
+
   appendColumnToNewTemplate = () => {
     this.updateProp(lensPath(['newTemplate', 'categories']), append({ type: '', show: true, workouts: [] }));
     this.updateProp(lensPath(['focus', 'categories']), append(false));
@@ -305,7 +316,7 @@ export default class Dashboard extends React.Component {
 
 
   render() {
-    const { categories } = this.state.template;
+    const { categories, templateName } = this.state.template;
     // const randomizeIcon = (
     //   <i className={cs(font.iconShuffle, font.iconShuffleColor)} />
     // );
@@ -403,6 +414,7 @@ export default class Dashboard extends React.Component {
             </Box>
           </Box>))}
       </React.Fragment>);
+
     const load = (
       <Box
         key="load"
@@ -619,22 +631,30 @@ export default class Dashboard extends React.Component {
       </TransitionGroup>);
 
     return (
-      <div className={cs(s.auto)} >
+      <div
+        ref={x => this.dashElement = x}
+        className={cs(s.auto)}
+      >
         <i
           onClick={this.toggleField('showMenu')}
           className={cs(font.iconMenu, h.iconMenu)}
         />
         {TemplateOptionsModal}
         <Header
-          addColumn={this.toggleField('addingColumnActive')}
+          addColumn={this.addNewColumn}
           toggleOptionsModal={this.toggleField('showOptionsModal')}
           addIsActive={this.state.addingColumnActive}
           showMenu={this.state.showMenu}
         />
-        <Box
+
+        <div
+          ref={x => this.dashContainer = x}
           onClick={this.closeOnOutside}
           className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
         >
+          <Box className={s.title}>
+            {templateName}
+          </Box>
           {categories.map((c, i) => (c.show ?
           (
             <Box key={`cat-${i}`} column className={s.colWrapper}>
@@ -725,7 +745,7 @@ export default class Dashboard extends React.Component {
       ) : null))}
           {this.state.addingColumnActive && NewColumn}
 
-        </Box>
+        </div>
       </div>
 
     );

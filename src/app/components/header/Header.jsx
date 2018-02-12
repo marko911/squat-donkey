@@ -4,7 +4,6 @@ import cs from 'classnames';
 import Box from '../box/Box';
 import s from './header.scss';
 import font from '../card/fontello.scss';
-import Tooltip from '../tooltip/Tooltip';
 
 export default class Header extends Component {
  renderHeaderIcon = el => (
@@ -48,4 +47,5 @@ Header.propTypes = {
   addColumn: PropTypes.func.isRequired,
   addIsActive: PropTypes.bool,
   toggleOptionsModal: PropTypes.func.isRequired,
+  showMenu: PropTypes.bool,
 };
