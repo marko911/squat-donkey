@@ -11,7 +11,7 @@ module.exports = {
   entry: ['react-hot-loader/patch', './src/index.js'],
   devtool: 'inline-source-map',
   output: {
-    filename: '[name].[chunkhash].js',
+    filename: '[name].[hash].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
