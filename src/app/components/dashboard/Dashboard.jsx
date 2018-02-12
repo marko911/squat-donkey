@@ -647,105 +647,106 @@ export default class Dashboard extends React.Component {
           showMenu={this.state.showMenu}
         />
 
-        <div
-          ref={x => this.dashContainer = x}
-          onClick={this.closeOnOutside}
-          className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
-        >
-          <Box className={s.title}>
-            {templateName}
-          </Box>
-          {categories.map((c, i) => (c.show ?
-          (
-            <Box key={`cat-${i}`} column className={s.colWrapper}>
-              <Box className={s.categoryHeader} align="center" justify="between">
-                <div className={s.cardName}>{c.type}</div>
-                <Box align="center">
-                  {/* <Tooltip
-                    positionShift={this.state.showMenu ? 64 : null}
-                    className={font.tooltipIcon}
-                    el={randomizeIcon}
-                    onClick={this.randomize(c.type)}
-                    text="Random workout"
-                  /> */}
-                  <Tooltip
-                    className={font.tooltipIcon}
-                    positionShift={this.state.showMenu ? 64 : null}
-                    el={addWorkoutIcon}
-                    onClick={() => this.updateProp(lensPath([
-                      'newCardOpen',
-                      [i],
+        <Box onClick={this.closeOnOutside}>
+          <div
+            ref={x => this.dashContainer = x}
+            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
+          >
+            <Box className={s.title}>
+              {templateName}
+            </Box>
+            {categories.map((c, i) => (c.show ?
+        (
+          <Box key={`cat${i}`} column className={s.colWrapper}>
+            <Box className={s.categoryHeader} align="center" justify="between">
+              <div className={s.cardName}>{c.type}</div>
+              <Box align="center">
+                {/* <Tooltip
+        positionShift={this.state.showMenu ? 64 : null}
+        className={font.tooltipIcon}
+        el={randomizeIcon}
+        onClick={this.randomize(c.type)}
+        text="Random workout"
+        /> */}
+                <Tooltip
+                  className={font.tooltipIcon}
+                  positionShift={this.state.showMenu ? 64 : null}
+                  el={addWorkoutIcon}
+                  onClick={() => this.updateProp(lensPath([
+                    'newCardOpen',
+                    [i],
                     ]), not)}
-                    text="Add workout"
-                  />
-                  <Tooltip
-                    className={font.tooltipIcon}
-                    positionShift={this.state.showMenu ? 64 : null}
-                    el={editColumnIcon}
-                    onClick={() => this.updateProp(lensPath([
-                      'editMode',
-                      [c.type],
+                  text="Add workout"
+                />
+                <Tooltip
+                  className={font.tooltipIcon}
+                  positionShift={this.state.showMenu ? 64 : null}
+                  el={editColumnIcon}
+                  onClick={() => this.updateProp(lensPath([
+                    'editMode',
+                    [c.type],
                     ]), not)}
-                    text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
-                  />
-                </Box>
-              </Box>
-              <Box column className={s.workoutsContainer}>
-                <TransitionGroup>
-                  {this.state.newCardOpen[i] &&
-                  <Slide
-                    timeout={{ enter: 200, exit: 0 }}
-                    classNames={s}
-                    key={`newcard-${c.type}`}
-                  >
-                    <NewCard
-                      key={sid.generate()}
-                      className={s.newCardOpen}
-                      onSubmit={this.addWorkoutToColumn(i)}
-                      close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}
-                    />
-                  </Slide>
-
-                }
-                </TransitionGroup>
-
-                {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (
-                  <Card
-                    shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
-                    key={`card-${i}-${j}`}
-                    onSubmitRecord={this.addWorkoutResult(i, j)}
-                    onDeleteSelf={this.deleteWorkout(i, j)}
-                    onDeleteRecord={this.deleteRecord(i, j)}
-                    data={w}
-                    type={c.type}
-                    editMode={!!this.state.editMode[c.type]}
-                  />
-              )) :
-                <Card key={sid.generate()}>
-                  <Box
-                    className={s.flex1}
-                    justify="center"
-                    align="center"
-                  >
-                    <div
-                      onClick={() => this.updateProp(lensPath([
-                        'newCardOpen',
-                        [i],
-                      ]), not)}
-                      className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
-                    >
-                  + Add New Workout
-                    </div>
-                  </Box>
-                </Card>
-              }
-
+                  text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
+                />
               </Box>
             </Box>
-      ) : null))}
-          {this.state.addingColumnActive && NewColumn}
+            <Box column className={s.workoutsContainer}>
+              <TransitionGroup>
+                {this.state.newCardOpen[i] &&
+                <Slide
+                  timeout={{ enter: 200, exit: 0 }}
+                  classNames={s}
+                  key={`newcard-${c.type}`}
+                >
+                  <NewCard
+                    key={sid.generate()}
+                    className={s.newCardOpen}
+                    onSubmit={this.addWorkoutToColumn(i)}
+                    close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}
+                  />
+                </Slide>
 
-        </div>
+        }
+              </TransitionGroup>
+
+              {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (
+                <Card
+                  shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
+                  key={`card--${j}`}
+                  onSubmitRecord={this.addWorkoutResult(i, j)}
+                  onDeleteSelf={this.deleteWorkout(i, j)}
+                  onDeleteRecord={this.deleteRecord(i, j)}
+                  data={w}
+                  type={c.type}
+                  editMode={!!this.state.editMode[c.type]}
+                />
+        )) :
+              <Card key={sid.generate()}>
+                <Box
+                  className={s.flex1}
+                  justify="center"
+                  align="center"
+                >
+                  <div
+                    onClick={() => this.updateProp(lensPath([
+                        'newCardOpen',
+                        [i],
+                        ]), not)}
+                    className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
+                  >
+                    + Add New Workout
+                  </div>
+                </Box>
+              </Card>
+        }
+
+            </Box>
+          </Box>
+        ) : null))}
+            {this.state.addingColumnActive && NewColumn}
+
+          </div>
+        </Box>
       </div>
 
     );
