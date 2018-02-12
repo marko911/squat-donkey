@@ -13,7 +13,7 @@
   z-index: 1301;
   flex:1 0 auto;
   top:100px;
-  color:$color-font-card;
+  color:$color-column-header-font;
 }
 
 .invis-wrapper {
@@ -36,9 +36,13 @@
 }
 
 .tableHeader {
-  margin: 24px 0 5px;
+  margin: 40px 0 5px;
   font-size: 10px;
   padding: 0 4px;
+  font-weight: 500;
+}
+input.content-main, .content-main {
+  color : $color-font-title;
 }
 
 .enter {
@@ -59,32 +63,77 @@
   transition: transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 
-.btn-close {
-    min-width: 88px;
-    line-height: 32px;
-    vertical-align: middle;
-    align-items: center;
-    text-align: center;
-    border-radius: 2px;
-    box-sizing: border-box;
-    outline: none;
-    border: 0;
-    color: currentColor;
-    white-space: nowrap;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 14px;
-    color: $color-card-btn-font;
-    border-radius: 3px;
-    background-color: transparent;
-    padding: 0 16px;
-    cursor: pointer;
-    &:hover {
-      background-color: $color-card-btn-bg;
+.table {
+  &:not(:last-child){
+    margin-bottom: 24px;
 
-    }
+  }
+}
+
+.btn-modal {
+  min-width: 88px;
+  line-height: 32px;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  border-radius: 2px;
+  box-sizing: border-box;
+  outline: none;
+  border: 0;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 3px;
+  padding: 0 16px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.btn-close {
+  @extend .btn-modal;
+  color: currentColor;
+  color: $color-card-btn-font;
+  background-color: transparent;
+  &:hover {
+    background-color: $color-card-btn-bg;
+  }
+}
+
+.btn-modal-load {
+  line-height: 24px;
+  font-size:12px; 
+}
+
+.btn-save {
+  @extend .btn-modal;
+  color: #fff;
+  background-color: $color-new-card-action;
+  &:hover {
+    background-color: $color-dark-secondary;
+    color: $color-card-btn-hover-font;
+  }
+}
+
+.btn-disabled {
+  background: rgba(0,0,0,0.12)!important;
+  color: rgba(0,0,0,.26)!important;
+  cursor: initial
 }
 
 .space-top {
   margin-top: 24px;
+}
+
+.moving-label {
+  top: 30px;
+  left: 4px;
+}
+
+.heading {
+  font-size: 14px;
+}
+
+.input-wrapper {
+  margin-bottom:10px;
 }

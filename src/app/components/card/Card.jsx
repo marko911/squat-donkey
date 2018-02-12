@@ -26,7 +26,7 @@ export default class Card extends React.Component {
   }
 
   onChangeDate = (date) => {
-    this.submitRecord(this.props.data.name, {
+    this.submitRecord({
       date,
       results: this.state.newRecords,
     })();
@@ -40,7 +40,7 @@ export default class Card extends React.Component {
     } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
     const datePickerPosition = {
       left: left + 92,
-      top: top - 48,
+      top,
     };
     if (document.documentElement.clientHeight - top < (265)) {
       datePickerPosition.top = top - 292;
@@ -82,12 +82,8 @@ export default class Card extends React.Component {
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
 
-  submitRecord = (name, submission) => () => {
-    this.props.onSubmitRecord({
-      type: this.props.type,
-      name,
-      submission,
-    });
+  submitRecord = submission => () => {
+    this.props.onSubmitRecord(submission);
     this.resetInputBoxes();
   };
 
@@ -165,11 +161,11 @@ export default class Card extends React.Component {
         </Box>
         <Box className={c.sectionWrapper} justify="between" align="center">
           <div
-            onClick={this.submitRecord(name, {
+            onClick={this.submitRecord({
               date: moment(),
               results: this.state.newRecords,
             })}
-            className={cs(c.btn, c.today)}
+            className={cs(c.btn, c.btnSecondary, c.today)}
           >
             today
           </div>
@@ -181,7 +177,7 @@ export default class Card extends React.Component {
             placeholder="Choose date"
             onDayChange={this.onChangeDate}
             overlayComponent={CustomOverlay(this.state.datePickerPosition)}
-            inputProps={{ onFocus: this.setDatePickerPosition }}
+            inputProps={{ onClick: this.setDatePickerPosition, onFocus: this.setDatePickerPosition }}
           />
         </Box>
       </Box>

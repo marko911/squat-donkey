@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import c from '../newCard/newCard.scss';
 
 const InputWithLabel = ({
-  label, children, focused, required,
+  label, children, focused, required, labelClass,
 }) => (
   <div className={cs(c.textfieldFloatingLabel)}>
     {children}
     <label
       className={cs(
+labelClass,
             c.textfieldLabel, c.floatingLabel, required && c.labelRequired,
             focused && c.isFocused,
             )}
