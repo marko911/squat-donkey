@@ -21,9 +21,12 @@ import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
+import Logo from '../icons/logo';
+import LogoR from '../icons/logoR';
 import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
+
 
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
 const Slide = ({ children, ...props }) => (
@@ -647,13 +650,19 @@ export default class Dashboard extends React.Component {
           showMenu={this.state.showMenu}
         />
 
-        <Box onClick={this.closeOnOutside}>
+        <Box
+          className={s.overflowWrapper}
+          onClick={this.closeOnOutside}
+        >
           <div
             ref={x => this.dashContainer = x}
             className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
           >
-            <Box className={s.title}>
-              {templateName}
+            <Box align="center" className={s.title}>
+              <Logo />
+              {/* <LogoR /> */}
+              <div className={s.flex1}>{templateName}</div>
+
             </Box>
             {categories.map((c, i) => (c.show ?
         (

@@ -6,6 +6,8 @@
   &:not(:last-child){
     margin-right: 12px;
   }
+  border: 1px solid $color-column-border;
+  border-radius: 5px;
 }
 
 .header-font{
@@ -16,17 +18,20 @@
 
 .overflow-wrapper {
   width: 100%;
+  
 }
 
 .category-header {
   @extend .header-font;
   background-color: $color-column-header-bg;
+  border-bottom: 1px solid $color-column-border;
   height: 30px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   min-height: 30px;
   box-sizing: border-box;
   padding: 4px 16px;
-  border: 1px solid $color-column-border;
-  border-radius: 5px;
+
   & * {
     min-width: 0;
     &:not(:first-child){
@@ -52,9 +57,8 @@
 
 .workouts-container {
   overflow: auto;
-  border: 1px solid $color-column-border;
-  border-radius: 5px;
-  margin-top: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .enter {
