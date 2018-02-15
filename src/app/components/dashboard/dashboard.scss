@@ -2,11 +2,13 @@
 @import "../variables.scss";
 
 :export {
-  colorLogo: rgba(104, 129, 169, 0.8 )
+  colorLogo: rgba(104, 129, 169, 0.7 );
 }
 
 .col-wrapper {
-  width: 240px;
+  min-width: 240px;
+  max-width: 25%;
+  flex: 1;
   &:not(:last-child){
     margin-right: 12px;
   }
@@ -50,7 +52,7 @@
   font-weight: 500;
   height: 24px;
   width: 100%;
-  color: $color-font-card;
+  color: $color-contrast-dark;
 }
 
 .divider {

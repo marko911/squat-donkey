@@ -6,7 +6,7 @@ import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { propEq, merge,
   keys, remove, lensPath, isEmpty,
-  lensProp, prepend, map,
+  lensProp, prepend, map, propOr,
   cond, always, equals,
   append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
@@ -26,7 +26,8 @@ import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
 
-// const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
+const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
+
 const Slide = ({ children, ...props }) => (
   <CSSTransition
     {...props}
@@ -38,6 +39,7 @@ const Slide = ({ children, ...props }) => (
 export default class Dashboard extends React.Component {
   state = {
     template: {},
+    numColsShown: 0,
     newTemplate: {
       templateName: '',
       categories: [{ type: '', show: true, workouts: [] }],
@@ -60,6 +62,7 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillMount() {
+    fetch(maximusUrl).then(res => res.json()).then(data => log(data)).catch(err => log('error: fetch:', err));
     let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
     const blankTemplates = JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
@@ -74,6 +77,9 @@ export default class Dashboard extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.setShownCols();
+  }
 
   setInkbar = () => this.setState({
     inkBarStyle: {
@@ -81,6 +87,20 @@ export default class Dashboard extends React.Component {
       width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
     },
   });
+
+  // puts the latest workout at top of column
+  rearrangeColumn = (catIdx, woIdx) => {
+    const column = lensPath([
+      'template',
+      'categories',
+      catIdx,
+    ]);
+    this.updateProp(column, (col) => {
+      const newList = workouts => [workouts[woIdx], ...workouts.slice(0, woIdx), ...workouts.slice(woIdx + 1)];
+      const rearranged = over(lensProp('workouts'), newList);
+      return rearranged(col);
+    });
+  }
 
   createBlankTemplate = (current) => {
     const records = over(lensProp('records'), always([]));
@@ -111,6 +131,7 @@ export default class Dashboard extends React.Component {
       'records',
     ]);
     this.updateProp(workoutResults, prepend(submission));
+    this.rearrangeColumn(catIdx, woIdx);
   }
 
   updateBlanks = () => this.setState(() => ({
@@ -187,7 +208,12 @@ export default class Dashboard extends React.Component {
 
   handleChange = prop => ({ target: { value } }) => this.setState({ [prop]: value });
 
-  handleHideToggle = idx => ({ target: { checked } }) => this.updateProp(lensPath(['template', 'categories', idx, 'show']), always(checked));
+  handleHideToggle = idx => ({ target: { checked } }) => {
+    this.updateProp(lensPath(['template', 'categories', idx, 'show']), always(checked));
+    setTimeout(this.setShownCols, 100);
+  }
+
+  setShownCols = () => this.setState({ numColsShown: this.dashContainer.children.length });
 
   changeTemplateName = ({ target: { value } }) => this.updateProp(lensPath(['template', 'templateName']), always(value));
 
@@ -627,7 +653,6 @@ export default class Dashboard extends React.Component {
             </Slide>
           }
       </TransitionGroup>);
-
     return (
       <div
         ref={x => this.dashElement = x}
@@ -650,7 +675,7 @@ export default class Dashboard extends React.Component {
         >
           <div
             ref={x => this.dashContainer = x}
-            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
+            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, this.state.numColsShown > 3 && s.spread, s.flex1)}
           >
             <Box align="center" className={s.title}>
               <Logo fill={s.colorLogo} />

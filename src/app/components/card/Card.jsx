@@ -43,7 +43,7 @@ export default class Card extends React.Component {
       top,
     };
     if (document.documentElement.clientHeight - top < (265)) {
-      datePickerPosition.top = top - 292;
+      datePickerPosition.top = top - 244;
     }
     this.setState({
       datePickerPosition,
@@ -125,6 +125,7 @@ export default class Card extends React.Component {
         {exercises.map(e => (
           <Box className={c.exercises} justified="between" key={sid.generate()}>
             <div className={c.label}>{e.label}</div>
+
             <div className={c.value}>{e.scheme}</div>
           </Box>
         ))}
@@ -254,7 +255,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-          </Box>{[
+            </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

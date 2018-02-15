@@ -132,7 +132,7 @@
   border-radius: 2px;
   background-color: $color-score-input;
   font-size: 11px;
-  max-width: 56px;
+  max-width: 50%;
   @extend .io-pad;
   &:focus {
     outline: none;

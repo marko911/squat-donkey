@@ -43,14 +43,10 @@ module.exports = {
         },
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf|png)$/,
+        test: /\.(woff|woff2|eot|ttf|otf|png|svg)$/,
         use: {
           loader: 'file-loader',
         },
-      },
-      {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader',
       },
       {
         test: /\.(html)$/,
