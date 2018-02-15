@@ -26,7 +26,7 @@ import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
 
-const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
+const stock = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
 
 const Slide = ({ children, ...props }) => (
   <CSSTransition
@@ -62,7 +62,7 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    fetch(maximusUrl).then(res => res.json()).then(data => log(data)).catch(err => log('error: fetch:', err));
+    this.getStockTemplates();
     let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
     const blankTemplates = JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
@@ -73,7 +73,7 @@ export default class Dashboard extends React.Component {
       template,
       blankTemplates,
       recentTemplates,
-      stockTemplates: [maximus],
+      stockTemplates: [],
     });
   }
 
@@ -81,6 +81,12 @@ export default class Dashboard extends React.Component {
     this.setShownCols();
   }
 
+  getStockTemplates = () => {
+    const getStock = url => fetch(url).then(data => data.json());
+    Promise
+      .all(stock.map(getStock))
+      .then(stockTemplates => this.setState({ stockTemplates }));
+  }
   setInkbar = () => this.setState({
     inkBarStyle: {
       left: 16,
