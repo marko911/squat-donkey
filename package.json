@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open",
-    "build": "webpack"
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "author": "Marko Bilal",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.5.1",
     "file-loader": "^1.1.6",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "json-loader": "^0.5.7",
     "postcss-import": "^11.0.0",
@@ -36,8 +37,10 @@
     "precss": "^2.0.0",
     "style-loader": "^0.19.1",
     "svg-inline-loader": "^0.8.0",
+    "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.1"
+    "webpack-dev-server": "^2.10.1",
+    "webpack-merge": "^4.1.1"
   },
   "dependencies": {
     "classnames": "^2.2.5",

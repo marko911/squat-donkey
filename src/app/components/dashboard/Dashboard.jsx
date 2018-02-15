@@ -22,11 +22,9 @@ import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
 import Logo from '../icons/logo';
-import LogoR from '../icons/logoR';
 import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
-
 
 // const maximusUrl = 'https://s3.amazonaws.com/workouttemplates/maximusBody.json';
 const Slide = ({ children, ...props }) => (
@@ -67,6 +65,7 @@ export default class Dashboard extends React.Component {
     const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
 
     template = !isEmpty(template) ? template : maximus;
+
     this.setState({
       template,
       blankTemplates,
@@ -83,7 +82,6 @@ export default class Dashboard extends React.Component {
     },
   });
 
-
   createBlankTemplate = (current) => {
     const records = over(lensProp('records'), always([]));
     const workouts = over(lensProp('workouts'), map(records));
@@ -92,7 +90,6 @@ export default class Dashboard extends React.Component {
     const blank = blankTemplate(current);
     return merge(blanks, { [blank.templateName]: blank });
   }
-
 
   updateProp = (path, functor) => this.setState(
     over(path, functor),
@@ -320,9 +317,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { categories, templateName } = this.state.template;
-    // const randomizeIcon = (
-    //   <i className={cs(font.iconShuffle, font.iconShuffleColor)} />
-    // );
+
     const addWorkoutIcon = (
       <i className={cs(font.iconPlusSquared, font.iconPlusSquaredColor)} />
     );
@@ -649,7 +644,6 @@ export default class Dashboard extends React.Component {
           addIsActive={this.state.addingColumnActive}
           showMenu={this.state.showMenu}
         />
-
         <Box
           className={s.overflowWrapper}
           onClick={this.closeOnOutside}
@@ -659,10 +653,9 @@ export default class Dashboard extends React.Component {
             className={cs(s.dashContainer, this.state.showMenu && s.menuOpen)}
           >
             <Box align="center" className={s.title}>
-              <Logo />
-              {/* <LogoR /> */}
-              <div className={s.flex1}>{templateName}</div>
-
+              <Logo fill={s.colorLogo} />
+              <span className={s.divider} />
+              <div>{templateName}</div>
             </Box>
             {categories.map((c, i) => (c.show ?
         (
@@ -670,13 +663,6 @@ export default class Dashboard extends React.Component {
             <Box className={s.categoryHeader} align="center" justify="between">
               <div className={s.cardName}>{c.type}</div>
               <Box align="center">
-                {/* <Tooltip
-        positionShift={this.state.showMenu ? 64 : null}
-        className={font.tooltipIcon}
-        el={randomizeIcon}
-        onClick={this.randomize(c.type)}
-        text="Random workout"
-        /> */}
                 <Tooltip
                   className={font.tooltipIcon}
                   positionShift={this.state.showMenu ? 64 : null}
@@ -701,21 +687,21 @@ export default class Dashboard extends React.Component {
             </Box>
             <Box column className={s.workoutsContainer}>
               <TransitionGroup>
-                {this.state.newCardOpen[i] &&
-                <Slide
-                  timeout={{ enter: 200, exit: 0 }}
-                  classNames={s}
-                  key={`newcard-${c.type}`}
-                >
-                  <NewCard
-                    key={sid.generate()}
-                    className={s.newCardOpen}
-                    onSubmit={this.addWorkoutToColumn(i)}
-                    close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}
-                  />
-                </Slide>
-
-        }
+                {
+                  this.state.newCardOpen[i] &&
+                  <Slide
+                    timeout={{ enter: 200, exit: 0 }}
+                    classNames={s}
+                    key={`newcard-${c.type}`}
+                  >
+                    <NewCard
+                      key={sid.generate()}
+                      className={s.newCardOpen}
+                      onSubmit={this.addWorkoutToColumn(i)}
+                      close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}
+                    />
+                  </Slide>
+                }
               </TransitionGroup>
 
               {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (

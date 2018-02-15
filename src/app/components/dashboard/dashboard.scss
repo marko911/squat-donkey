@@ -1,6 +1,10 @@
 @import "../layout.scss";
 @import "../variables.scss";
 
+:export {
+  colorLogo: rgba(104, 129, 169, 0.8 )
+}
+
 .col-wrapper {
   width: 240px;
   &:not(:last-child){
@@ -18,7 +22,6 @@
 
 .overflow-wrapper {
   width: 100%;
-  
 }
 
 .category-header {
@@ -42,12 +45,29 @@
 
 .title {
   position: fixed;
-  transform: translate3d(1rem, -1.8em, 0px);
+  transform: translate3d(0, -54px, 0px);
   font-size: 20px;
   font-weight: 500;
-  line-height: 20px;
-  color: $color-template-title;
+  height: 24px;
+  width: 100%;
+  color: $color-font-card;
 }
+
+.divider {
+  font-size: 1rem;
+  font-weight: 400;
+  padding-left: 1rem;
+  margin: 0px 0px 0px calc(1rem + 1px);
+  border-left: 1px solid;
+  height: 20px;
+}
+
+.logo-container{
+  position:absolute;
+  left:24;
+  top:1em;
+}
+
 
 .card-name {
   overflow: hidden;
@@ -109,8 +129,6 @@
   background-color: $color-text-field-border;
   color: white;
 }
-
-
 
 .template-options {
   width: 400px;

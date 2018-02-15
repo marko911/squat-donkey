@@ -9,13 +9,14 @@ body {
   background-color: $color-background-main;
   & button {
     font-family: "Roboto Mono", "sans-serif";
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
 .dashContainer {
-  padding: 54px 24px 16px;
+  padding: 72px 24px 16px;
   box-sizing: border-box;
   position: relative;
   height: 100%;
