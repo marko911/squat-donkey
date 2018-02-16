@@ -78,7 +78,7 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.setShownCols();
+    setTimeout(this.setShownCols, 100);
   }
 
   getStockTemplates = () => {
@@ -87,12 +87,15 @@ export default class Dashboard extends React.Component {
       .all(stock.map(getStock))
       .then(stockTemplates => this.setState({ stockTemplates }));
   }
+
   setInkbar = () => this.setState({
     inkBarStyle: {
       left: 16,
       width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
     },
   });
+
+  setShownCols = () => this.setState({ numColsShown: this.dashContainer.children.length });
 
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
@@ -219,7 +222,6 @@ export default class Dashboard extends React.Component {
     setTimeout(this.setShownCols, 100);
   }
 
-  setShownCols = () => this.setState({ numColsShown: this.dashContainer.children.length });
 
   changeTemplateName = ({ target: { value } }) => this.updateProp(lensPath(['template', 'templateName']), always(value));
 
@@ -668,6 +670,9 @@ export default class Dashboard extends React.Component {
           onClick={this.toggleField('showMenu')}
           className={cs(font.iconMenu, h.iconMenu)}
         />
+        <Box className={h.calendarWrap}>
+          <i className={cs(font.iconCalendarPlusO, h.iconCalendar)} />
+        </Box>
         {TemplateOptionsModal}
         <Header
           addColumn={this.addNewColumn}
