@@ -22,6 +22,7 @@ import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
 import Logo from '../icons/logo';
+import TemplateIcon from '../icons/templateIcon';
 import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
@@ -196,6 +197,7 @@ export default class Dashboard extends React.Component {
       [idx],
     ]), not);
   }
+
 
   deleteFromList = (path, i) => this.updateProp(path, remove(i, 1))
 
@@ -609,7 +611,7 @@ export default class Dashboard extends React.Component {
         {
             this.state.showOptionsModal &&
             <Slide
-              timeout={225}
+              timeout={200}
               in={this.state.showOptionsModal}
               key="optModal"
               classNames={s}
@@ -671,6 +673,8 @@ export default class Dashboard extends React.Component {
           className={cs(font.iconMenu, h.iconMenu)}
         />
         <Box className={h.calendarWrap}>
+          <TemplateIcon />
+
           <i className={cs(font.iconCalendarPlusO, h.iconCalendar)} />
         </Box>
         {TemplateOptionsModal}
@@ -726,12 +730,14 @@ export default class Dashboard extends React.Component {
                 {
                   this.state.newCardOpen[i] &&
                   <Slide
+                    in={this.state.newCardOpen[i]}
                     timeout={{ enter: 200, exit: 0 }}
                     classNames={s}
-                    key={`newcard-${c.type}`}
+                    onEnter={() => log('entering')}
+                    key="newcard"
                   >
                     <NewCard
-                      key={sid.generate()}
+                      key={`newcard${i}`}
                       className={s.newCardOpen}
                       onSubmit={this.addWorkoutToColumn(i)}
                       close={() => this.updateProp(lensPath(['newCardOpen', [i]]), not)}

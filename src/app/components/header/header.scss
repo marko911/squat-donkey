@@ -32,7 +32,6 @@
 .icon-fixed {
   z-index: 1000;
   display: flex;
-  justify-content: center;
   color: $color-contrast-dark;
   &:before {
     font-size: 24px;
@@ -44,15 +43,18 @@
 }
 .icon-menu, .menu-wrap {
   @extend .icon-fixed;
+  justify-content: flex-end;
   -webkit-transform: translate3d(calc(100vw - 3em),1em,0);
   transform: translate3d(calc(100vw - 3em),1em,0);
 }
 
 .iconCalendar {
   @extend .icon-fixed;
+  position: relative;
 }
 
 .calendar-wrap {
+  position: fixed;
   -webkit-transform: translate3d(calc(100vw - 5em),1em,0);
   transform: translate3d(calc(100vw - 5em),1em,0);
 }
@@ -62,7 +64,6 @@
   transition: width 0.4s, height 0.4s, transform 0.4s, background-color 0.4s;
   transition-timing-function: cubic-bezier(0.7,0,0.3,1);
   background-color: transparent;
-
 }
 
 
@@ -75,7 +76,6 @@
   transition-delay: 0s;
   border-bottom: 1px solid $color-card-divider;
   background-color: $color-card-bg;
-
 }
 
 .menu {
@@ -83,8 +83,6 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0 24px;
   margin-right: 3em;
 }
 
