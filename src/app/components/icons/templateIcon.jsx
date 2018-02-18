@@ -2,7 +2,19 @@ import React from 'react';
 
 export default function templateIcon(props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="8 8 48 48" enableBackground="new 0 0 64 64" xmlSpace="preserve"  width={24} height={24} {...props}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      version="1.1"
+      x="0px"
+      y="0px"
+      viewBox="3.5 4 57 57"
+      enableBackground="new 0 0 64 64"
+      xmlSpace="preserve"
+      width={24}
+      height={24}
+      {...props}
+    >
       <path d="M52,8H12c-2.2,0-4,1.8-4,4v40c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V12C56,9.8,54.2,8,52,8z M54,52c0,1.1-0.9,2-2,2H12  c-1.1,0-2-0.9-2-2V20h44V52z M54,18H10v-6c0-1.1,0.9-2,2-2h40c1.1,0,2,0.9,2,2V18z" />
       <path d="M47,15.9c-1,0-1.9-0.8-1.9-1.9s0.8-1.9,1.9-1.9s1.9,0.8,1.9,1.9S48,15.9,47,15.9z M47,12.9c-0.6,0-1.1,0.5-1.1,1.1  s0.5,1.1,1.1,1.1s1.1-0.5,1.1-1.1S47.6,12.9,47,12.9z" />
       <path d="M51,15.9c-1,0-1.9-0.8-1.9-1.9s0.8-1.9,1.9-1.9s1.9,0.8,1.9,1.9S52,15.9,51,15.9z M51,12.9c-0.6,0-1.1,0.5-1.1,1.1  s0.5,1.1,1.1,1.1s1.1-0.5,1.1-1.1S51.6,12.9,51,12.9z" />

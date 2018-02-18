@@ -6,7 +6,7 @@ import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { propEq, merge,
   keys, remove, lensPath, isEmpty,
-  lensProp, prepend, map, propOr,
+  lensProp, prepend, map,
   cond, always, equals,
   append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
@@ -21,8 +21,10 @@ import Tooltip from '../tooltip/Tooltip';
 import Box from '../box/Box';
 import NewCard from '../newCard/NewCard';
 import Header from '../header/Header';
+import Calendar from '../calendar/Calendar';
 import Logo from '../icons/logo';
 import TemplateIcon from '../icons/templateIcon';
+import CalendarIcon from '../icons/calendarIcon';
 import maximus from '../../constants/maximusBody.json';
 import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
@@ -45,6 +47,7 @@ export default class Dashboard extends React.Component {
       templateName: '',
       categories: [{ type: '', show: true, workouts: [] }],
     },
+    view: 'template',
     idxOfHighlighted: {},
     newCardOpen: {},
     editMode: {},
@@ -349,7 +352,6 @@ export default class Dashboard extends React.Component {
     [equals(2), always(second)],
     [equals(3), always(third)],
   ]);
-
 
   render() {
     const { categories, templateName } = this.state.template;
@@ -663,44 +665,10 @@ export default class Dashboard extends React.Component {
             </Slide>
           }
       </TransitionGroup>);
-    return (
-      <div
-        ref={x => this.dashElement = x}
-        className={cs(s.auto)}
-      >
-        <i
-          onClick={this.toggleField('showMenu')}
-          className={cs(font.iconMenu, h.iconMenu)}
-        />
-        <Box className={h.calendarWrap}>
-          <TemplateIcon />
-
-          <i className={cs(font.iconCalendarPlusO, h.iconCalendar)} />
-        </Box>
-        {TemplateOptionsModal}
-        <Header
-          addColumn={this.addNewColumn}
-          toggleOptionsModal={this.toggleField('showOptionsModal')}
-          addIsActive={this.state.addingColumnActive}
-          showMenu={this.state.showMenu}
-        />
-        <Box
-          className={s.overflowWrapper}
-          onClick={this.closeOnOutside}
-        >
-          <div
-            ref={x => this.dashContainer = x}
-            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, this.state.numColsShown > 3 && s.spread, s.flex1)}
-          >
-            <Box align="center" className={s.title}>
-              <Logo fill={s.colorLogo} />
-              <span className={s.divider} />
-              <div>{templateName}</div>
-            </Box>
-            {categories.map((c, i) => (c.show ?
-        (
-          <Box key={`cat${i}`} column className={s.colWrapper}>
-            <Box className={s.categoryHeader} align="center" justify="between">
+    const columns = categories.map((c, i) => (c.show ?
+      (
+        <Box key={`cat${i}`} column className={s.colWrapper}>
+          <Box className={s.categoryHeader} align="center" justify="between">
               <div className={s.cardName}>{c.type}</div>
               <Box align="center">
                 <Tooltip
@@ -725,7 +693,7 @@ export default class Dashboard extends React.Component {
                 />
               </Box>
             </Box>
-            <Box column className={s.workoutsContainer}>
+          <Box column className={s.workoutsContainer}>
               <TransitionGroup>
                 {
                   this.state.newCardOpen[i] &&
@@ -778,8 +746,52 @@ export default class Dashboard extends React.Component {
         }
 
             </Box>
-          </Box>
-        ) : null))}
+        </Box>
+      ) : null));
+    return (
+      <div
+        ref={x => this.dashElement = x}
+        className={cs(s.auto)}
+      >
+        <i
+          onClick={this.toggleField('showMenu')}
+          className={cs(font.iconMenu, h.iconMenu)}
+        />
+        <Box className={h.calendarWrap}>
+
+          {/* <i className={cs(font.iconCalendarPlusO, h.iconCalendar)} /> */}
+        </Box>
+        {TemplateOptionsModal}
+        <Header
+          addColumn={this.addNewColumn}
+          toggleOptionsModal={this.toggleField('showOptionsModal')}
+          addIsActive={this.state.addingColumnActive}
+          showMenu={this.state.showMenu}
+        />
+        <Box
+          className={s.overflowWrapper}
+          onClick={this.closeOnOutside}
+        >
+          <div
+            ref={x => this.dashContainer = x}
+            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, this.state.numColsShown > 3 && s.spread, s.flex1)}
+          >
+            <Box align="center" className={s.viewToggle}>
+              {this.state.view === 'template' ?
+                <CalendarIcon
+                  onClick={() => this.setState({ view: 'calendar' })}
+                  fill={s.colorTogglerIcons}
+                />
+              : <TemplateIcon
+                onClick={() => this.setState({ view: 'template' })}
+                fill={s.colorTogglerIcons}
+              />}
+
+              {/* <span className={s.divider} />
+              <div>{templateName}</div> */}
+            </Box>
+            {this.state.view === 'template' ? columns : <Calendar />
+              }
             {this.state.addingColumnActive && NewColumn}
 
           </div>

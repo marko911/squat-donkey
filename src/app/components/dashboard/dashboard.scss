@@ -3,6 +3,7 @@
 
 :export {
   colorLogo: rgba(104, 129, 169, 0.7 );
+  colorTogglerIcons : #6881a9;
 }
 
 .col-wrapper {
@@ -45,14 +46,19 @@
   }
 }
 
-.title {
+.view-toggle {
   position: fixed;
-  transform: translate3d(0, -54px, 0px);
+  transform: translate3d(0, -38px, 0px);
   font-size: 18px;
   font-weight: 500;
   height: 24px;
   width: 100%;
   color: $color-contrast-dark;
+  & svg{
+    margin-left: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
 }
 
 .divider {
