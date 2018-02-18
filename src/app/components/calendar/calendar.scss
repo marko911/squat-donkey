@@ -2,8 +2,63 @@
 @import "../variables.scss";
 
 .calendar-container {
-  border: 1px solid #e0ebfc;
+  border: 1px solid $color-column-border;
   border-radius: 5px;
   background: #fff;
-  height: 100%;
+  flex:1;
+
+}
+
+.cal-wrapper {
+  margin-top: 9px;
+}
+
+.cal-row {
+  border-bottom: 1px solid $color-column-border; 
+}
+
+.th {
+  color :$color-contrast-dark;
+  font-weight: 500;
+}
+
+.days {
+  padding: 16px 16px 8px 0;
+  text-transform: uppercase;
+}
+
+.header {
+  @extend .th;
+  position: fixed;
+  width: 300px;
+  font-size:18px;
+  font-weight: 600;
+  transform: translate3d(calc(100vw/2 - 50%),-3.5em,0);
+  padding:8px;
+}
+
+.month-toggle {
+  height: 48px;
+}
+
+.days-of-week {
+  @extend .cal-row;
+  font-size: 14px;
+  height: 48px;
+}
+
+.week {
+  border-bottom: 1px solid $color-column-border; 
+  flex: 1 1 0%;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.day {
+  @extend .flex1;
+  padding: 16px 16px 16px 0;
+  &:not(:last-child) {
+    border-right: 1px solid $color-column-border; 
+  }
+
 }

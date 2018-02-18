@@ -346,7 +346,6 @@ export default class Dashboard extends React.Component {
     return footerContent(this.state.modalTabSelected);
   }
 
-
   renderTabContent = (first, second, third) => cond([
     [equals(1), always(first)],
     [equals(2), always(second)],
@@ -669,33 +668,33 @@ export default class Dashboard extends React.Component {
       (
         <Box key={`cat${i}`} column className={s.colWrapper}>
           <Box className={s.categoryHeader} align="center" justify="between">
-              <div className={s.cardName}>{c.type}</div>
-              <Box align="center">
-                <Tooltip
-                  className={font.tooltipIcon}
-                  positionShift={this.state.showMenu ? 64 : null}
-                  el={addWorkoutIcon}
-                  onClick={() => this.updateProp(lensPath([
+            <div className={s.cardName}>{c.type}</div>
+            <Box align="center">
+              <Tooltip
+                className={font.tooltipIcon}
+                positionShift={this.state.showMenu ? 64 : null}
+                el={addWorkoutIcon}
+                onClick={() => this.updateProp(lensPath([
                     'newCardOpen',
                     [i],
                     ]), not)}
-                  text="Add workout"
-                />
-                <Tooltip
-                  className={font.tooltipIcon}
-                  positionShift={this.state.showMenu ? 64 : null}
-                  el={editColumnIcon}
-                  onClick={() => this.updateProp(lensPath([
+                text="Add workout"
+              />
+              <Tooltip
+                className={font.tooltipIcon}
+                positionShift={this.state.showMenu ? 64 : null}
+                el={editColumnIcon}
+                onClick={() => this.updateProp(lensPath([
                     'editMode',
                     [c.type],
                     ]), not)}
-                  text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
-                />
-              </Box>
+                text={`Edit:${this.state.editMode[c.type] ? 'On' : 'Off'}`}
+              />
             </Box>
+          </Box>
           <Box column className={s.workoutsContainer}>
-              <TransitionGroup>
-                {
+            <TransitionGroup>
+              {
                   this.state.newCardOpen[i] &&
                   <Slide
                     in={this.state.newCardOpen[i]}
@@ -712,40 +711,40 @@ export default class Dashboard extends React.Component {
                     />
                   </Slide>
                 }
-              </TransitionGroup>
+            </TransitionGroup>
 
-              {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (
-                <Card
-                  shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
-                  key={`card--${j}`}
-                  onSubmitRecord={this.addWorkoutResult(i, j)}
-                  onDeleteSelf={this.deleteWorkout(i, j)}
-                  onDeleteRecord={this.deleteRecord(i, j)}
-                  data={w}
-                  type={c.type}
-                  editMode={!!this.state.editMode[c.type]}
-                />
+            {c.workouts.length || this.state.newCardOpen[i] ? c.workouts.map((w, j) => (
+              <Card
+                shouldHighlight={propEq(i, true)(this.state.idxOfHighlighted)}
+                key={`card--${j}`}
+                onSubmitRecord={this.addWorkoutResult(i, j)}
+                onDeleteSelf={this.deleteWorkout(i, j)}
+                onDeleteRecord={this.deleteRecord(i, j)}
+                data={w}
+                type={c.type}
+                editMode={!!this.state.editMode[c.type]}
+              />
         )) :
-              <Card key={sid.generate()}>
-                <Box
-                  className={s.flex1}
-                  justify="center"
-                  align="center"
-                >
-                  <div
-                    onClick={() => this.updateProp(lensPath([
+            <Card key={sid.generate()}>
+              <Box
+                className={s.flex1}
+                justify="center"
+                align="center"
+              >
+                <div
+                  onClick={() => this.updateProp(lensPath([
                         'newCardOpen',
                         [i],
                         ]), not)}
-                    className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
-                  >
+                  className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
+                >
                     + Add New Workout
-                  </div>
-                </Box>
-              </Card>
+                </div>
+              </Box>
+            </Card>
         }
 
-            </Box>
+          </Box>
         </Box>
       ) : null));
     return (
