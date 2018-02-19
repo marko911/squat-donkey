@@ -3,6 +3,7 @@ import cs from 'classnames';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import Box from '../box/Box';
+import Day from './Day';
 import s from './calendar.scss';
 
 const moment = extendMoment(Moment);
@@ -23,8 +24,7 @@ export default class Calendar extends React.Component {
     this.setState({ weeks });
   }
 
-  isOffRange = date => moment(date).isSame(moment(), 'month')
-
+  isInMonth = date => moment(date).isSame(moment(), 'month')
 
   render() {
     return (
@@ -38,9 +38,12 @@ export default class Calendar extends React.Component {
           >
             <Box
               align="center"
+              justify="center"
+              column
               className={s.monthToggle}
             >
-             February
+              {moment().format('MMMM')}
+              <div className={s.year}>{moment().format('YYYY')}</div>
             </Box>
           </Box>
 
@@ -59,12 +62,11 @@ export default class Calendar extends React.Component {
             {this.state.weeks.map(week => (
               <Box className={s.week}>
                 {week.map(day => (
-                  <Box
-                    justify="end"
-                    className={s.day}
-                  >
-                    {day.format('D')}
-                  </Box>
+                  <Day
+                    inRange={this.isInMonth(day)}
+                    day={day}
+                  />
+
                 ))}
               </Box>
             ))}

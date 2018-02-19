@@ -23,7 +23,7 @@
 }
 
 .days {
-  padding: 16px 16px 8px 0;
+  padding: 8px 8px 8px 0;
   text-transform: uppercase;
 }
 
@@ -33,7 +33,7 @@
   width: 300px;
   font-size:18px;
   font-weight: 600;
-  transform: translate3d(calc(100vw/2 - 50%),-3.5em,0);
+  transform: translate3d(calc((100vw - 64px)/2 - 50%),-3.5em,0);
   padding:8px;
 }
 
@@ -46,19 +46,27 @@
   font-size: 14px;
   height: 48px;
 }
+.year {
+  color :#9598A1;
+  font-size: 12px;
+}
 
 .week {
   border-bottom: 1px solid $color-column-border; 
   flex: 1 1 0%;
   font-size: 14px;
   font-weight: 400;
+  color: $color-card-btn-font;
 }
 
 .day {
   @extend .flex1;
-  padding: 16px 16px 16px 0;
+  padding: 8px 8px 8px 0;
   &:not(:last-child) {
     border-right: 1px solid $color-column-border; 
   }
+}
 
+.off-range {
+  color: $color-grey-disable;
 }

@@ -664,7 +664,8 @@ export default class Dashboard extends React.Component {
             </Slide>
           }
       </TransitionGroup>);
-    const columns = categories.map((c, i) => (c.show ?
+    const columns = (
+      <Box className={cs(s.columns, s.flex1, this.state.numColsShown > 3 && s.spread )}>{categories.map((c, i) => (c.show ?
       (
         <Box key={`cat${i}`} column className={s.colWrapper}>
           <Box className={s.categoryHeader} align="center" justify="between">
@@ -746,7 +747,8 @@ export default class Dashboard extends React.Component {
 
           </Box>
         </Box>
-      ) : null));
+      ) : null))}
+      </Box>);
     return (
       <div
         ref={x => this.dashElement = x}
@@ -773,7 +775,7 @@ export default class Dashboard extends React.Component {
         >
           <div
             ref={x => this.dashContainer = x}
-            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, this.state.numColsShown > 3 && s.spread, s.flex1)}
+            className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, s.flex1)}
           >
             <Box align="center" className={s.viewToggle}>
               {this.state.view === 'template' ?
