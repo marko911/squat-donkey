@@ -1,30 +1,41 @@
 import React from 'react';
 import cs from 'classnames';
 import Moment from 'moment';
+import sid from 'shortid';
 import { extendMoment } from 'moment-range';
 import Box from '../box/Box';
 import Day from './Day';
+import Tooltip from '../tooltip/Tooltip';
 import s from './calendar.scss';
+import font from '../card/fontello.scss';
 
 const moment = extendMoment(Moment);
 
 export default class Calendar extends React.Component {
   state = {
+    currentMonth: moment().month(),
   }
 
   componentWillMount() {
-    this.setWeeksForThisMonth();
+    this.setWeeksForMonth(this.state.currentMonth);
   }
 
-  setWeeksForThisMonth = () => {
-    const firstDateOfFirstWeek = moment(moment().startOf('month')).startOf('week');
-    const firstDayOfEachWeek = moment.range(firstDateOfFirstWeek, moment().endOf('month'));
+  setWeeksForMonth = (m) => {
+    log(m);
+    const currentMonth = moment().month(m);
+    const firstDateOfFirstWeek = moment(currentMonth.startOf('month')).startOf('week');
+    const firstDayOfEachWeek = moment.range(firstDateOfFirstWeek, currentMonth.endOf('month'));
     const weeks = Array.from(firstDayOfEachWeek.by('week'))
       .map(w => Array.from(moment.range(w, moment(w).endOf('week')).by('day')));
     this.setState({ weeks });
   }
 
-  isInMonth = date => moment(date).isSame(moment(), 'month')
+  isInMonth = date => moment(date).isSame(moment().month(this.state.currentMonth), 'month')
+
+  changeMonth = direction => () => this.setState(
+    { currentMonth: direction === 'next' ? this.state.currentMonth + 1 : this.state.currentMonth - 1 },
+    () => this.setWeeksForMonth(this.state.currentMonth),
+  )
 
   render() {
     return (
@@ -42,8 +53,29 @@ export default class Calendar extends React.Component {
               column
               className={s.monthToggle}
             >
-              {moment().format('MMMM')}
-              <div className={s.year}>{moment().format('YYYY')}</div>
+              <Box className={s.monthSlider}>
+                <Box
+                  onClick={this.changeMonth('previous')}
+                  justify="center"
+                  align="center"
+                  className={s.arrowWrap}
+                ><i className={cs(font.iconAngleLeft, s.iconArrow)} />
+                </Box>
+                <Box
+                  justify="center"
+                  align="center"
+                  className={s.month}
+                >{moment().month(this.state.currentMonth).format('MMMM')}
+                </Box>
+                <Box
+                  onClick={this.changeMonth('next')}
+                  justify="center"
+                  align="center"
+                  className={s.arrowWrap}
+                ><i className={cs(font.iconAngleRight, s.iconArrow)} />
+                </Box>
+              </Box>
+              <div className={s.year}>{moment().month(this.state.currentMonth).format('YYYY')}</div>
             </Box>
           </Box>
 
@@ -60,9 +92,10 @@ export default class Calendar extends React.Component {
             ))}
             </Box>
             {this.state.weeks.map(week => (
-              <Box className={s.week}>
+              <Box key={sid.generate()} className={s.week}>
                 {week.map(day => (
                   <Day
+                    key={sid.generate()}
                     inRange={this.isInMonth(day)}
                     day={day}
                   />

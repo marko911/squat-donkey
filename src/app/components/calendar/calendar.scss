@@ -6,7 +6,6 @@
   border-radius: 5px;
   background: #fff;
   flex:1;
-
 }
 
 .cal-wrapper {
@@ -30,7 +29,7 @@
 .header {
   @extend .th;
   position: fixed;
-  width: 300px;
+  width: 500px;
   font-size:18px;
   font-weight: 600;
   transform: translate3d(calc((100vw - 64px)/2 - 50%),-3.5em,0);
@@ -51,6 +50,10 @@
   font-size: 12px;
 }
 
+.month {
+  min-width: 140px;
+}
+
 .week {
   border-bottom: 1px solid $color-column-border; 
   flex: 1 1 0%;
@@ -69,4 +72,22 @@
 
 .off-range {
   color: $color-grey-disable;
+}
+
+.icon-arrow {
+ &:before{
+  font-size: 24px;
+  margin: 0;
+ }
+}
+
+.arrow-wrap {
+  width: 32px;
+  height:32px;
+  margin: 0 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  &:hover {
+    background-color: rgba(0,0,0,.07);
+  }
 }

@@ -99,7 +99,7 @@ export default class Dashboard extends React.Component {
     },
   });
 
-  setShownCols = () => this.setState({ numColsShown: this.dashContainer.children.length });
+  setShownCols = () => this.setState({ numColsShown: this.columns.children.length });
 
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
@@ -665,7 +665,10 @@ export default class Dashboard extends React.Component {
           }
       </TransitionGroup>);
     const columns = (
-      <Box className={cs(s.columns, s.flex1, this.state.numColsShown > 3 && s.spread )}>{categories.map((c, i) => (c.show ?
+      <div
+        ref={x => this.columns = x}
+        className={cs(s.columns, s.flex1, this.state.numColsShown > 2 && s.spread)}
+      >{categories.map((c, i) => (c.show ?
       (
         <Box key={`cat${i}`} column className={s.colWrapper}>
           <Box className={s.categoryHeader} align="center" justify="between">
@@ -748,7 +751,7 @@ export default class Dashboard extends React.Component {
           </Box>
         </Box>
       ) : null))}
-      </Box>);
+      </div>);
     return (
       <div
         ref={x => this.dashElement = x}
@@ -774,7 +777,6 @@ export default class Dashboard extends React.Component {
           onClick={this.closeOnOutside}
         >
           <div
-            ref={x => this.dashContainer = x}
             className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, s.flex1)}
           >
             <Box align="center" className={s.viewToggle}>

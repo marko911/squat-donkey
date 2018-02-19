@@ -4,8 +4,11 @@ import cs from 'classnames';
 import Box from '../box/Box';
 import s from './calendar.scss';
 
-const Day = ({ day, inRange, data }) => (
+const Day = ({
+  day, inRange, data, ...props
+}) => (
   <Box
+    {...props}
     justify="end"
     className={cs(s.day, !inRange && s.offRange)}
   >

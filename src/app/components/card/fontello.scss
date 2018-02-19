@@ -68,6 +68,14 @@
   content: "\f107";
 } /* '' */
 
+.icon-angle-left:before { 
+  @extend .icon-base;
+  content: '\f104'; } /* '' */
+
+.icon-angle-right:before { 
+  @extend .icon-base;
+  content: '\f105'; }
+
 .icon-plus-squared:before {
   @extend .icon-base;
   content: "\f0fe";
