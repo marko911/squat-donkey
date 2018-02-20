@@ -1,0 +1,47 @@
+@import "../layout.scss";
+@import "../variables.scss";
+
+.entry-container {
+  & .strip, .entry{
+    margin-top:8px;
+    height: 24px;
+  }
+}
+
+$strip-colors: #23DBDC,#5F4BB6,#8CFFC7,#62997E,#D33F49,#5488F7,#8D63FF,#FD9B5B,  #406F77, #E8E19F ;
+
+$entry-colors:#EBFDFD,#F0EEF8,#EAFFF5,#E6F2EC,#F7DCDD,#DCE7FD,#F1ECFF,#FEF3EB , #D4E8EC ,  #FFFDF0;
+
+:export {
+  stripColors: $strip-colors;
+  entryColors: $entry-colors;
+}
+
+.strip {
+  width: 4px;
+}
+
+.entry {
+  font-weight: 600;
+  padding: 0 4px;
+  font-size: 12px;
+}
+
+
+.card {
+  padding: 24px 16px 16px;
+  width: 245px;
+  height: 230px;
+  border-radius: 3px;
+  background: #fff;
+  box-sizing: border-box;
+  position: fixed;
+  transform: scale(0);
+  border: 1px solid $color-column-border;
+  box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);  
+
+  &.active {
+    transform: scale(1);
+  }
+}
+

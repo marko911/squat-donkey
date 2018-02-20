@@ -15,11 +15,16 @@
   }
   border: 1px solid $color-column-border;
   border-radius: 5px;
+  align-self: flex-start;
+  overflow: auto;
+  max-height: calc(100% - 2px);
 }
 
 .columns {
   display:flex;
   margin-top: 9px;
+  overflow: hidden;
+  height: calc(100vh - 79px);
 }
 
 .header-font{

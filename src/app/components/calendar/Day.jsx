@@ -3,16 +3,29 @@ import PropTypes from 'prop-types';
 import cs from 'classnames';
 import Box from '../box/Box';
 import s from './calendar.scss';
+import DayEntry from './DayEntry';
 
 const Day = ({
-  day, inRange, data, ...props
+  day, inRange, workouts, active, ...props
 }) => (
   <Box
     {...props}
-    justify="end"
     className={cs(s.day, !inRange && s.offRange)}
   >
-    {day.format('D')}
+    <Box
+      column
+      className={s.flex1}
+    >
+      <Box
+        justify="end"
+        className={s.dayNumber}
+      >
+        <div className={cs(active ? s.active : undefined)}>{day.format('D')}</div>
+      </Box>
+      <DayEntry
+        workouts={workouts}
+      />
+    </Box>
   </Box>);
 
 

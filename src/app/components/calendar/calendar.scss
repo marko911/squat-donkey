@@ -24,6 +24,9 @@
 .days {
   padding: 8px 8px 8px 0;
   text-transform: uppercase;
+  &.active {
+    color :$color-template-title;
+  }
 }
 
 .header {
@@ -64,10 +67,25 @@
 
 .day {
   @extend .flex1;
-  padding: 8px 8px 8px 0;
+  padding: 8px;
   &:not(:last-child) {
     border-right: 1px solid $color-column-border; 
   }
+  & .active {
+    margin-left: -2px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: #fff;
+    background-color: $color-template-title;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+  }
+}
+
+.day-number {
+  min-height: 24px;
 }
 
 .off-range {
@@ -75,6 +93,8 @@
 }
 
 .icon-arrow {
+  text-align: center;
+  width: 24px;
  &:before{
   font-size: 24px;
   margin: 0;
@@ -90,4 +110,31 @@
   &:hover {
     background-color: rgba(0,0,0,.07);
   }
+}
+
+.card-title {
+  font-weight: 800;
+  font-size:22px;
+  color: $color-calendar-card;
+  margin-bottom: 8px;
+}
+
+.wo-type {
+  color :$color-light-grey;
+  font-weight: 500;
+}
+
+.exercises {
+  font-size:13px;
+  word-break: break-word;
+  & div {
+    padding: 4px 0;
+  }
+}
+.card-label {
+  color : $color-calendar-card;
+}
+.card-scheme {
+  font-size: 12px;
+  color: $color-light-grey;
 }

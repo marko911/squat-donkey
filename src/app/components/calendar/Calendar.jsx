@@ -14,14 +14,15 @@ const moment = extendMoment(Moment);
 export default class Calendar extends React.Component {
   state = {
     currentMonth: moment().month(),
+    workouts: [],
   }
 
   componentWillMount() {
     this.setWeeksForMonth(this.state.currentMonth);
+    this.setState({ workouts: this.props.workouts });
   }
 
   setWeeksForMonth = (m) => {
-    log(m);
     const currentMonth = moment().month(m);
     const firstDateOfFirstWeek = moment(currentMonth.startOf('month')).startOf('week');
     const firstDayOfEachWeek = moment.range(firstDateOfFirstWeek, currentMonth.endOf('month'));
@@ -30,8 +31,11 @@ export default class Calendar extends React.Component {
     this.setState({ weeks });
   }
 
-  isInMonth = date => moment(date).isSame(moment().month(this.state.currentMonth), 'month')
+  getWorkoutsForDate = (date, workouts) => workouts.filter(w => moment(date).isSame(moment(w.date), 'day'))
 
+  isInMonth = date => moment(date).isSame(moment().month(this.state.currentMonth), 'month')
+  isToday = date => moment().isSame(moment(date), 'day')
+  isDayOfWeek = (date, i) => (moment().month() !== this.state.currentMonth ? false : moment(date).day() === i);
   changeMonth = direction => () => this.setState(
     { currentMonth: direction === 'next' ? this.state.currentMonth + 1 : this.state.currentMonth - 1 },
     () => this.setWeeksForMonth(this.state.currentMonth),
@@ -81,26 +85,32 @@ export default class Calendar extends React.Component {
 
           <Box column className={s.calendarContainer} >
             <Box className={cs(s.daysOfWeek)}>
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-                <Box
-                  key={d}
-                  className={cs(s.flex1, s.th, s.days)}
-                  justify="end"
-                  align="end"
-                >{d}
-                </Box>
+              {moment.weekdaysShort()
+                .map((d, i) => (
+                  <Box
+                    key={d}
+                    className={cs(s.flex1, s.th, s.days, this.isDayOfWeek(moment().month(this.state.currentMonth), i) ? s.active : undefined)}
+                    justify="end"
+                    align="end"
+                  >{d}
+                  </Box>
             ))}
             </Box>
             {this.state.weeks.map(week => (
               <Box key={sid.generate()} className={s.week}>
-                {week.map(day => (
-                  <Day
-                    key={sid.generate()}
-                    inRange={this.isInMonth(day)}
-                    day={day}
-                  />
+                {week.map((day) => {
+                  const workouts = this.getWorkoutsForDate(day, this.state.workouts);
+                  return (
+                    <Day
+                      workouts={workouts}
+                      active={this.isToday(day)}
+                      key={sid.generate()}
+                      inRange={this.isInMonth(day)}
+                      day={day}
+                    />
 
-                ))}
+                );
+ })}
               </Box>
             ))}
           </Box>

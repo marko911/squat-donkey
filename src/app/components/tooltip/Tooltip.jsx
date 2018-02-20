@@ -21,7 +21,6 @@ export default class Tooltip extends Component {
       const pos = target.getBoundingClientRect();
       const tooltipOverflow = document.documentElement.clientWidth - ((pos.left + pos.width / 2) + this.toolEl.offsetWidth / 2);
       const marginLeft = tooltipOverflow < 24 ? -1 * (24 - 1 * tooltipOverflow + this.toolEl.offsetWidth / 2) : -1 * (this.toolEl.offsetWidth / 2);
-
       this.setState({
         tooltipStyle: {
           left: pos.left + pos.width / 2,

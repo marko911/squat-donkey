@@ -6,7 +6,7 @@ import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { propEq, merge,
   keys, remove, lensPath, isEmpty,
-  lensProp, prepend, map,
+  lensProp, prepend, map, pick,
   cond, always, equals,
   append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
@@ -42,6 +42,7 @@ const Slide = ({ children, ...props }) => (
 export default class Dashboard extends React.Component {
   state = {
     template: {},
+    calendarWorkouts: [],
     numColsShown: 0,
     newTemplate: {
       templateName: '',
@@ -143,8 +144,18 @@ export default class Dashboard extends React.Component {
       woIdx,
       'records',
     ]);
+    log('submiss', submission);
     this.updateProp(workoutResults, prepend(submission));
     this.rearrangeColumn(catIdx, woIdx);
+    this.addToCalendar(catIdx, woIdx, submission);
+  }
+
+  addToCalendar = (catIdx, woIdx, submission) => {
+    const category = this.state.template.categories[catIdx];
+    const workout = pick(['exercises','name','parameters'],category.workouts[woIdx]);
+    this.updateProp(lensProp('calendarWorkouts'), append({
+      ...submission, type: category.type, workout, styleIdx: catIdx,
+    }));
   }
 
   updateBlanks = () => this.setState(() => ({
@@ -793,7 +804,7 @@ export default class Dashboard extends React.Component {
               {/* <span className={s.divider} />
               <div>{templateName}</div> */}
             </Box>
-            {this.state.view === 'template' ? columns : <Calendar />
+            {this.state.view === 'template' ? columns : <Calendar workouts={this.state.calendarWorkouts} />
               }
             {this.state.addingColumnActive && NewColumn}
 
