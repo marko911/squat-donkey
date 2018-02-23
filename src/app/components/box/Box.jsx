@@ -16,6 +16,7 @@ const Box = ({
     [s.justifyStart]: justify === 'start',
     [s.alignStart]: align === 'start',
     [s.alignEnd]: align === 'end',
+    [s.alignBaseline]: align === 'baseline',
     [s.contentCenter]: content === 'center',
     [s.contentBetween]: content === 'between',
     [s.end]: justify === 'end',

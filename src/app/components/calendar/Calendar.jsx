@@ -34,8 +34,11 @@ export default class Calendar extends React.Component {
   getWorkoutsForDate = (date, workouts) => workouts.filter(w => moment(date).isSame(moment(w.date), 'day'))
 
   isInMonth = date => moment(date).isSame(moment().month(this.state.currentMonth), 'month')
+
   isToday = date => moment().isSame(moment(date), 'day')
+
   isDayOfWeek = (date, i) => (moment().month() !== this.state.currentMonth ? false : moment(date).day() === i);
+
   changeMonth = direction => () => this.setState(
     { currentMonth: direction === 'next' ? this.state.currentMonth + 1 : this.state.currentMonth - 1 },
     () => this.setWeeksForMonth(this.state.currentMonth),

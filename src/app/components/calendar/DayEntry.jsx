@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cs from 'classnames';
 import Box from '../box/Box';
 import s from './dayEntry.scss';
-import SessionCard from './SessionCard';
+import CalendarCard from './CalendarCard';
 
 const getStyle = (list, idx) => ({
   background: list[idx] || list[0],
@@ -48,7 +48,7 @@ export default class DayEntry extends React.Component {
             key={`sess${i}`}
             onClick={this.toggleCard(true)}
           >
-            <SessionCard
+            <CalendarCard
               style={this.state.cardPosition}
               session={w}
               className={cs(s.card, this.state.cardActive && s.active)}

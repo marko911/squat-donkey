@@ -36,7 +36,7 @@ export default class Card extends React.Component {
 
   setDatePickerPosition = () => {
     const {
-      top, left,
+      top, left, right,
     } = ReactDOM.findDOMNode(this.datepicker).getBoundingClientRect();
     const datePickerPosition = {
       left: left + 92,
@@ -45,6 +45,10 @@ export default class Card extends React.Component {
     if (document.documentElement.clientHeight - top < (265)) {
       datePickerPosition.top = top - 244;
     }
+    if ((document.documentElement.clientWidth - (right + 265)) < 24) {
+      datePickerPosition.left -= (92 + 265);
+    }
+
     this.setState({
       datePickerPosition,
     });
@@ -255,7 +259,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-            </Box>{[
+          </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

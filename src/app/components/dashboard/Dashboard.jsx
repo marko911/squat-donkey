@@ -144,7 +144,6 @@ export default class Dashboard extends React.Component {
       woIdx,
       'records',
     ]);
-    log('submiss', submission);
     this.updateProp(workoutResults, prepend(submission));
     this.rearrangeColumn(catIdx, woIdx);
     this.addToCalendar(catIdx, woIdx, submission);
@@ -152,9 +151,9 @@ export default class Dashboard extends React.Component {
 
   addToCalendar = (catIdx, woIdx, submission) => {
     const category = this.state.template.categories[catIdx];
-    const workout = pick(['exercises','name','parameters'],category.workouts[woIdx]);
+    const workout = pick(['exercises', 'name', 'parameters'], category.workouts[woIdx]);
     this.updateProp(lensProp('calendarWorkouts'), append({
-      ...submission, type: category.type, workout, styleIdx: catIdx,
+      ...submission, type: category.type, workout, styleIdx: catIdx, template: this.state.template.templateName,
     }));
   }
 
