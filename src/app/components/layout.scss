@@ -92,6 +92,10 @@ body {
   flex-direction: column;
 }
 
+.wrap {
+  flex-wrap: wrap;
+}
+
 .flex1 {
   flex: 1;
 }
@@ -122,8 +126,8 @@ body {
   margin-left: 10px;
   background-color: $color-card-btn-bg;
   &:hover {
-    background-color: $color-dark-secondary;
-    color: $color-card-btn-hover-font;
+    background-color: #91B2FF;
+    color: #fff;
   }
 }
 

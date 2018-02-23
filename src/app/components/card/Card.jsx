@@ -144,7 +144,11 @@ export default class Card extends React.Component {
 
 
     const inputRecords = (
-      <Box key="footer-card" column className={c.sectionWrapper}>
+      <Box
+        key="footer-card"
+        column
+        className={cs(c.sectionWrapper, c.recordsBorder)}
+      >
         <Box column>
           {recordables.map((r, i) => (
             <Box
@@ -208,6 +212,7 @@ export default class Card extends React.Component {
       <Box
         className={cs(c.recentRecord)}
         align="start"
+        justify="between"
         key={data.name ? `records-${name}` : 'somekey'}
       >
         <Box column className={cs(c.containWidth, c.flex1)}>
@@ -223,13 +228,13 @@ export default class Card extends React.Component {
                   />
                 )}
                 <div className={c.date}>{dateOfResult}</div>
-                <Box column className={cs(c.flex1)}>
+                <Box wrap>
                   {keys(results).length ? keys(results).map((r, j) => {
                     const val = results[r];
                     return (
                       <div
                         key={`rec-${j}`}
-                        className={cs(c.containWidth, c.value, c.flex1)}
+                        className={cs(c.containWidth, c.value)}
                       >
                         {!isEmpty(val) ? `${r}: ${val}` : '(completed)'}
                       </div>
@@ -259,7 +264,7 @@ export default class Card extends React.Component {
           <><Box justify="between">
             <div className={c.cardHeader}>{name}</div>
             {this.props.editMode && deleteWorkoutIcon}
-          </Box>{[
+            </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,

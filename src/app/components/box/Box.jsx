@@ -5,11 +5,12 @@ import s from '../layout.scss';
 
 
 const Box = ({
-  children, column, align, auto, content, justify, className, ...props
+  children, column, align, wrap, auto, content, justify, className, ...props
 }) => {
   const classes = cs({
     [s.auto]: auto,
     [s.box]: true,
+    [s.wrap]: wrap,
     [s.col]: column,
     [s.center]: justify === 'center',
     [s.alignCenter]: align === 'center',
@@ -35,7 +36,8 @@ export default Box;
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   column: PropTypes.bool,
-  align: PropTypes.oneOf(['center', 'start', 'end']),
+  wrap: PropTypes.bool,
+  align: PropTypes.oneOf(['center', 'start', 'end', 'baseline']),
   content: PropTypes.oneOf(['center', 'start', 'end', 'between']),
   justify: PropTypes.oneOf(['center', 'start', 'end', 'between']),
   auto: PropTypes.bool,

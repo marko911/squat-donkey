@@ -42,7 +42,6 @@ const Slide = ({ children, ...props }) => (
 export default class Dashboard extends React.Component {
   state = {
     template: {},
-    calendarWorkouts: [],
     numColsShown: 0,
     newTemplate: {
       templateName: '',
@@ -71,13 +70,14 @@ export default class Dashboard extends React.Component {
     let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
     const blankTemplates = JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const recentTemplates = JSON.parse(localStorage.getItem('recentTemplates')) || {};
-
+    const calendarWorkouts = JSON.parse(localStorage.getItem('calendarWorkouts')) || [];
     template = !isEmpty(template) ? template : maximus;
 
     this.setState({
       template,
       blankTemplates,
       recentTemplates,
+      calendarWorkouts,
       stockTemplates: [],
     });
   }
@@ -132,6 +132,7 @@ export default class Dashboard extends React.Component {
 
   updateLocalStorage=() => {
     localStorage.setItem('currentTemplate', JSON.stringify(this.state.template));
+    localStorage.setItem('calendarWorkouts', JSON.stringify(this.state.calendarWorkouts));
     this.setState({ saveBlankDisabled: false });
   }
 
@@ -373,7 +374,7 @@ export default class Dashboard extends React.Component {
     );
     const NewColumn = (
       <Box key="new-col-wrap" column className={s.colWrapper}>
-        <Box className={s.categoryHeader} justify="between" align="center">
+        <Box className={cs(s.categoryHeader, s.newColumnBorder)} justify="between" align="center">
           <input
             ref={c => this.newColumnInput = c}
             className={cs(form.inputName, s.newColumnInput)}
@@ -761,6 +762,8 @@ export default class Dashboard extends React.Component {
           </Box>
         </Box>
       ) : null))}
+        {this.state.addingColumnActive && NewColumn}
+
       </div>);
     return (
       <div
@@ -771,10 +774,7 @@ export default class Dashboard extends React.Component {
           onClick={this.toggleField('showMenu')}
           className={cs(font.iconMenu, h.iconMenu)}
         />
-        <Box className={h.calendarWrap}>
-
-          {/* <i className={cs(font.iconCalendarPlusO, h.iconCalendar)} /> */}
-        </Box>
+        <Box className={h.calendarWrap} />
         {TemplateOptionsModal}
         <Header
           addColumn={this.addNewColumn}
@@ -787,9 +787,13 @@ export default class Dashboard extends React.Component {
           onClick={this.closeOnOutside}
         >
           <div
+            ref={x => this.dashContainer = x}
             className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, s.flex1)}
           >
             <Box align="center" className={s.viewToggle}>
+              <div>{templateName}</div>
+              <span className={s.divider} />
+              <div className={s.logoContainer}>{this.state.view === 'template' && <Logo fill={s.colorLogo} />}</div>
               {this.state.view === 'template' ?
                 <CalendarIcon
                   onClick={() => this.setState({ view: 'calendar' })}
@@ -800,12 +804,10 @@ export default class Dashboard extends React.Component {
                 fill={s.colorTogglerIcons}
               />}
 
-              {/* <span className={s.divider} />
-              <div>{templateName}</div> */}
+
             </Box>
             {this.state.view === 'template' ? columns : <Calendar workouts={this.state.calendarWorkouts} />
               }
-            {this.state.addingColumnActive && NewColumn}
 
           </div>
         </Box>

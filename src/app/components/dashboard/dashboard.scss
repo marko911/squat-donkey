@@ -39,15 +39,15 @@
 
 .category-header {
   @extend .header-font;
-  background-color: $color-column-header-bg;
-  border-bottom: 1px solid $color-column-border;
-  height: 30px;
+  background-color: #fff;
+  border-bottom: 1px solid #e0ebfc;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   min-height: 30px;
   box-sizing: border-box;
-  padding: 4px 16px;
-
+  padding: 10px 16px;
+  flex-shrink: 0;
+  max-height: 40px;
   & * {
     min-width: 0;
     &:not(:first-child){
@@ -59,13 +59,12 @@
 .view-toggle {
   position: fixed;
   transform: translate3d(0, -38px, 0px);
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   height: 24px;
-  width: 100%;
-  color: $color-contrast-dark;
+  width: calc(100% - 48px);
+  color: $color-font-card;
   & svg{
-    margin-left: 16px;
     cursor: pointer;
     box-sizing: border-box;
   }
@@ -82,8 +81,10 @@
 
 .logo-container{
   position:absolute;
-  left:24;
-  top:1em;
+  left:50%;
+  transform: translate3d(-50%,0,0);
+  top:0;
+  & svg{cursor: initial}
 }
 
 
@@ -118,7 +119,7 @@
 }
 
 *.new-column-input {
-  height: 23px;
+  height: 20px;
   background-color: inherit;
   border-radius: 1px;
   color: $color-text-field-label;
@@ -127,6 +128,10 @@
     color: initial;
     border: 1px solid transparent;
   }
+}
+
+.new-column-border {
+  border-bottom: none;
 }
 
 ::placeholder {

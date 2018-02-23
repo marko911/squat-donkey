@@ -132,6 +132,9 @@
 
 .card-label {
   color : $color-calendar-card;
+  &:not(:first-child){
+    margin-top: 8px;
+  }
 }
 
 .card-scheme {
@@ -150,6 +153,6 @@
 }
 .param {
   font-size: 12px;
-  padding-top:4px;
+  padding-top:8px;
 }
 

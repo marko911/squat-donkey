@@ -46,7 +46,8 @@ export default class DayEntry extends React.Component {
         {workouts.map((w, i) => (
           <Box
             key={`sess${i}`}
-            onClick={this.toggleCard(true)}
+            onMouseEnter={this.toggleCard(true)}
+            onMouseLeave={this.toggleCard(false)}
           >
             <CalendarCard
               style={this.state.cardPosition}

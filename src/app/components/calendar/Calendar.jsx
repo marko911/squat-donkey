@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cs from 'classnames';
 import Moment from 'moment';
 import sid from 'shortid';
@@ -12,6 +13,9 @@ import font from '../card/fontello.scss';
 const moment = extendMoment(Moment);
 
 export default class Calendar extends React.Component {
+  static defaultProps = {
+    workouts: [],
+  };
   state = {
     currentMonth: moment().month(),
     workouts: [],

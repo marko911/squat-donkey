@@ -32,7 +32,7 @@
   display: inline-block;
   text-decoration: inherit;
   text-align: center;
-  /* opacity: .8; */
+
 
   /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
@@ -91,10 +91,11 @@
   content: '\f271'; 
 } /* '' */
 
-.icon-plus-squared-color {
-  color: $color-icon-add;
+.icon-plus-squared-color,
+.icon-edit-color {
+  color: $color-icon-column;
   &:hover {
-    color: #2fa139
+    color: #91B2FF
   }
 }
 
@@ -114,12 +115,7 @@
   
 } /* '' */
 
-.icon-shuffle-color {
-  color: $color-font-title;
-  &:hover {
-    color: #226791
-  }
-}
+
 
 .icon-cancel:before { 
   @extend .icon-base;
@@ -173,12 +169,7 @@
     font-size: 24px;
   }
 }
-.icon-edit-color {
-  color: $color-new-card-action;
-  &:hover {
-    color:#4e49b1
-  }
-}
+
 
 .icon-trash-empty:before {
   @extend .icon-base;
@@ -191,6 +182,8 @@
   margin-right: 8px;
   margin-left: 0;
 }
+
+
 
 
 .tooltip-icon {

@@ -10,7 +10,7 @@
   padding-bottom: 0;
 }
 .card-divider {
-  border-bottom: 1px solid $color-card-divider;
+  border-bottom: 1px solid $color-card-divider-light;
 }
 .card {
   color: $color-font-card;
@@ -58,7 +58,7 @@
   margin-top: 5px;
 }
 .section-wrapper {
-  padding-top: 10px;
+  padding: 5px 0;
 }
 .section-item {
   margin-left: 10px;
@@ -76,9 +76,7 @@
 }
 .exercises {
   font-size: 13px;
-  &:not(:first-child) {
-    @extend .section-wrapper;
-  }
+  @extend .section-wrapper;
 }
 .exercise-container {
   padding-left: 16px;
@@ -93,6 +91,10 @@
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+.recordsBorder {
+  border-top: 1px solid $color-card-divider-light;
 }
 .recent-record {
   margin-top: 10px;
@@ -125,14 +127,17 @@
 .value {
   min-width: 0;
   word-wrap: break-word;
+  margin: 0 4px;
+  line-height: 16px;
+  text-align: right;
 }
 .score-input {
   @extend .section-item;
   border: 1px solid $color-column-border;
   border-radius: 2px;
   background-color: $color-score-input;
-  font-size: 11px;
-  max-width: 50%;
+  font-size: 12px;
+  max-width: 25%;
   @extend .io-pad;
   &:focus {
     outline: none;
