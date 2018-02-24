@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 import cs from 'classnames';
 import { over,
   lensPath,
-  always,
-  cond,
+  always, not,
+  cond, isEmpty, keys,
   equals } from 'ramda';
 import o from './modal.scss';
 import s from '../dashboard/dashboard.scss';
 import t from '../input/toggle.scss';
+import c from '../card/card.scss';
 import form from '../newCard/newCard.scss';
 import font from '../card/fontello.scss';
 import Modal from './Modal';
@@ -22,6 +24,16 @@ export default class TemplateModal extends React.Component {
   state = {
     modalTabSelected: 1,
     saveBlankDisabled: false,
+    focus: {
+      newTemplateName: false,
+      categories: [false],
+    },
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setInkbar();
+    }, 100);
   }
 
 
@@ -43,6 +55,11 @@ export default class TemplateModal extends React.Component {
     ]), always(offsetLeft));
   }
 
+  stopProp = (e) => {
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+  }
+
   renderTabContent = (first, second, third) => cond([
     [equals(1), always(first)],
     [equals(2), always(second)],
@@ -53,7 +70,7 @@ export default class TemplateModal extends React.Component {
     const saveBlank = (
       <button
         disabled={this.state.saveBlankDisabled}
-        onClick={this.updateBlanks}
+        onClick={this.props.updateBlanks}
         className={cs(o.btnModal, o.spaceTop, o.btnSave, this.state.saveBlankDisabled && o.btnDisabled)}
       >
         {this.state.saveBlankDisabled ? 'Saved' : 'Save Blank'}
@@ -61,7 +78,7 @@ export default class TemplateModal extends React.Component {
     const createNew = (
       <button
         disabled={this.state.saveBlankDisabled}
-        onClick={this.createTemplate}
+        onClick={this.props.createTemplate}
         className={cs(o.btnModal, o.spaceTop, o.btnSave)}
       >
         Create
@@ -78,10 +95,18 @@ export default class TemplateModal extends React.Component {
       categories,
       changeTemplateName,
       templateName,
+      newTemplate,
       handleChangeColumnName,
       changeNewTemplate,
       removeColumnFromTemplate,
+      stockTemplates,
       handleHideToggle,
+      recentTemplates,
+      loadTemplate,
+      appendColumnToNewTemplate,
+      closeOptionsModal,
+      invalidFields,
+      blankTemplates,
     } = this.props;
     const current = (
       <React.Fragment>
@@ -161,13 +186,13 @@ export default class TemplateModal extends React.Component {
         className={cs(o.tableHeader)}
       >
 
-        {!isEmpty(this.state.blankTemplates) &&
+        {!isEmpty(blankTemplates) &&
         <Box column className={o.table}>
           <Box justify="between" >
             <div>My Blank Templates</div>
           </Box>
 
-          <Box column>{keys(this.state.blankTemplates).map(name => (
+          <Box column>{keys(blankTemplates).map(name => (
             <Box
               key={name}
               justify="between"
@@ -175,7 +200,7 @@ export default class TemplateModal extends React.Component {
               className={cs(s.loadTabItem, o.contentMain)}
             >{name}
               <div
-                onClick={this.loadTemplate(this.state.blankTemplates[name])}
+                onClick={loadTemplate(blankTemplates[name])}
                 className={cs(s.btn, o.btnModal, o.btnModalLoad)}
               >
               Load
@@ -191,7 +216,7 @@ export default class TemplateModal extends React.Component {
             <div>Stock Templates</div>
           </Box>
 
-          <Box column>{this.state.stockTemplates.map(stock => (
+          <Box column>{stockTemplates.map(stock => (
             <Box
               justify="between"
               key={stock.templateName}
@@ -199,7 +224,7 @@ export default class TemplateModal extends React.Component {
               className={cs(s.loadTabItem, o.contentMain)}
             >{stock.templateName}
               <div
-                onClick={this.loadTemplate(stock)}
+                onClick={loadTemplate(stock)}
                 className={cs(s.btn, o.btnModal, o.btnModalLoad)}
               >
               Load
@@ -214,7 +239,7 @@ export default class TemplateModal extends React.Component {
             <div>My Recent Plans</div>
           </Box>
 
-          <Box column>{keys(this.state.recentTemplates).map(recent => (
+          <Box column>{keys(recentTemplates).map(recent => (
             <Box
               justify="between"
               key={recent}
@@ -222,7 +247,7 @@ export default class TemplateModal extends React.Component {
               className={cs(s.loadTabItem, o.contentMain)}
             >{recent}
               <div
-                onClick={this.loadTemplate(this.state.recentTemplates[recent])}
+                onClick={loadTemplate(recentTemplates[recent])}
                 className={cs(s.btn, o.btnModal, o.btnModalLoad)}
               >
               Load
@@ -250,11 +275,11 @@ export default class TemplateModal extends React.Component {
           >
             <Box justify="between">
               <input
-                className={cs(form.inputName, o.contentMain, this.state.invalidFields.includes('newTemplateName') && form.highlightInput)}
-                value={this.state.newTemplate.templateName}
+                className={cs(form.inputName, o.contentMain, invalidFields.includes('newTemplateName') && form.highlightInput)}
+                value={newTemplate.templateName}
                 onChange={changeNewTemplate(['templateName'])}
-                onFocus={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
-                onBlur={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
+                onFocus={() => (!newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
+                onBlur={() => (!newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
               />
               <i
                 className={cs(font.iconPencil)}
@@ -267,7 +292,7 @@ export default class TemplateModal extends React.Component {
           column
           id="cols"
         >
-          {this.state.newTemplate.categories.map((col, i) => (
+          {newTemplate.categories.map((col, i) => (
             <Box
               key={`tempcat-col${i}`}
               justify="between"
@@ -283,10 +308,10 @@ export default class TemplateModal extends React.Component {
                 <Box justify="between" className={o.inputWrapper}>
                   <input
                     className={cs(form.inputName, o.contentMain)}
-                    value={this.state.newTemplate.categories[i].type}
-                    onChange={this.changeNewTemplate(['categories', i, 'type'])}
-                    onFocus={() => (!this.state.newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
-                    onBlur={() => (!this.state.newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
+                    value={newTemplate.categories[i].type}
+                    onChange={changeNewTemplate(['categories', i, 'type'])}
+                    onFocus={() => (!newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
+                    onBlur={() => (!newTemplate.categories[i].type ? this.updateProp(lensPath(['focus', 'categories', i]), not) : null)}
                   />
                   <i
                     className={cs(font.iconPencil)}
@@ -297,7 +322,7 @@ export default class TemplateModal extends React.Component {
         ))}
           <Box justify="end">
             <a
-              onClick={this.appendColumnToNewTemplate}
+              onClick={appendColumnToNewTemplate}
               className={cs(c.toggleLink, form.add)}
             >Add
             </a>
@@ -344,7 +369,7 @@ export default class TemplateModal extends React.Component {
         <Box justify="end" className={o.spaceTop}>
           {this.renderOptionsFooter()}
           <button
-            onClick={this.closeOptionsModal}
+            onClick={closeOptionsModal}
             className={cs(o.btnClose, o.spaceTop)}
           >
                   Close
@@ -353,3 +378,22 @@ export default class TemplateModal extends React.Component {
       </Modal>);
   }
 }
+
+TemplateModal.propTypes = {
+  categories: PropTypes.array,
+  changeTemplateName: PropTypes.func.isRequired,
+  templateName: PropTypes.string,
+  newTemplate: PropTypes.object,
+  handleChangeColumnName: PropTypes.func.isRequired,
+  createTemplate: PropTypes.func.isRequired,
+  changeNewTemplate: PropTypes.func.isRequired,
+  removeColumnFromTemplate: PropTypes.func.isRequired,
+  stockTemplates: PropTypes.object,
+  handleHideToggle: PropTypes.func.isRequired,
+  recentTemplates: PropTypes.object,
+  loadTemplate: PropTypes.func.isRequired,
+  appendColumnToNewTemplate: PropTypes.func.isRequired,
+  closeOptionsModal: PropTypes.func.isRequired,
+  invalidFields: PropTypes.array,
+  blankTemplates: PropTypes.object,
+};

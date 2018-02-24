@@ -165,6 +165,7 @@
     width: auto;
     min-width: 0;
     padding-right:26px;
+    padding-left:8px;
     margin-left: -4px;
     border-radius: 2px;
     &:focus {
@@ -179,7 +180,7 @@
   & i{
     position: absolute;
     right: 8;
-    top:8;
+    top:2;
     display:none;
     color: $color-light-grey;
   }

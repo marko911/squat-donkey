@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
@@ -315,7 +314,6 @@ export default class Dashboard extends React.Component {
     this.updateProp(lensPath(['focus', 'categories']), append(false));
   }
 
-
   render() {
     const { categories, templateName } = this.state.template;
 
@@ -579,60 +577,25 @@ export default class Dashboard extends React.Component {
               in={this.state.showOptionsModal}
               key="optModal"
               classNames={s}
-              onEnter={this.setInkbar}
             >
-              {/* <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
-                <Box
-                  className={s.tabBar}
-                  justify="center"
-                  content="between"
-                  align="start"
-                >
-                  <a
-                    ref={x => this.firstTab = x}
-                    onClick={this.handleTabChange(1)}
-                    className={cs(s.tab, this.state.modalTabSelected === 1 && s.isActive)}
-                    href="#"
-                  >
-                   Current
-                  </a>
-                  <a
-                    onClick={this.handleTabChange(2)}
-                    className={cs(s.tab, this.state.modalTabSelected === 2 && s.isActive)}
-                    href="#"
-                  >
-                    Load
-                  </a>
-                  <a
-                    onClick={this.handleTabChange(3)}
-                    className={cs(s.tab, this.state.modalTabSelected === 3 && s.isActive)}
-                    href="#"
-                  >
-                  New
-                  </a>
-                  <div className={s.inkBar} style={this.state.inkBarStyle} />
-                </Box>
-                {tabContent(this.state.modalTabSelected)}
-                <Box justify="end" className={o.spaceTop}>
-                  {this.renderOptionsFooter()}
-                  <button
-                    onClick={this.closeOptionsModal}
-                    className={cs(o.btnClose, o.spaceTop)}
-                  >
-                  Close
-                  </button>
-                </Box>
-
-              </Modal> */}
               <TemplateModal
                 handleChangeColumnName={this.handleChangeColumnName}
                 handleHideToggle={this.handleHideToggle}
                 removeColumnFromTemplate={this.removeColumnFromTemplate}
-                changeTemplateName={this.changeNewTemplateName}
+                closeOptionsModal={this.closeOptionsModal}
+                changeTemplateName={this.changeTemplateName}
                 templateName={this.state.template.templateName}
+                newTemplate={this.state.newTemplate}
                 changeNewTemplate={this.changeNewTemplate}
+                blankTemplates={this.state.blankTemplates}
+                updateBlanks={this.updateBlanks}
                 categories={categories}
-
+                stockTemplates={this.state.stockTemplates}
+                recentTemplates={this.state.recentTemplates}
+                loadTemplate={this.loadTemplate}
+                invalidFields={this.state.invalidFields}
+                createTemplate={this.createTemplate}
+                appendColumnToNewTemplate={this.appendColumnToNewTemplate}
               />
             </Slide>
           }
