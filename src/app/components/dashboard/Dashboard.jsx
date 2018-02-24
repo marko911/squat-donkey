@@ -56,8 +56,6 @@ export default class Dashboard extends React.Component {
     addingColumnActive: false,
     showOptionsModal: false,
     showMenu: false,
-    modalTabSelected: 1,
-    saveBlankDisabled: false,
     focus: {
       newTemplateName: false,
       categories: [false],
@@ -93,12 +91,6 @@ export default class Dashboard extends React.Component {
       .then(stockTemplates => this.setState({ stockTemplates }));
   }
 
-  setInkbar = () => this.setState({
-    inkBarStyle: {
-      left: 16,
-      width: ReactDOM.findDOMNode(this.firstTab).getBoundingClientRect().width,
-    },
-  });
 
   setShownCols = () => this.setState({ numColsShown: this.columns.children.length });
 
@@ -297,16 +289,6 @@ export default class Dashboard extends React.Component {
     }
   }
 
-
-  handleTabChange = i => ({ target }) => {
-    this.updateProp(lensPath(['modalTabSelected']), always(i));
-    const { offsetLeft } = target;
-    this.updateProp(lensPath([
-      'inkBarStyle',
-      'left',
-    ]), always(offsetLeft));
-  }
-
   checkForEnter = ({ charCode }) => {
     if (charCode === 13) {
       this.addColumnToTemplate();
@@ -333,35 +315,6 @@ export default class Dashboard extends React.Component {
     this.updateProp(lensPath(['focus', 'categories']), append(false));
   }
 
-  renderOptionsFooter = () => {
-    const saveBlank = (
-      <button
-        disabled={this.state.saveBlankDisabled}
-        onClick={this.updateBlanks}
-        className={cs(o.btnModal, o.spaceTop, o.btnSave, this.state.saveBlankDisabled && o.btnDisabled)}
-      >
-        {this.state.saveBlankDisabled ? 'Saved' : 'Save Blank'}
-      </button>);
-    const createNew = (
-      <button
-        disabled={this.state.saveBlankDisabled}
-        onClick={this.createTemplate}
-        className={cs(o.btnModal, o.spaceTop, o.btnSave)}
-      >
-        Create
-      </button>);
-    const footerContent = cond([
-      [equals(1), always(saveBlank)],
-      [equals(3), always(createNew)],
-    ]);
-    return footerContent(this.state.modalTabSelected);
-  }
-
-  renderTabContent = (first, second, third) => cond([
-    [equals(1), always(first)],
-    [equals(2), always(second)],
-    [equals(3), always(third)],
-  ]);
 
   render() {
     const { categories, templateName } = this.state.template;
@@ -613,7 +566,6 @@ export default class Dashboard extends React.Component {
         </Box>
       </Box>);
 
-    const tabContent = this.renderTabContent(current, load, createNew);
 
     const TemplateOptionsModal = (
       <TransitionGroup

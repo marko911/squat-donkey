@@ -13,6 +13,7 @@
   &:not(:last-child){
     margin-right: 12px;
   }
+  
   border: 1px solid $color-column-border;
   border-radius: 5px;
   align-self: flex-start;
@@ -39,7 +40,7 @@
 
 .category-header {
   @extend .header-font;
-  background-color: #fff;
+  background-color: $color-card-bg;
   border-bottom: 1px solid #e0ebfc;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
