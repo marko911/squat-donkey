@@ -7,7 +7,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { propEq, merge,
   keys, remove, lensPath, isEmpty,
   lensProp, prepend, map, pick,
-  cond, always, equals,
+  always,
   append, not, over } from 'ramda';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
@@ -26,8 +26,8 @@ import Logo from '../icons/logo';
 import TemplateIcon from '../icons/templateIcon';
 import CalendarIcon from '../icons/calendarIcon';
 import maximus from '../../constants/maximusBody.json';
-import Modal from '../modal/Modal';
 import InputWithLabel from '../input/InputWithLabel';
+import TemplateModal from '../modal/TemplateModal';
 
 const stock = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
 
@@ -581,7 +581,7 @@ export default class Dashboard extends React.Component {
               classNames={s}
               onEnter={this.setInkbar}
             >
-              <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
+              {/* <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
                 <Box
                   className={s.tabBar}
                   justify="center"
@@ -623,7 +623,17 @@ export default class Dashboard extends React.Component {
                   </button>
                 </Box>
 
-              </Modal>
+              </Modal> */}
+              <TemplateModal
+                handleChangeColumnName={this.handleChangeColumnName}
+                handleHideToggle={this.handleHideToggle}
+                removeColumnFromTemplate={this.removeColumnFromTemplate}
+                changeTemplateName={this.changeNewTemplateName}
+                templateName={this.state.template.templateName}
+                changeNewTemplate={this.changeNewTemplate}
+                categories={categories}
+
+              />
             </Slide>
           }
       </TransitionGroup>);

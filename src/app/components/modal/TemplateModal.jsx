@@ -8,7 +8,9 @@ import { over,
   equals } from 'ramda';
 import o from './modal.scss';
 import s from '../dashboard/dashboard.scss';
+import t from '../input/toggle.scss';
 import form from '../newCard/newCard.scss';
+import font from '../card/fontello.scss';
 import Modal from './Modal';
 import Box from '../box/Box';
 import InputWithLabel from '../input/InputWithLabel';
@@ -72,8 +74,15 @@ export default class TemplateModal extends React.Component {
   }
 
   render() {
-    const { categories } = this.props;
-    const tabContent = this.renderTabContent(current, load, createNew);
+    const {
+      categories,
+      changeTemplateName,
+      templateName,
+      handleChangeColumnName,
+      changeNewTemplate,
+      removeColumnFromTemplate,
+      handleHideToggle,
+    } = this.props;
     const current = (
       <React.Fragment>
         <Box key="curre" justify="between" className={cs(o.tableHeader)}>
@@ -86,8 +95,8 @@ export default class TemplateModal extends React.Component {
         >
           <input
             className={cs(o.contentMain, form.inputName)}
-            value={this.state.template.templateName}
-            onChange={this.changeTemplateName}
+            value={templateName}
+            onChange={changeTemplateName}
           />
           <i
             className={cs(font.iconPencil)}
@@ -115,7 +124,7 @@ export default class TemplateModal extends React.Component {
                 className={cs(form.inputName, s.templateOptionsColumnInput, o.contentMain)}
                 placeholder="Column name"
                 value={c.type}
-                onChange={this.handleChangeColumnName(i)}
+                onChange={handleChangeColumnName(i)}
               />
               <i
                 className={cs(font.iconPencil)}
@@ -123,7 +132,7 @@ export default class TemplateModal extends React.Component {
             </Box>
             <Box align="center">
               <i
-                onClick={this.removeColumnFromTemplate(i)}
+                onClick={removeColumnFromTemplate(i)}
                 className={cs(font.iconTrashEmpty)}
               />
               <Box
@@ -132,8 +141,8 @@ export default class TemplateModal extends React.Component {
               ><input
                 type="checkbox"
                 id={`id-togg${i}`}
-                checked={this.state.template.categories[i].show}
-                onChange={this.handleHideToggle(i)}
+                checked={categories[i].show}
+                onChange={handleHideToggle(i)}
                 className={t.switchInput}
               />
                 <label
@@ -224,7 +233,6 @@ export default class TemplateModal extends React.Component {
         </Box>
       </Box>
     );
-
     const createNew = (
       <Box key="createnew" column className={cs(o.tableHeader)}>
         <div className={o.heading}>Create new template</div>
@@ -244,7 +252,7 @@ export default class TemplateModal extends React.Component {
               <input
                 className={cs(form.inputName, o.contentMain, this.state.invalidFields.includes('newTemplateName') && form.highlightInput)}
                 value={this.state.newTemplate.templateName}
-                onChange={this.changeNewTemplate(['templateName'])}
+                onChange={changeNewTemplate(['templateName'])}
                 onFocus={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
                 onBlur={() => (!this.state.newTemplate.templateName ? this.updateProp(lensPath(['focus', 'newTemplateName']), not) : null)}
               />
@@ -296,6 +304,10 @@ export default class TemplateModal extends React.Component {
           </Box>
         </Box>
       </Box>);
+
+    const tabContent = this.renderTabContent(current, load, createNew);
+
+
     return (
       <Modal className={s.templateOptions} key="templateOptions" onClick={this.stopProp} >
         <Box
