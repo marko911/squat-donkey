@@ -716,9 +716,9 @@ export default class Dashboard extends React.Component {
             className={cs(s.dashContainer, this.state.showMenu && s.menuOpen, s.flex1)}
           >
             <Box align="center" className={s.viewToggle}>
-              <div>{templateName}</div>
-              <span className={s.divider} />
               <div className={s.logoContainer}>{this.state.view === 'template' && <Logo fill={s.colorLogo} />}</div>
+              <span className={s.divider} />
+              <div>{templateName}</div>
               {this.state.view === 'template' ?
                 <CalendarIcon
                   onClick={() => this.setState({ view: 'calendar' })}
