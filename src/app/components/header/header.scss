@@ -45,7 +45,7 @@
   @extend .icon-fixed;
   justify-content: flex-end;
   -webkit-transform: translate3d(calc(100vw - 3em),1em,0);
-  transform: translate3d(calc(100vw - 3em),1em,0);
+  transform: translate3d(calc(100vw - 3em),0.8rem,0);
 }
 
 .iconCalendar {

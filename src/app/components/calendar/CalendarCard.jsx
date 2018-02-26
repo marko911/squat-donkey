@@ -25,7 +25,8 @@ const CalendarCard = ({ session, className, ...props }) => {
       <Box className={s.cardResult}>
         {keys(results).map(r => (
           <div key={sid.generate()}>{results[r] ? results[r] : 'Completed without score'}</div>
-          )).reduce((prev, curr) => [prev, <div key={sid.generate()}>/</div>, curr])}
+          )).reduce((prev, curr) => [prev, <span className={s.divider} />,
+             curr])}
       </Box>
       <Box column className={s.exercises}>
         {workout.exercises.map(e => (

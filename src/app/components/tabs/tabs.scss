@@ -1,0 +1,56 @@
+@import "../layout.scss";
+@import "../variables.scss";
+
+.tab-bar {
+  position: relative;
+  display: flex;
+  justify-content: "center";
+  align-content : "space-between";
+  align-items: 'flex-start';
+  padding: 16px 16px 0;
+  margin: -16px;
+  background: #f1f4f9;
+  height: 48px;
+  border-bottom: 1px solid $color-card-divider;
+}
+
+.tab {
+  margin: 0;
+  border: none;
+  padding: 0 24px;
+  float: left;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  height: 48px;
+  cursor: pointer;
+  line-height: 48px;
+  text-align: center;
+  flex:1;
+  font-weight: 500;
+  font-size: 14px;
+  color: rgba(0,0,0,.54);
+  overflow: hidden;
+  &.is-active {
+    color: rgba(0,0,0,.87);
+  }
+}
+
+.tabs {color: inherit}
+
+
+.ink-bar {
+  color:$color-dark-secondary;;
+  background: $color-dark-secondary;;
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  transition: all 0.15s;
+}
+
+.load-tab-item {
+  line-height: 20px;
+  padding: 8px 0 0 0px;
+  font-size: 16px;
+  font-weight: 400;
+}

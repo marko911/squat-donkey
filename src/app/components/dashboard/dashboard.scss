@@ -59,16 +59,19 @@
 
 .view-toggle {
   position: fixed;
-  transform: translate3d(0, -38px, 0px);
+  transform: translate3d(0, -54px, 0px);
   font-size: 14px;
   font-weight: 400;
-  height: 24px;
-  width: calc(100% - 48px);
+  height: 48px;
+  width: 100%;
+  margin-left: -24px;
   color: $color-font-card;
+  border-bottom: 1px solid $color-column-border;
+  background: $color-card-bg;
   & svg{
     cursor: pointer;
     box-sizing: border-box;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
   }
 }
 
@@ -82,7 +85,7 @@
 }
 
 .logo-container{
-  
+
   & svg{cursor: initial}
 }
 
@@ -232,6 +235,7 @@ input.template-options-column-input {
     -webkit-transform: translate3d(0,64px,0);
     transform: translate3d(0,64px,0);
 }
+
 @keyframes border-expand {
   0% {
     opacity: 0;
@@ -240,48 +244,4 @@ input.template-options-column-input {
     opacity: 1;
     width: 100%; } }
 
-.tab-bar {
-  position: relative;
-  padding: 16px 16px 0;
-  margin: -16px;
-  background: #f1f4f9;
-  height: 48px;
-  border-bottom: 1px solid $color-card-divider;
-}
 
-.tab {
-    margin: 0;
-    border: none;
-    padding: 0 24px;
-    float: left;
-    position: relative;
-    display: block;
-    text-decoration: none;
-    height: 48px;
-    line-height: 48px;
-    text-align: center;
-    flex:1;
-    font-weight: 500;
-    font-size: 14px;
-    color: rgba(0,0,0,.54);
-    overflow: hidden;
-    &.is-active {
-      color: rgba(0,0,0,.87);
-    }
-}
-
-.ink-bar {
-  color:$color-dark-secondary;;
-  background: $color-dark-secondary;;
-  position: absolute;
-  bottom: 0;
-  height: 2px;
-  transition: all 0.15s;
-}
-
-.load-tab-item {
-  line-height: 20px;
-  padding: 8px 0 0 0px;
-  font-size: 16px;
-  font-weight: 400;
-}

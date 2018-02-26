@@ -36,7 +36,6 @@
   font-size:18px;
   font-weight: 600;
   transform: translate3d(calc((100vw - 64px)/2 - 50%),-3.5em,0);
-  padding:8px;
 }
 
 .month-toggle {
@@ -48,6 +47,7 @@
   font-size: 14px;
   height: 48px;
 }
+
 .year {
   color :#9598A1;
   font-size: 12px;
@@ -156,3 +156,11 @@
   padding-top:8px;
 }
 
+.divider {
+  font-size: 1rem;
+  font-weight: 400;
+  padding-left: 1rem;
+  margin: 0px 0px 0px calc(1rem + 1px);
+  border-left: 1px solid;
+  height: 20px;
+}
