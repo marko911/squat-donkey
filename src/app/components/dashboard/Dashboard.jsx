@@ -1,12 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import sid from "shortid";
-import cs from "classnames";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import React from 'react';
+import PropTypes from 'prop-types';
+import sid from 'shortid';
+import cs from 'classnames';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   propEq,
   merge,
-  keys,
   remove,
   lensPath,
   isEmpty,
@@ -17,29 +16,26 @@ import {
   always,
   append,
   not,
-  over
-} from "ramda";
-import form from "../newCard/newCard.scss";
-import s from "./dashboard.scss";
-import font from "../card/fontello.scss";
-import c from "../card/card.scss";
-import t from "../input/toggle.scss";
-import o from "../modal/modal.scss";
-import h from "../header/header.scss";
-import Card from "../card/Card";
-import Tooltip from "../tooltip/Tooltip";
-import Box from "../box/Box";
-import NewCard from "../newCard/NewCard";
-import Header from "../header/Header";
-import Calendar from "../calendar/Calendar";
-import Logo from "../icons/logo";
-import TemplateIcon from "../icons/templateIcon";
-import CalendarIcon from "../icons/calendarIcon";
-import maximus from "../../constants/maximusBody.json";
-import InputWithLabel from "../input/InputWithLabel";
-import TemplateModal from "../modal/TemplateModal";
+  over,
+} from 'ramda';
+import form from '../newCard/newCard.scss';
+import s from './dashboard.scss';
+import font from '../card/fontello.scss';
+import o from '../modal/modal.scss';
+import h from '../header/header.scss';
+import Card from '../card/Card';
+import Tooltip from '../tooltip/Tooltip';
+import Box from '../box/Box';
+import NewCard from '../newCard/NewCard';
+import Calendar from '../calendar/Calendar';
+import Logo from '../icons/logo';
+import TemplateIcon from '../icons/templateIcon';
+import CalendarIcon from '../icons/calendarIcon';
+import CircleAddIcon from '../icons/circleadd';
+import maximus from '../../constants/maximusBody.json';
+import TemplateModal from '../modal/TemplateModal';
 
-const stock = ["https://s3.amazonaws.com/workouttemplates/maximusBody.json"];
+const stock = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
 
 const Slide = ({ children, ...props }) => (
   <CSSTransition {...props}>{children}</CSSTransition>
@@ -50,34 +46,34 @@ export default class Dashboard extends React.Component {
     template: {},
     numColsShown: 0,
     newTemplate: {
-      templateName: "",
-      categories: [{ type: "", show: true, workouts: [] }]
+      templateName: '',
+      categories: [{ type: '', show: true, workouts: [] }],
     },
-    view: "template",
+    view: 'template',
     idxOfHighlighted: {},
     newCardOpen: {},
     editMode: {},
-    newColumnName: "",
-    templateName: "",
+    newColumnName: '',
+    templateName: '',
     addingColumnActive: false,
     showOptionsModal: false,
     showMenu: false,
     focus: {
       newTemplateName: false,
-      categories: [false]
+      categories: [false],
     },
-    invalidFields: []
+    invalidFields: [],
   };
 
   componentWillMount() {
     this.getStockTemplates();
-    let template = JSON.parse(localStorage.getItem("currentTemplate")) || {};
+    let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
     const blankTemplates =
-      JSON.parse(localStorage.getItem("blankTemplates")) || {};
+      JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const recentTemplates =
-      JSON.parse(localStorage.getItem("recentTemplates")) || {};
+      JSON.parse(localStorage.getItem('recentTemplates')) || {};
     const calendarWorkouts =
-      JSON.parse(localStorage.getItem("calendarWorkouts")) || [];
+      JSON.parse(localStorage.getItem('calendarWorkouts')) || [];
     template = !isEmpty(template) ? template : maximus;
 
     this.setState({
@@ -85,7 +81,7 @@ export default class Dashboard extends React.Component {
       blankTemplates,
       recentTemplates,
       calendarWorkouts,
-      stockTemplates: []
+      stockTemplates: [],
     });
   }
 
@@ -96,8 +92,7 @@ export default class Dashboard extends React.Component {
   getStockTemplates = () => {
     const getStock = url => fetch(url).then(data => data.json());
     Promise.all(stock.map(getStock)).then(stockTemplates =>
-      this.setState({ stockTemplates })
-    );
+      this.setState({ stockTemplates }));
   };
 
   setShownCols = () =>
@@ -105,23 +100,23 @@ export default class Dashboard extends React.Component {
 
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
-    const column = lensPath(["template", "categories", catIdx]);
-    this.updateProp(column, col => {
+    const column = lensPath(['template', 'categories', catIdx]);
+    this.updateProp(column, (col) => {
       const newList = workouts => [
         workouts[woIdx],
         ...workouts.slice(0, woIdx),
-        ...workouts.slice(woIdx + 1)
+        ...workouts.slice(woIdx + 1),
       ];
-      const rearranged = over(lensProp("workouts"), newList);
+      const rearranged = over(lensProp('workouts'), newList);
       return rearranged(col);
     });
   };
 
-  createBlankTemplate = current => {
-    const records = over(lensProp("records"), always([]));
-    const workouts = over(lensProp("workouts"), map(records));
-    const blankTemplate = over(lensProp("categories"), map(workouts));
-    const blanks = JSON.parse(localStorage.getItem("blankTemplates")) || {};
+  createBlankTemplate = (current) => {
+    const records = over(lensProp('records'), always([]));
+    const workouts = over(lensProp('workouts'), map(records));
+    const blankTemplate = over(lensProp('categories'), map(workouts));
+    const blanks = JSON.parse(localStorage.getItem('blankTemplates')) || {};
     const blank = blankTemplate(current);
     return merge(blanks, { [blank.templateName]: blank });
   };
@@ -131,24 +126,24 @@ export default class Dashboard extends React.Component {
 
   updateLocalStorage = () => {
     localStorage.setItem(
-      "currentTemplate",
-      JSON.stringify(this.state.template)
+      'currentTemplate',
+      JSON.stringify(this.state.template),
     );
     localStorage.setItem(
-      "calendarWorkouts",
-      JSON.stringify(this.state.calendarWorkouts)
+      'calendarWorkouts',
+      JSON.stringify(this.state.calendarWorkouts),
     );
     this.setState({ saveBlankDisabled: false });
   };
 
-  addWorkoutResult = (catIdx, woIdx) => submission => {
+  addWorkoutResult = (catIdx, woIdx) => (submission) => {
     const workoutResults = lensPath([
-      "template",
-      "categories",
+      'template',
+      'categories',
       catIdx,
-      "workouts",
+      'workouts',
       woIdx,
-      "records"
+      'records',
     ]);
     this.updateProp(workoutResults, prepend(submission));
     this.rearrangeColumn(catIdx, woIdx);
@@ -158,18 +153,18 @@ export default class Dashboard extends React.Component {
   addToCalendar = (catIdx, woIdx, submission) => {
     const category = this.state.template.categories[catIdx];
     const workout = pick(
-      ["exercises", "name", "parameters"],
-      category.workouts[woIdx]
+      ['exercises', 'name', 'parameters'],
+      category.workouts[woIdx],
     );
     this.updateProp(
-      lensProp("calendarWorkouts"),
+      lensProp('calendarWorkouts'),
       append({
         ...submission,
         type: category.type,
         workout,
         styleIdx: catIdx,
-        template: this.state.template.templateName
-      })
+        template: this.state.template.templateName,
+      }),
     );
   };
 
@@ -177,84 +172,84 @@ export default class Dashboard extends React.Component {
     this.setState(
       () => ({
         blankTemplates: this.createBlankTemplate(this.state.template),
-        saveBlankDisabled: true
+        saveBlankDisabled: true,
       }),
       () =>
         localStorage.setItem(
-          "blankTemplates",
-          JSON.stringify(this.state.blankTemplates)
-        )
+          'blankTemplates',
+          JSON.stringify(this.state.blankTemplates),
+        ),
     );
 
   saveCurrentTemplate = () => {
     const recentTemplates =
-      JSON.parse(localStorage.getItem("recentTemplates")) || {};
+      JSON.parse(localStorage.getItem('recentTemplates')) || {};
     const addedToRecents = merge(recentTemplates, {
-      [this.state.template.templateName]: this.state.template
+      [this.state.template.templateName]: this.state.template,
     });
     this.setState({ recentTemplates: addedToRecents });
-    localStorage.setItem("recentTemplates", JSON.stringify(addedToRecents));
+    localStorage.setItem('recentTemplates', JSON.stringify(addedToRecents));
   };
 
   loadTemplate = template => () => {
     this.saveCurrentTemplate();
-    this.updateProp(lensProp("template"), always(template));
+    this.updateProp(lensProp('template'), always(template));
     this.closeOptionsModal();
-    this.toggleField("showMenu")();
+    this.toggleField('showMenu')();
   };
 
   createTemplate = () => {
     if (!this.state.newTemplate.templateName) {
-      this.updateProp(lensProp("invalidFields"), append("newTemplateName"));
+      this.updateProp(lensProp('invalidFields'), append('newTemplateName'));
       return;
     }
     if (!this.state.newTemplate.categories[0].type.length) {
-      const noCategory = over(lensProp(["categories"]), always([]));
+      const noCategory = over(lensProp(['categories']), always([]));
       this.loadTemplate(noCategory(this.state.newTemplate))();
     } else {
       this.loadTemplate(this.state.newTemplate)();
     }
     this.updateProp(
-      lensProp("newTemplate"),
+      lensProp('newTemplate'),
       always({
-        templateName: "",
-        categories: [{ type: "", show: true, workouts: [] }]
-      })
+        templateName: '',
+        categories: [{ type: '', show: true, workouts: [] }],
+      }),
     );
     this.updateProp(
-      lensProp("focus"),
+      lensProp('focus'),
       always({
         newTemplateName: false,
-        categories: [false]
-      })
+        categories: [false],
+      }),
     );
   };
 
-  addWorkoutToColumn = idx => workout => {
-    const workouts = lensPath(["template", "categories", idx, "workouts"]);
+  addWorkoutToColumn = idx => (workout) => {
+    const workouts = lensPath(['template', 'categories', idx, 'workouts']);
     this.updateProp(workouts, prepend(workout));
-    this.updateProp(lensPath(["newCardOpen", [idx]]), not);
+    this.updateProp(lensPath(['newCardOpen', [idx]]), not);
   };
 
   deleteFromList = (path, i) => this.updateProp(path, remove(i, 1));
 
   deleteWorkout = (catIdx, woIdx) => () =>
     this.deleteFromList(
-      lensPath(["template", "categories", catIdx, "workouts"]),
-      woIdx
+      lensPath(['template', 'categories', catIdx, 'workouts']),
+      woIdx,
     );
 
   deleteRecord = (catIdx, woIdx) => rIdx => () =>
     this.deleteFromList(
       lensPath([
-        "template",
-        "categories",
+        'template',
+        'categories',
         catIdx,
-        "workouts",
+        'workouts',
         woIdx,
-        "records"
+        'records',
       ]),
-      rIdx
+      rIdx,
     );
 
   handleChange = prop => ({ target: { value } }) =>
@@ -262,24 +257,24 @@ export default class Dashboard extends React.Component {
 
   handleHideToggle = idx => ({ target: { checked } }) => {
     this.updateProp(
-      lensPath(["template", "categories", idx, "show"]),
-      always(checked)
+      lensPath(['template', 'categories', idx, 'show']),
+      always(checked),
     );
     setTimeout(this.setShownCols, 100);
   };
 
   changeTemplateName = ({ target: { value } }) =>
-    this.updateProp(lensPath(["template", "templateName"]), always(value));
+    this.updateProp(lensPath(['template', 'templateName']), always(value));
 
   changeNewTemplate = path => ({ target: { value } }) => {
-    this.updateProp(lensPath(["newTemplate", ...path]), always(value));
-    if (path.includes("templateName")) {
+    this.updateProp(lensPath(['newTemplate', ...path]), always(value));
+    if (path.includes('templateName')) {
       this.setState({ invalidFields: [] });
     }
   };
 
   handleChangeColumnName = i => ({ target: { value } }) => {
-    const column = lensPath(["template", "categories", i, "type"]);
+    const column = lensPath(['template', 'categories', i, 'type']);
     this.updateProp(column, always(value));
   };
 
@@ -290,31 +285,25 @@ export default class Dashboard extends React.Component {
       return;
     }
     this.updateProp(
-      lensPath(["template", "categories"]),
+      lensPath(['template', 'categories']),
       append({
         type: this.state.newColumnName,
         show: true,
-        workouts: []
-      })
+        workouts: [],
+      }),
     );
     this.setState({
-      newColumnName: "",
-      addingColumnActive: false
+      newColumnName: '',
+      addingColumnActive: false,
     });
   };
 
   removeColumnFromTemplate = i => () =>
-    this.deleteFromList(lensPath(["template", "categories"]), i);
+    this.deleteFromList(lensPath(['template', 'categories']), i);
 
-  stopProp = e => {
+  stopProp = (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-  };
-
-  closeOnOutside = () => {
-    if (this.state.showMenu) {
-      this.toggleField("showMenu")();
-    }
   };
 
   checkForEnter = ({ charCode }) => {
@@ -324,7 +313,7 @@ export default class Dashboard extends React.Component {
   };
 
   closeOptionsModal = () => {
-    this.toggleField("showOptionsModal")();
+    this.toggleField('showOptionsModal')();
     this.setState({ modalTabSelected: 1 });
   };
 
@@ -339,21 +328,32 @@ export default class Dashboard extends React.Component {
             document.documentElement.clientWidth;
           parent.scrollLeft = diff;
         }
-      }
+      },
     );
   };
 
   appendColumnToNewTemplate = () => {
     this.updateProp(
-      lensPath(["newTemplate", "categories"]),
-      append({ type: "", show: true, workouts: [] })
+      lensPath(['newTemplate', 'categories']),
+      append({ type: '', show: true, workouts: [] }),
     );
-    this.updateProp(lensPath(["focus", "categories"]), append(false));
+    this.updateProp(lensPath(['focus', 'categories']), append(false));
   };
 
   render() {
     const { categories, templateName } = this.state.template;
-
+    const {
+      addIsActive,
+      newColumnName,
+      numColsShown,
+      editMode,
+      newCardOpen,
+      view,
+      showOptionsModal,
+      calendarWorkouts,
+      idxOfHighlighted,
+      addingColumnActive,
+    } = this.state;
     const addWorkoutIcon = (
       <i className={cs(font.iconPlusSquared, font.iconPlusSquaredColor)} />
     );
@@ -371,9 +371,9 @@ export default class Dashboard extends React.Component {
             ref={c => (this.newColumnInput = c)}
             className={cs(form.inputName, s.newColumnInput)}
             placeholder="Enter column name"
-            value={this.state.newColumnName}
+            value={newColumnName}
             onKeyPress={this.checkForEnter}
-            onChange={this.handleChange("newColumnName")}
+            onChange={this.handleChange('newColumnName')}
           />
           <div
             onClick={this.addColumnToTemplate}
@@ -385,257 +385,15 @@ export default class Dashboard extends React.Component {
       </Box>
     );
 
-    const current = (
-      <React.Fragment>
-        <Box key="curre" justify="between" className={cs(o.tableHeader)}>
-          <div>Name</div>
-        </Box>
-        <Box justify="between" align="start" className={s.templateModalHeader}>
-          <input
-            className={cs(o.contentMain, form.inputName)}
-            value={this.state.template.templateName}
-            onChange={this.changeTemplateName}
-          />
-          <i className={cs(font.iconPencil)} />
-        </Box>
-        <Box justify="between" className={cs(o.tableHeader, o.spaceTop)}>
-          <div>Column</div>
-          <Box>
-            Remove
-            <div className={o.actionDivider}>Hide/Show</div>
-          </Box>
-        </Box>
-        {categories.map((c, i) => (
-          <Box align="center" justify="between" key={`toggler-${i}`}>
-            <Box
-              justify="between"
-              align="start"
-              className={s.templateModalListItem}
-            >
-              <input
-                className={cs(
-                  form.inputName,
-                  s.templateOptionsColumnInput,
-                  o.contentMain
-                )}
-                placeholder="Column name"
-                value={c.type}
-                onChange={this.handleChangeColumnName(i)}
-              />
-              <i className={cs(font.iconPencil)} />
-            </Box>
-            <Box align="center">
-              <i
-                onClick={this.removeColumnFromTemplate(i)}
-                className={cs(font.iconTrashEmpty)}
-              />
-              <Box justify="end" className={o.actionDivider}>
-                <input
-                  type="checkbox"
-                  id={`id-togg${i}`}
-                  checked={this.state.template.categories[i].show}
-                  onChange={this.handleHideToggle(i)}
-                  className={t.switchInput}
-                />
-                <label htmlFor={`id-togg${i}`} className={cs(t.switchLabel)} />
-              </Box>
-            </Box>
-          </Box>
-        ))}
-      </React.Fragment>
-    );
-
-    const load = (
-      <Box key="load" column className={cs(o.tableHeader)}>
-        {!isEmpty(this.state.blankTemplates) && (
-          <Box column className={o.table}>
-            <Box justify="between">
-              <div>My Blank Templates</div>
-            </Box>
-
-            <Box column>
-              {keys(this.state.blankTemplates).map(name => (
-                <Box
-                  key={name}
-                  justify="between"
-                  align="start"
-                  className={cs(s.loadTabItem, o.contentMain)}
-                >
-                  {name}
-                  <div
-                    onClick={this.loadTemplate(this.state.blankTemplates[name])}
-                    className={cs(s.btn, o.btnModal, o.btnModalLoad)}
-                  >
-                    Load
-                  </div>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        )}
-
-        <Box column className={o.table}>
-          <Box justify="between">
-            <div>Stock Templates</div>
-          </Box>
-
-          <Box column>
-            {this.state.stockTemplates.map(stock => (
-              <Box
-                justify="between"
-                key={stock.templateName}
-                align="start"
-                className={cs(s.loadTabItem, o.contentMain)}
-              >
-                {stock.templateName}
-                <div
-                  onClick={this.loadTemplate(stock)}
-                  className={cs(s.btn, o.btnModal, o.btnModalLoad)}
-                >
-                  Load
-                </div>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-
-        <Box column className={o.table}>
-          <Box justify="between">
-            <div>My Recent Plans</div>
-          </Box>
-
-          <Box column>
-            {keys(this.state.recentTemplates).map(recent => (
-              <Box
-                justify="between"
-                key={recent}
-                align="start"
-                className={cs(s.loadTabItem, o.contentMain)}
-              >
-                {recent}
-                <div
-                  onClick={this.loadTemplate(
-                    this.state.recentTemplates[recent]
-                  )}
-                  className={cs(s.btn, o.btnModal, o.btnModalLoad)}
-                >
-                  Load
-                </div>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    );
-
-    const createNew = (
-      <Box key="createnew" column className={cs(o.tableHeader)}>
-        <div className={o.heading}>Create new template</div>
-        <Box
-          justify="between"
-          align="start"
-          className={cs(s.templateModalListItem, s.floatingI, o.spaceTop)}
-        >
-          <InputWithLabel
-            key="name"
-            label="Template Name"
-            required
-            labelClass={o.movingLabel}
-            focused={this.state.focus.newTemplateName}
-          >
-            <Box justify="between">
-              <input
-                className={cs(
-                  form.inputName,
-                  o.contentMain,
-                  this.state.invalidFields.includes("newTemplateName") &&
-                    form.highlightInput
-                )}
-                value={this.state.newTemplate.templateName}
-                onChange={this.changeNewTemplate(["templateName"])}
-                onFocus={() =>
-                  !this.state.newTemplate.templateName
-                    ? this.updateProp(
-                        lensPath(["focus", "newTemplateName"]),
-                        not
-                      )
-                    : null
-                }
-                onBlur={() =>
-                  !this.state.newTemplate.templateName
-                    ? this.updateProp(
-                        lensPath(["focus", "newTemplateName"]),
-                        not
-                      )
-                    : null
-                }
-              />
-              <i className={cs(font.iconPencil)} />
-            </Box>
-          </InputWithLabel>
-        </Box>
-        <Box className={s.templateModalListItem} column id="cols">
-          {this.state.newTemplate.categories.map((col, i) => (
-            <Box
-              key={`tempcat-col${i}`}
-              justify="between"
-              align="start"
-              className={cs(s.floatingI, s.templateModalInput)}
-            >
-              <InputWithLabel
-                key="col"
-                label={`Column ${i + 1}`}
-                labelClass={o.movingLabel}
-                focused={this.state.focus.categories[i]}
-              >
-                <Box justify="between" className={o.inputWrapper}>
-                  <input
-                    className={cs(form.inputName, o.contentMain)}
-                    value={this.state.newTemplate.categories[i].type}
-                    onChange={this.changeNewTemplate(["categories", i, "type"])}
-                    onFocus={() =>
-                      !this.state.newTemplate.categories[i].type
-                        ? this.updateProp(
-                            lensPath(["focus", "categories", i]),
-                            not
-                          )
-                        : null
-                    }
-                    onBlur={() =>
-                      !this.state.newTemplate.categories[i].type
-                        ? this.updateProp(
-                            lensPath(["focus", "categories", i]),
-                            not
-                          )
-                        : null
-                    }
-                  />
-                  <i className={cs(font.iconPencil)} />
-                </Box>
-              </InputWithLabel>
-            </Box>
-          ))}
-          <Box justify="end">
-            <a
-              onClick={this.appendColumnToNewTemplate}
-              className={cs(c.toggleLink, form.add)}
-            >
-              Add
-            </a>
-          </Box>
-        </Box>
-      </Box>
-    );
-
     const TemplateOptionsModal = (
       <TransitionGroup
         onClick={this.closeOptionsModal}
-        className={cs(o.invisWrapper, this.state.showOptionsModal && o.active)}
+        className={cs(o.invisWrapper, showOptionsModal && o.active)}
       >
-        {this.state.showOptionsModal && (
+        {showOptionsModal && (
           <Slide
             timeout={200}
-            in={this.state.showOptionsModal}
+            in={showOptionsModal}
             key="optModal"
             classNames={s}
           >
@@ -650,6 +408,7 @@ export default class Dashboard extends React.Component {
               changeNewTemplate={this.changeNewTemplate}
               blankTemplates={this.state.blankTemplates}
               updateBlanks={this.updateBlanks}
+              saveBlankDisabled={this.state.saveBlankDisabled}
               categories={categories}
               stockTemplates={this.state.stockTemplates}
               recentTemplates={this.state.recentTemplates}
@@ -668,12 +427,11 @@ export default class Dashboard extends React.Component {
         className={cs(
           s.columns,
           s.flex1,
-          this.state.numColsShown > 2 && s.spread
+          numColsShown > 2 && s.spread,
         )}
       >
-        {categories.map(
-          (c, i) =>
-            c.show ? (
+        {categories.map((c, i) =>
+            (c.show ? (
               <Box key={`cat${i}`} column className={s.colWrapper}>
                 <Box
                   className={s.categoryHeader}
@@ -684,34 +442,32 @@ export default class Dashboard extends React.Component {
                   <Box align="center">
                     <Tooltip
                       className={font.tooltipIcon}
-                      positionShift={this.state.showMenu ? 64 : null}
                       el={addWorkoutIcon}
                       onClick={() =>
-                        this.updateProp(lensPath(["newCardOpen", [i]]), not)
+                        this.updateProp(lensPath(['newCardOpen', [i]]), not)
                       }
                       text="Add workout"
                     />
                     <Tooltip
                       className={font.tooltipIcon}
-                      positionShift={this.state.showMenu ? 64 : null}
                       el={editColumnIcon}
                       onClick={() =>
-                        this.updateProp(lensPath(["editMode", [c.type]]), not)
+                        this.updateProp(lensPath(['editMode', [c.type]]), not)
                       }
                       text={`Edit:${
-                        this.state.editMode[c.type] ? "On" : "Off"
+                        editMode[c.type] ? 'On' : 'Off'
                       }`}
                     />
                   </Box>
                 </Box>
                 <Box column className={s.workoutsContainer}>
                   <TransitionGroup>
-                    {this.state.newCardOpen[i] && (
+                    {newCardOpen[i] && (
                       <Slide
-                        in={this.state.newCardOpen[i]}
+                        in={newCardOpen[i]}
                         timeout={{ enter: 200, exit: 0 }}
                         classNames={s}
-                        onEnter={() => log("entering")}
+                        onEnter={() => log('entering')}
                         key="newcard"
                       >
                         <NewCard
@@ -719,26 +475,24 @@ export default class Dashboard extends React.Component {
                           className={s.newCardOpen}
                           onSubmit={this.addWorkoutToColumn(i)}
                           close={() =>
-                            this.updateProp(lensPath(["newCardOpen", [i]]), not)
+                            this.updateProp(lensPath(['newCardOpen', [i]]), not)
                           }
                         />
                       </Slide>
                     )}
                   </TransitionGroup>
 
-                  {c.workouts.length || this.state.newCardOpen[i] ? (
+                  {c.workouts.length || newCardOpen[i] ? (
                     c.workouts.map((w, j) => (
                       <Card
-                        shouldHighlight={propEq(i, true)(
-                          this.state.idxOfHighlighted
-                        )}
+                        shouldHighlight={propEq(i, true)(idxOfHighlighted)}
                         key={`card--${j}`}
                         onSubmitRecord={this.addWorkoutResult(i, j)}
                         onDeleteSelf={this.deleteWorkout(i, j)}
                         onDeleteRecord={this.deleteRecord(i, j)}
                         data={w}
                         type={c.type}
-                        editMode={!!this.state.editMode[c.type]}
+                        editMode={!!editMode[c.type]}
                       />
                     ))
                   ) : (
@@ -746,7 +500,7 @@ export default class Dashboard extends React.Component {
                       <Box className={s.flex1} justify="center" align="center">
                         <div
                           onClick={() =>
-                            this.updateProp(lensPath(["newCardOpen", [i]]), not)
+                            this.updateProp(lensPath(['newCardOpen', [i]]), not)
                           }
                           className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
                         >
@@ -757,57 +511,48 @@ export default class Dashboard extends React.Component {
                   )}
                 </Box>
               </Box>
-            ) : null
-        )}
-        {this.state.addingColumnActive && NewColumn}
+            ) : null))}
+        {addingColumnActive && NewColumn}
       </div>
     );
     return (
       <div ref={x => (this.dashElement = x)} className={cs(s.auto)}>
-        <i
-          onClick={this.toggleField("showMenu")}
-          className={cs(font.iconMenu, h.iconMenu)}
-        />
-        <Box className={h.calendarWrap} />
         {TemplateOptionsModal}
-        <Header
-          addColumn={this.addNewColumn}
-          toggleOptionsModal={this.toggleField("showOptionsModal")}
-          addIsActive={this.state.addingColumnActive}
-          showMenu={this.state.showMenu}
-        />
         <Box className={s.overflowWrapper} onClick={this.closeOnOutside}>
           <div
             ref={x => (this.dashContainer = x)}
             className={cs(
               s.dashContainer,
-              this.state.showMenu && s.menuOpen,
-              s.flex1
+              s.flex1,
             )}
           >
-            <Box align="center" className={s.viewToggle}>
-              <div className={s.logoContainer}>
-                {" "}
-                <Logo fill={s.colorLogo} />
-              </div>
-              <span className={s.divider} />
-              <div>{templateName}</div>
-              {this.state.view === "template" ? (
-                <CalendarIcon
-                  onClick={() => this.setState({ view: "calendar" })}
-                  fill={s.colorTogglerIcons}
-                />
+            <Box align="center" justify="between" className={s.viewToggle}>
+              <Box>
+                <div className={s.logoContainer}>
+                  <Logo fill={s.colorLogo} />
+                </div>
+                <span className={s.divider} />
+                <div>{templateName}</div>
+              </Box>
+              <Box className={h.menuIcons}>
+                {view === 'template' ? (
+                  <CalendarIcon
+                    onClick={() => this.setState({ view: 'calendar' })}
+                    fill={s.colorTogglerIcons}
+                  />
               ) : (
                 <TemplateIcon
-                  onClick={() => this.setState({ view: "template" })}
+                  onClick={() => this.setState({ view: 'template' })}
                   fill={s.colorTogglerIcons}
                 />
               )}
+                <CircleAddIcon fill={s.colorTogglerIcons} />
+              </Box>
             </Box>
-            {this.state.view === "template" ? (
+            {view === 'template' ? (
               columns
             ) : (
-              <Calendar workouts={this.state.calendarWorkouts} />
+              <Calendar workouts={calendarWorkouts} />
             )}
           </div>
         </Box>
@@ -817,5 +562,5 @@ export default class Dashboard extends React.Component {
 }
 
 Slide.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };

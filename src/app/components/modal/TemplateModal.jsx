@@ -5,12 +5,9 @@ import cs from 'classnames';
 import {
   over,
   lensPath,
-  always,
   not,
-  cond,
   isEmpty,
   keys,
-  equals,
 } from 'ramda';
 import o from './modal.scss';
 import s from '../dashboard/dashboard.scss';
@@ -23,11 +20,27 @@ import Box from '../box/Box';
 import InputWithLabel from '../input/InputWithLabel';
 import { Tabs, Tab, TabPanels, TabPanel, TabList } from '../tabs/Tabs';
 
+export const ModalFooter = ({ children, closeButton }, context) => {
+  const { activeIndex } = context;
+  return (
+    <Box justify="end" className={o.spaceTop}>
+      {[children[activeIndex], closeButton]}
+    </Box>);
+};
+
+ModalFooter.contextTypes = {
+  activeIndex: PropTypes.number.isRequired,
+};
+
+ModalFooter.propTypes = {
+  children: PropTypes.node,
+  closeButton: PropTypes.node,
+};
+
+
 export default class TemplateModal extends React.Component {
   static defaultProps = {};
   state = {
-    modalTabSelected: 1,
-    saveBlankDisabled: false,
     focus: {
       newTemplateName: false,
       categories: [false],
@@ -37,53 +50,9 @@ export default class TemplateModal extends React.Component {
 
   updateProp = (path, functor) => this.setState(over(path, functor));
 
-  handleTabChange = i => ({ target }) => {
-    this.updateProp(lensPath(['modalTabSelected']), always(i));
-    const { offsetLeft } = target;
-    this.updateProp(lensPath(['inkBarStyle', 'left']), always(offsetLeft));
-  };
-
   stopProp = (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
-  };
-
-  renderTabContent = (first, second, third) =>
-    cond([
-      [equals(1), always(first)],
-      [equals(2), always(second)],
-      [equals(3), always(third)],
-    ]);
-
-  renderOptionsFooter = () => {
-    const saveBlank = (
-      <button
-        disabled={this.state.saveBlankDisabled}
-        onClick={this.props.updateBlanks}
-        className={cs(
-          o.btnModal,
-          o.spaceTop,
-          o.btnSave,
-          this.state.saveBlankDisabled && o.btnDisabled,
-        )}
-      >
-        {this.state.saveBlankDisabled ? 'Saved' : 'Save Blank'}
-      </button>
-    );
-    const createNew = (
-      <button
-        disabled={this.state.saveBlankDisabled}
-        onClick={this.props.createTemplate}
-        className={cs(o.btnModal, o.spaceTop, o.btnSave)}
-      >
-        Create
-      </button>
-    );
-    const footerContent = cond([
-      [equals(1), always(saveBlank)],
-      [equals(3), always(createNew)],
-    ]);
-    return footerContent(this.state.modalTabSelected);
   };
 
   render() {
@@ -104,6 +73,7 @@ export default class TemplateModal extends React.Component {
       invalidFields,
       blankTemplates,
     } = this.props;
+
     const current = (
       <React.Fragment>
         <Box key="curre" justify="between" className={cs(o.tableHeader)}>
@@ -178,7 +148,7 @@ export default class TemplateModal extends React.Component {
                   key={name}
                   justify="between"
                   align="start"
-                  className={cs(s.loadTabItem, o.contentMain)}
+                  className={cs(o.loadTabItem, o.contentMain)}
                 >
                   {name}
                   <div
@@ -204,7 +174,7 @@ export default class TemplateModal extends React.Component {
                 justify="between"
                 key={stock.templateName}
                 align="start"
-                className={cs(s.loadTabItem, o.contentMain)}
+                className={cs(o.loadTabItem, o.contentMain)}
               >
                 {stock.templateName}
                 <div
@@ -229,7 +199,7 @@ export default class TemplateModal extends React.Component {
                 justify="between"
                 key={recent}
                 align="start"
-                className={cs(s.loadTabItem, o.contentMain)}
+                className={cs(o.loadTabItem, o.contentMain)}
               >
                 {recent}
                 <div
@@ -343,8 +313,13 @@ export default class TemplateModal extends React.Component {
       </Box>
     );
 
-    const tabContent = this.renderTabContent(current, load, createNew);
-
+    const closeButton = (
+      <button
+        onClick={closeOptionsModal}
+        className={cs(o.btnClose, o.spaceTop)}
+      >
+        Close
+      </button>);
     return (
       <Modal
         className={s.templateOptions}
@@ -353,57 +328,44 @@ export default class TemplateModal extends React.Component {
       >
         <Tabs>
           <TabList>
-            <Tab>
-              Current
-            </Tab>
-            <Tab>
-              Load
-            </Tab>
-            <Tab>
-              New
-            </Tab>
+            <Tab> Current </Tab>
+            <Tab> Load </Tab>
+            <Tab> New </Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel> {current} </TabPanel>
+            <TabPanel> {load} </TabPanel>
+            <TabPanel> {createNew} </TabPanel>
+          </TabPanels>
+          <ModalFooter closeButton={closeButton}>
+            <TabPanel>
+              <button
+                disabled={this.props.saveBlankDisabled}
+                onClick={this.props.updateBlanks}
+                className={cs(
+                  o.btnModal,
+                  o.spaceTop,
+                  o.btnSave,
+                  this.props.saveBlankDisabled && o.btnDisabled,
+                  )}
+              >
+                {this.props.saveBlankDisabled ? 'Saved' : 'Save Blank'}
+              </button>
+            </TabPanel>
+
+            <TabPanel>{null}</TabPanel>
+
+            <TabPanel>
+              <button
+                disabled={this.props.saveBlankDisabled}
+                onClick={this.props.createTemplate}
+                className={cs(o.btnModal, o.spaceTop, o.btnSave)}
+              >
+                Create
+              </button>
+            </TabPanel>
+          </ModalFooter>
         </Tabs>
-
-        {/* <Box
-          className={s.tabBar}
-          justify="center"
-          content="between"
-          align="start"
-        >
-
-          <a
-            onClick={this.handleTabChange(2)}
-            className={cs(
-              s.tab,
-              this.state.modalTabSelected === 2 && s.isActive,
-            )}
-            href="#"
-          >
-            Load
-          </a>
-          <a
-            onClick={this.handleTabChange(3)}
-            className={cs(
-              s.tab,
-              this.state.modalTabSelected === 3 && s.isActive,
-            )}
-            href="#"
-          >
-            New
-          </a>
-          <div className={s.inkBar} style={this.state.inkBarStyle} />
-        </Box> */}
-        {tabContent(this.state.modalTabSelected)}
-        <Box justify="end" className={o.spaceTop}>
-          {this.renderOptionsFooter()}
-          <button
-            onClick={closeOptionsModal}
-            className={cs(o.btnClose, o.spaceTop)}
-          >
-            Close
-          </button>
-        </Box>
       </Modal>
     );
   }

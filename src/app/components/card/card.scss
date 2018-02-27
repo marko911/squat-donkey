@@ -10,7 +10,7 @@
   padding-bottom: 0;
 }
 .card-divider {
-  border-bottom: 1px solid $color-card-divider-light;
+  border-bottom: 1px solid $color-card-divider-strong;
 }
 .card {
   color: $color-font-card;
@@ -137,7 +137,7 @@
   border-radius: 2px;
   background-color: $color-card-bg;
   font-size: 12px;
-  max-width: 25%;
+  max-width: 90px;
   @extend .io-pad;
   &:focus {
     outline: none;

@@ -63,7 +63,6 @@ export class TabList extends Component {
 
 
   render() {
-    log('tab change');
     const {
       activeIndex, onSelectTab,
     } = this.context;
