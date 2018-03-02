@@ -71,7 +71,6 @@
   & svg{
     cursor: pointer;
     box-sizing: border-box;
-    margin-left: 1.5rem;
   }
 }
 
@@ -85,7 +84,7 @@
 }
 
 .logo-container{
-
+  margin-left: 24px;
   & svg{cursor: initial}
 }
 

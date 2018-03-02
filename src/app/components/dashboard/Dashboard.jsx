@@ -32,6 +32,7 @@ import Logo from '../icons/logo';
 import TemplateIcon from '../icons/templateIcon';
 import CalendarIcon from '../icons/calendarIcon';
 import CircleAddIcon from '../icons/circleadd';
+import CircleCancelIcon from '../icons/circleCancel';
 import maximus from '../../constants/maximusBody.json';
 import TemplateModal from '../modal/TemplateModal';
 
@@ -536,17 +537,36 @@ export default class Dashboard extends React.Component {
               </Box>
               <Box className={h.menuIcons}>
                 {view === 'template' ? (
-                  <CalendarIcon
+                  <Tooltip
+                    el={<CalendarIcon
+                      fill={s.colorTogglerIcons}
+                    />}
                     onClick={() => this.setState({ view: 'calendar' })}
-                    fill={s.colorTogglerIcons}
+                    text="Calendar"
                   />
               ) : (
-                <TemplateIcon
+                <Tooltip
+                  el={<TemplateIcon
+                    fill={s.colorTogglerIcons}
+                    width={24}
+                    height={24}
+                  />}
                   onClick={() => this.setState({ view: 'template' })}
-                  fill={s.colorTogglerIcons}
+                  text="Dashboard"
                 />
               )}
-                <CircleAddIcon fill={s.colorTogglerIcons} />
+                {this.state.addingColumnActive ?
+                  <Tooltip
+                    el={<CircleCancelIcon fill={s.colorTogglerIcons} />}
+                    onClick={this.addNewColumn}
+                    text="Cancel"
+                  /> :
+                  <Tooltip
+                    el={<CircleAddIcon fill={s.colorTogglerIcons} />}
+                    onClick={this.addNewColumn}
+                    text="Add new workout"
+                  />}
+
               </Box>
             </Box>
             {view === 'template' ? (
