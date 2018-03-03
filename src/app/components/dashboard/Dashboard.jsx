@@ -33,6 +33,7 @@ import TemplateIcon from '../icons/templateIcon';
 import CalendarIcon from '../icons/calendarIcon';
 import CircleAddIcon from '../icons/circleadd';
 import CircleCancelIcon from '../icons/circleCancel';
+import SlidersIcon from '../icons/slidersIcon';
 import maximus from '../../constants/maximusBody.json';
 import TemplateModal from '../modal/TemplateModal';
 
@@ -539,7 +540,7 @@ export default class Dashboard extends React.Component {
                 {view === 'template' ? (
                   <Tooltip
                     el={<CalendarIcon
-                      fill={s.colorTogglerIcons}
+                      className={h.menuIcon}
                     />}
                     onClick={() => this.setState({ view: 'calendar' })}
                     text="Calendar"
@@ -547,7 +548,7 @@ export default class Dashboard extends React.Component {
               ) : (
                 <Tooltip
                   el={<TemplateIcon
-                    fill={s.colorTogglerIcons}
+                    className={h.menuIcon}
                     width={24}
                     height={24}
                   />}
@@ -557,15 +558,20 @@ export default class Dashboard extends React.Component {
               )}
                 {this.state.addingColumnActive ?
                   <Tooltip
-                    el={<CircleCancelIcon fill={s.colorTogglerIcons} />}
+                    el={<CircleCancelIcon className={h.menuIcon} />}
                     onClick={this.addNewColumn}
                     text="Cancel"
                   /> :
                   <Tooltip
-                    el={<CircleAddIcon fill={s.colorTogglerIcons} />}
+                    el={<CircleAddIcon className={h.menuIcon} />}
                     onClick={this.addNewColumn}
                     text="Add new workout"
                   />}
+                <Tooltip
+                  el={<SlidersIcon className={h.menuIcon} />}
+                  onClick={this.toggleField('showOptionsModal')}
+                  text="Template Options"
+                />
 
               </Box>
             </Box>

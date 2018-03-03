@@ -8,7 +8,7 @@ export default function circleadd(props) {
       version="1.1"
       x="0px"
       y="0px"
-      viewBox="3 3 17.75 17.75"
+      viewBox="3 3 18 17.75"
       style={{ enableBackground: 'new 0 0 24 24' }}
       xmlSpace="preserve"
       width={24}

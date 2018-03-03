@@ -50,6 +50,12 @@
   }
 }
 
+.menu-icon {
+  fill: $color-icon-header;
+  &:hover {
+    fill: $color-contrast-dark
+  }
+}
 .menu-icons {
   margin-right: 24px;
   & > div {

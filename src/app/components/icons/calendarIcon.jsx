@@ -8,7 +8,7 @@ export default function CalendarIcon(props) {
       version="1.1"
       x="0px"
       y="0px"
-      viewBox="0 0 24 24"
+      viewBox="1 1 22 22.5"
       style={{ enableBackground: 'new 0 0 24 24' }}
       xmlSpace="preserve"
       width={24}
