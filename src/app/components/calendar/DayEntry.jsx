@@ -13,6 +13,7 @@ export default class DayEntry extends React.Component {
   state={ cardActive: false }
 
   toggleCard = active => ({ target }) => {
+    log('tog', active);
     this.setState({ cardActive: !this.state.cardActive });
     if (active) {
       const pos = target.getBoundingClientRect();
@@ -22,7 +23,7 @@ export default class DayEntry extends React.Component {
       };
 
       const horizDiff = document.documentElement.clientWidth - (pos.right + 245 + 24);
-      const vertDiff = (document.documentElement.clientHeight - pos.top - 16) - 230;
+      const vertDiff = (document.documentElement.clientHeight - pos.top - 16) - 300;
       if (vertDiff < 0) {
         cardPosition.top += vertDiff - 2;
       }
@@ -44,22 +45,25 @@ export default class DayEntry extends React.Component {
         className={cs(s.entryContainer, s.flex1)}
       >
         {workouts.map((w, i) => (
-          <Box
-            key={`sess${i}`}
-            onMouseEnter={this.toggleCard(true)}
-            onMouseLeave={this.toggleCard(false)}
-          >
+          <React.Fragment>
+            <Box
+              key="sess"
+              onMouseEnter={this.toggleCard(true)}
+              onMouseLeave={this.toggleCard(false)}
+            >
+              <Box className={s.strip} style={getStyle(s.stripColors.split(','), w.styleIdx)} />
+              <Box align="center" className={cs(s.flex1, s.entry)} style={getStyle(s.entryColors.split(','), w.styleIdx)} >
+                {w.type}
+              </Box>
+            </Box>
             <CalendarCard
               style={this.state.cardPosition}
               session={w}
               className={cs(s.card, this.state.cardActive && s.active)}
             />
-            <Box className={s.strip} style={getStyle(s.stripColors.split(','), w.styleIdx)} />
-            <Box align="center" className={cs(s.flex1, s.entry)} style={getStyle(s.entryColors.split(','), w.styleIdx)} >
-              {w.type}
-            </Box>
-          </Box>
+          </React.Fragment>
         ))}
+
       </Box>);
   }
 }

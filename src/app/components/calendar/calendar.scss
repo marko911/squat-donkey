@@ -125,7 +125,7 @@
 }
 
 .exercises {
-  font-size:13px;
+  font-size: 12px;
   word-break: break-word;
   padding-top: 12px;
 }
@@ -159,8 +159,18 @@
 .divider {
   font-size: 1rem;
   font-weight: 400;
-  padding-left: 1rem;
-  margin: 0px 0px 0px calc(1rem + 1px);
+  padding-left: 0.25rem;
+  margin: 0px 0px 0px calc(0.25rem + 1px);
   border-left: 1px solid;
   height: 20px;
+  color: $color-card-divider-light;
+}
+
+.result-name {
+  color: $color-light-grey;
+  font-size: 10px;
+}
+
+.card-subheading {
+  opacity:0.8;
 }

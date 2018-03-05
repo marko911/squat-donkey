@@ -154,9 +154,10 @@ export default class Dashboard extends React.Component {
   addToCalendar = (catIdx, woIdx, submission) => {
     const category = this.state.template.categories[catIdx];
     const workout = pick(
-      ['exercises', 'name', 'parameters'],
+      ['exerciseBlocks', 'name', 'recordables'],
       category.workouts[woIdx],
     );
+    log('wrkout', workout);
     this.updateProp(
       lensProp('calendarWorkouts'),
       append({
@@ -344,7 +345,6 @@ export default class Dashboard extends React.Component {
   render() {
     const { categories, templateName } = this.state.template;
     const {
-      addIsActive,
       newColumnName,
       numColsShown,
       editMode,
@@ -352,7 +352,6 @@ export default class Dashboard extends React.Component {
       view,
       showOptionsModal,
       calendarWorkouts,
-      idxOfHighlighted,
       addingColumnActive,
     } = this.state;
     const addWorkoutIcon = (

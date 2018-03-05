@@ -31,7 +31,7 @@ $entry-colors:#EBFDFD,#F0EEF8,#EAFFF5,#E6F2EC,#F7DCDD,#DCE7FD,#F1ECFF,#FEF3EB , 
 .card {
   padding: 24px 16px 16px;
   width: 245px;
-  height: 230px;
+  max-height: 300px;
   border-radius: 3px;
   background: #fff;
   box-sizing: border-box;

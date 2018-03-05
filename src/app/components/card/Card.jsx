@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import cs from 'classnames';
 import sid from 'shortid';
-import { isEmpty, head, keys } from 'ramda';
+import { isEmpty, head, keys, lensPath, over, always } from 'ramda';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -62,24 +62,12 @@ export default class Card extends React.Component {
 
   resetInputBoxes = (data) => {
     const newRecords = data ?
-      data.recordables.reduce(
-        (acc, rec) => ({
-          ...acc,
-          [rec.label]: '',
-        }),
-        {},
-      )
-      : {};
+      data.recordables.map(r => '')
+      : [];
     this.setState({ newRecords });
   };
 
-  handleInput = label => ({ target: { value } }) =>
-    this.setState({
-      newRecords: {
-        ...this.state.newRecords,
-        [label]: value,
-      },
-    });
+  handleInput = i => ({ target: { value } }) => this.setState(over(lensPath(['newRecords', i]), always(value)))
 
   checkForEnter = ({ charCode }) => {
     if (charCode === 13) {
@@ -108,13 +96,13 @@ export default class Card extends React.Component {
       instructions = '',
       recordables = [],
       exerciseBlocks = [],
-      parameters = [],
       records = [],
     } = data;
+
     const toggler = (
       <a
         key={sid.generate()}
-        className={cs(c.toggleLink, c.lineItem)}
+        className={cs(c.toggleLink)}
         onClick={this.toggleInstructions}
       >
         {this.state.showInstructions
@@ -130,12 +118,18 @@ export default class Card extends React.Component {
     );
 
     const exerciseList = (
-      <Box key={sid.generate()} column className={c.lineItem}>
+      <Box key={sid.generate()} column>
         {exerciseBlocks.map(block => (
-          <div className={c.exerciseBlock}>
-            {block.subHeadings.map(sh => (
-              <Box>{sh}</Box>
-          ))}
+          <div key={sid.generate()} className={c.section}>
+            {
+              block.subheadings.map((sh, ii) => (
+                <Box
+                  className={c.subheading}
+                  key={ii}
+                >{sh}
+                </Box>
+               ))
+            }
             {
             block.exercises.map(e => (
               <Box className={c.exercises} justified="between" key={sid.generate()}>
@@ -149,19 +143,14 @@ export default class Card extends React.Component {
       </Box>
     );
 
-    const workoutParams = (
-      <div key={sid.generate()} className={cs(c.sectionWrapper)}>
-        {parameters.map(p => <div key={sid.generate()}>{p}</div>)}
-      </div>
-    );
 
     const inputRecords = (
       <Box
         key="footer-card"
         column
-        className={cs(c.sectionWrapper, c.recordsBorder)}
+        className={cs(c.sectionWrapper)}
       >
-        <Box column>
+        <Box column className={c.section}>
           {recordables.length ? recordables.map((r, i) => (
             <Box
               key={i}
@@ -169,11 +158,11 @@ export default class Card extends React.Component {
               align="center"
               justify="between"
             >
-              <div>{r.label}</div>
+              <div>{r}</div>
               <input
                 type="text"
-                value={this.state.newRecords[r.label]}
-                onChange={this.handleInput(r.label)}
+                value={this.state.newRecords[i]}
+                onChange={this.handleInput(i)}
                 onKeyPress={this.checkForEnter}
                 className={c.scoreInput}
               />
@@ -241,17 +230,14 @@ export default class Card extends React.Component {
                 )}
                 <div className={c.date}>{dateOfResult}</div>
                 <Box wrap>
-                  {keys(results).length ? keys(results).map((r, j) => {
-                    const val = results[r];
-                    return (
-                      <div
-                        key={`rec-${j}`}
-                        className={cs(c.containWidth, c.value)}
-                      >
-                        {!isEmpty(val) ? `${r}: ${val}` : '(completed)'}
-                      </div>
-                    );
-                  }) : '(completed)'}
+                  {results.length ? results.map((r, j) => (
+                    <div
+                      key={`rec-${j}`}
+                      className={cs(c.containWidth, c.value)}
+                    >
+                      {!isEmpty(r) ? `${recordables[j]}: ${r}` : '(completed)'}
+                    </div>
+                    )) : '(completed)'}
                 </Box>
               </Box>
             );
@@ -274,13 +260,12 @@ export default class Card extends React.Component {
         {!isEmpty(data) ? (
           <React.Fragment>
             <Box justify="between">
-              <div className={c.cardHeader}>{name}</div>
+              <div className={cs(c.cardHeader)}>{name}</div>
               {this.props.editMode && deleteWorkoutIcon}
             </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
               exerciseList,
-              parameters.length ? workoutParams : null,
               inputRecords,
               mostRecentWithCollapse,
             ]}

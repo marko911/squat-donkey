@@ -32,19 +32,11 @@ const initialState = {
         exercises: [false],
       },
     ],
-    parameters: [{
-      label: false,
-    }],
-    recordables: [{
-      label: false,
-    }],
+    recordables: [
+      false,
+    ],
   },
-  recordables: [{
-    label: '',
-  }],
-  parameters: [{
-    label: '',
-  }],
+  recordables: [''],
   invalidFields: [],
 };
 
@@ -173,6 +165,7 @@ export default class NewCard extends React.Component {
             <div className={c.blockTitle}>Block {j + 1}</div>
             {block.subheadings.map((sub, k) => (
               <InputWithLabel
+                key={`sub-${k}`}
                 label="Subheading/Parameter"
                 focused={this.state.focus.exerciseBlocks[j].subheadings[k]}
               >
@@ -197,7 +190,6 @@ export default class NewCard extends React.Component {
                 <Box column key={`wrkt-${i}`}>
                   <div className={cs(s.flex1, s.containWidth, c.exerciseBox)}>
                     <InputWithLabel
-                      required={i === 0}
                       label={`Exercise ${i + 1}`}
                       focused={this.state.focus.exerciseBlocks[j].exercises[i]}
                     >
@@ -222,14 +214,16 @@ export default class NewCard extends React.Component {
             </Box>
           </Box>
         ))}
-        <a
-          onClick={this.addSectionItem(['exerciseBlocks'], {
-                  subheadings: [''],
-                  exercises: [''],
-                })}
-          className={cs(s.toggleLink, c.add)}
-        >Add Block
-        </a>
+        <Box justify="end">
+          <a
+            onClick={this.addSectionItem(['exerciseBlocks'], {
+        subheadings: [''],
+        exercises: [''],
+        })}
+            className={cs(s.toggleLink, c.add, c.block)}
+          >Add Block
+          </a>
+        </Box>
 
       </div>
     );
@@ -242,34 +236,33 @@ export default class NewCard extends React.Component {
           this.state.recordables.map((rec, i) => (
             <InputWithLabel
               key={`par-${i}`}
-              label={`Result Field ${i + 1}`}
-              focused={this.state.focus.recordables[i].label}
+              label={`Result ${i + 1}`}
+              focused={this.state.focus.recordables[i]}
             >
               <input
                 className={cs(c.inputName)}
-                value={this.state.recordables[i].label}
-                onChange={this.handleChangeArray(['recordables', i, 'label'])}
-                onFocus={this.handleFocus(['recordables', i, 'label'])}
-                onBlur={this.handleBlur(['recordables', i, 'label'])}
+                value={this.state.recordables[i]}
+                onChange={this.handleChangeArray(['recordables', i])}
+                onFocus={this.handleFocus(['recordables', i])}
+                onBlur={this.handleBlur(['recordables', i])}
               />
             </InputWithLabel>
           ))
         }
         <Box justify="end">
           <a
-            onClick={this.addSectionItem('recordables', '')}
+            onClick={this.addSectionItem(['recordables'], '')}
             className={cs(s.toggleLink, c.add)}
-          >Add
+          >Add Result
           </a>
         </Box>
       </div>
     );
 
     return (
-
       <div className={cs(c.newCardContainer, s.card)} >
         <Box className={c.newCardHeader} justify="between">
-          <div>New Workout</div>
+          <div>Add Workout</div>
           <i onClick={close} className={cs(font.iconCancel, c.close)} />
         </Box>
 
@@ -278,7 +271,7 @@ export default class NewCard extends React.Component {
           <div className={c.error}>
             {!isEmpty(this.state.invalidFields) && 'Enter required fields'}
           </div>
-          <div onClick={this.submitWorkout} className={cs(c.btn, c.submit)}>
+          <div onClick={this.submitWorkout} className={cs(c.btn, c.submit, c.block)}>
             Submit
           </div>
         </Box>

@@ -10,6 +10,7 @@ const CalendarCard = ({ session, className, ...props }) => {
   const {
     type, workout, results, template,
   } = session;
+  log(workout);
   return (
     <Box
       column
@@ -22,32 +23,52 @@ const CalendarCard = ({ session, className, ...props }) => {
       >{type}<div className={s.templateName}> ({template})</div>
       </Box>
       <div className={s.cardTitle}>{workout.name}</div>
-      <Box className={s.cardResult}>
-        {keys(results).map(r => (
-          <div key={sid.generate()}>{results[r] ? results[r] : 'Completed without score'}</div>
+      <Box
+        align="end"
+        justify="between"
+        className={s.cardResult}
+      >
+        {results.map((r, i) => (
+          <Box
+            column
+            align="center"
+            key={sid.generate()}
+          >{[
+            <div className={s.resultName}>{workout.recordables[i]}</div>,
+             r || 'N/A',
+          ]}
+          </Box>
           )).reduce((prev, curr) => [prev, <span key={sid.generate()} className={s.divider} />,
              curr])}
       </Box>
-      <Box column className={s.exercises}>
-        {workout.exercises.map(e => (
-          <div key={sid.generate()}>
-            <div
-              className={s.cardLabel}
-            >{e.label}
-            </div>
-            {e.scheme && <div className={s.cardScheme}>{e.scheme}</div>}
-          </div>
+      <Box column>
+        {workout.exerciseBlocks.map((block, i) => (
+          <Box
+            className={s.exercises}
+            column
+          >
+            {
+            block.subheadings.map((sub, j) => (
+              <div key={sid.generate()}>
+                <div
+                  className={s.cardSubheading}
+                >{sub}
+                </div>
+              </div>
+            ))
+          }
+            {
+            block.exercises.map(e => (
+              <div key={sid.generate()}>
+                <div
+                  className={s.cardLabel}
+                >{e}
+                </div>
+              </div>))
+          }
+          </Box>
         ))}
       </Box>
-      {
-      workout.parameters.map(p => (
-        <div
-          key={sid.generate()}
-          className={s.param}
-        >{p}
-        </div>
-      ))
-    }
     </Box>
   );
 };
