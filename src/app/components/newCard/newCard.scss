@@ -38,8 +38,7 @@
   font-size: 14px;
   display: inline-block;
   box-sizing: border-box;
-  width: 300px;
-  max-width: 100%;
+  width: 100%;
   margin: 0;
   padding: 20px 0 5px;
 }
@@ -98,12 +97,6 @@ label.is-focused {
   visibility: visible;
 }
 
-.exercise-box {
-  &:not(:first-child){
-    margin-left:4px;
-  }
-}
-
 .section-heading {
   font-size: 14px;
   margin: 10px 0 6px;
@@ -142,4 +135,12 @@ label.is-focused {
 .error {
   color: $color-error;
   font-size:10px;
+}
+
+.block {
+  margin-top: 24px;
+}
+.block-title {
+  font-size: 0.9em;
+  margin-bottom: 12px;
 }

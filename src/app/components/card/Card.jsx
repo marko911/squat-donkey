@@ -21,8 +21,14 @@ export default class Card extends React.Component {
   };
 
   componentWillMount() {
-    this.resetInputBoxes();
+    this.resetInputBoxes(this.props.data);
     this.setState({ datepickerId: 'datepickerkey' });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data.name !== this.props.data.name) {
+      this.resetInputBoxes(nextProps.data);
+    }
   }
 
   onChangeDate = (date) => {
@@ -54,16 +60,16 @@ export default class Card extends React.Component {
     });
   }
 
-  resetInputBoxes = () => {
-    const newRecords = this.props.data
-      ? this.props.data.recordables.reduce(
+  resetInputBoxes = (data) => {
+    const newRecords = data ?
+      data.recordables.reduce(
         (acc, rec) => ({
           ...acc,
           [rec.label]: '',
         }),
         {},
       )
-      : [];
+      : {};
     this.setState({ newRecords });
   };
 
@@ -88,9 +94,8 @@ export default class Card extends React.Component {
 
   submitRecord = submission => () => {
     this.props.onSubmitRecord(submission);
-    this.resetInputBoxes();
+    this.resetInputBoxes(this.props.data);
   };
-
 
   focusDatePicker= () => {
     this.controlDatePicker();
@@ -102,7 +107,7 @@ export default class Card extends React.Component {
       name,
       instructions = '',
       recordables = [],
-      exercises = [],
+      exerciseBlocks = [],
       parameters = [],
       records = [],
     } = data;
@@ -126,13 +131,21 @@ export default class Card extends React.Component {
 
     const exerciseList = (
       <Box key={sid.generate()} column className={c.lineItem}>
-        {exercises.map(e => (
-          <Box className={c.exercises} justified="between" key={sid.generate()}>
-            <div className={c.label}>{e.label}</div>
-
-            <div className={c.value}>{e.scheme}</div>
-          </Box>
-        ))}
+        {exerciseBlocks.map(block => (
+          <div className={c.exerciseBlock}>
+            {block.subHeadings.map(sh => (
+              <Box>{sh}</Box>
+          ))}
+            {
+            block.exercises.map(e => (
+              <Box className={c.exercises} justified="between" key={sid.generate()}>
+                <div className={c.label}>{e}</div>
+              </Box>
+            ))
+          }
+          </div>
+        ))
+}
       </Box>
     );
 
@@ -142,7 +155,6 @@ export default class Card extends React.Component {
       </div>
     );
 
-
     const inputRecords = (
       <Box
         key="footer-card"
@@ -150,7 +162,7 @@ export default class Card extends React.Component {
         className={cs(c.sectionWrapper, c.recordsBorder)}
       >
         <Box column>
-          {recordables.map((r, i) => (
+          {recordables.length ? recordables.map((r, i) => (
             <Box
               key={i}
               className={cs(c.recordable)}
@@ -166,7 +178,7 @@ export default class Card extends React.Component {
                 className={c.scoreInput}
               />
             </Box>
-          ))}
+          )) : null}
         </Box>
         <Box className={c.sectionWrapper} justify="between" align="center">
           <div
@@ -256,14 +268,14 @@ export default class Card extends React.Component {
         className={cs(
           c.container,
           c.card,
-          this.props.shouldHighlight && c.workoutHighlighted,
           isEmpty(data) && c.emptyColumn,
         )}
       >
         {!isEmpty(data) ? (
-          <><Box justify="between">
-            <div className={c.cardHeader}>{name}</div>
-            {this.props.editMode && deleteWorkoutIcon}
+          <React.Fragment>
+            <Box justify="between">
+              <div className={c.cardHeader}>{name}</div>
+              {this.props.editMode && deleteWorkoutIcon}
             </Box>{[
               this.state.showInstructions ? mainText : null,
               instructions.length ? toggler : null,
@@ -271,7 +283,8 @@ export default class Card extends React.Component {
               parameters.length ? workoutParams : null,
               inputRecords,
               mostRecentWithCollapse,
-            ]}</>
+            ]}
+          </React.Fragment>
         ) : (
           this.props.children
         )}

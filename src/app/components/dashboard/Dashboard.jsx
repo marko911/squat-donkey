@@ -4,7 +4,6 @@ import sid from 'shortid';
 import cs from 'classnames';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
-  propEq,
   merge,
   remove,
   lensPath,
@@ -487,7 +486,6 @@ export default class Dashboard extends React.Component {
                   {c.workouts.length || newCardOpen[i] ? (
                     c.workouts.map((w, j) => (
                       <Card
-                        shouldHighlight={propEq(i, true)(idxOfHighlighted)}
                         key={`card--${j}`}
                         onSubmitRecord={this.addWorkoutResult(i, j)}
                         onDeleteSelf={this.deleteWorkout(i, j)}

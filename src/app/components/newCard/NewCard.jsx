@@ -1,6 +1,12 @@
 import React from 'react';
 import cs from 'classnames';
-import { isEmpty, head, keys, ifElse, compose, prop, T, without, clone } from 'ramda';
+import {
+  isEmpty,
+  view,
+  ifElse, append, last,
+  T, without, lensPath, over, not,
+  always,
+} from 'ramda';
 import PropTypes from 'prop-types';
 import c from './newCard.scss';
 import s from '../card/card.scss';
@@ -11,23 +17,21 @@ import InputWithLabel from '../input/InputWithLabel';
 const initialState = {
   name: '',
   instructions: '',
-  exercises: [{
-    label: '',
-    scheme: '',
-  }, {
-    label: '',
-    scheme: '',
-  }],
+  exerciseBlocks: [
+    {
+      subheadings: [''],
+      exercises: [''],
+    },
+  ],
   focus: {
     name: false,
     instructions: false,
-    exercises: [{
-      label: false,
-      scheme: false,
-    }, {
-      label: false,
-      scheme: false,
-    }],
+    exerciseBlocks: [
+      {
+        subheadings: [false],
+        exercises: [false],
+      },
+    ],
     parameters: [{
       label: false,
     }],
@@ -46,7 +50,6 @@ const initialState = {
 
 const requiredFields = [
   { prop: 'name', validator: obj => !isEmpty(obj) },
-  { prop: 'exercises', validator: compose(l => l >= 1, prop('length')) },
 ];
 
 export default class NewCard extends React.Component {
@@ -67,14 +70,13 @@ export default class NewCard extends React.Component {
 
   submitWorkout =() => {
     const {
-      name, instructions, exercises, parameters, recordables,
+      name, instructions, exerciseBlocks, recordables,
     } = this.state;
 
     const workoutObj = {
       name,
       instructions,
-      exercises: exercises.filter(e => !isEmpty(e.label)),
-      parameters: parameters.map(p => p.label).filter(x => !isEmpty(x)),
+      exerciseBlocks: exerciseBlocks.filter(block => !isEmpty(block.exercises.filter(e => !isEmpty(e)))),
       recordables: recordables.filter(r => !isEmpty(r.label)),
       records: [],
     };
@@ -87,96 +89,51 @@ export default class NewCard extends React.Component {
     validateAndSubmit(workoutObj);
   }
 
-
   handleChange = field => ({ target: { value } }) => {
     this.setState({ [field]: value });
   }
 
-  handleChangeArray = (i, ...path) => ({ target: { value } }) => {
-    const propName = path.shift();
-    const newList = clone(this.state[propName]);
-    newList[i][path.shift()] = value;
-    this.setState({
-      [propName]: newList,
-    });
+  handleChangeArray = path => ({ target: { value } }) => this.setState(over(lensPath(path), always(value)));
+
+  handleFocus = path => () => {
+    const val = view(lensPath(path), this.state);
+    const field = last(path);
+    let focus = {};
+    if (isEmpty(val)) {
+      focus = over(lensPath(['focus', ...path]), not)(this.state);
+    }
+    const nextState = {
+      ...focus,
+      invalidFields: [...without([field], this.state.invalidFields)],
+    };
+    this.setState(nextState);
   }
 
-  handleFocus = (field, ...path) => () => {
-    if (isEmpty(path)) {
-      this.setState({
-        focus: {
-          ...this.state.focus,
-          [field]: true,
-        },
-        invalidFields: [...without([field], this.state.invalidFields)],
-      });
-    } else {
-      const newList = [...this.state.focus[field]];
-      newList[head(path)][path[1]] = true;
-      this.setState({
-        focus: {
-          ...this.state.focus,
-          [field]: newList,
-        },
-        invalidFields: [...without([field], this.state.invalidFields)],
-      });
+  handleBlur = path => () => {
+    const val = view(lensPath(path), this.state);
+    if (isEmpty(val)) {
+      this.setState(over(lensPath(['focus', ...path]), not));
     }
   }
 
-  handleBlur = (field, ...path) => () => {
-    if (isEmpty(path)) {
-      if (isEmpty(this.state[field])) {
-        this.setState({
-          focus: {
-            ...this.state.focus,
-            [field]: false,
-          },
-        });
-      }
-    } else if (isEmpty(this.state[field][head(path)][path[1]])) {
-      const newList = [...this.state.focus[field]];
-      newList[head(path)][path[1]] = false;
-      this.setState({
-        focus: {
-          ...this.state.focus,
-          [field]: newList,
-        },
-      });
-    }
-  }
-
-  addSectionInput = field => () => {
-    const fieldKeys = keys(this.state[field][0]);
-    const list = [...this.state[field], fieldKeys.reduce(
-      (curr, next) => (
-        {
-          [next]: '',
-        }),
-      {},
-    )];
-    const focus = { ...this.state.focus };
-    const focusKeys = keys(focus[field][0]);
-    focus[field].push(focusKeys.reduce(
-      (curr, next) => (
-        {
-          [next]: false,
-        }
-      ),
-      {},
-    ));
+  addSectionItem = (path, item) => () => {
+    const nextItems = over(lensPath(path), append(item))(this.state);
+    const toAppend = typeof (item) === 'object' ? {
+      subheadings: [false],
+      exercises: [false],
+    } : false;
+    const nextFocusAndItems = over(lensPath(['focus', ...path]), append(toAppend))(nextItems);
     this.setState({
-      [field]: list,
-      focus,
+      ...nextFocusAndItems,
     });
   }
-
 
   render() {
     const { close } = this.props;
     const name = (
       <InputWithLabel
         key="name"
-        label="Workout Name"
+        label="Workout Name/Title"
         required
         focused={this.state.focus.name}
       >
@@ -184,8 +141,8 @@ export default class NewCard extends React.Component {
           className={cs(c.inputName, this.state.invalidFields.includes('name') && c.highlightInput)}
           value={this.state.name}
           onChange={this.handleChange('name')}
-          onFocus={this.handleFocus('name')}
-          onBlur={this.handleBlur('name')}
+          onFocus={this.handleFocus(['name'])}
+          onBlur={this.handleBlur(['name'])}
         />
       </InputWithLabel>);
     const instructions = (
@@ -199,87 +156,84 @@ export default class NewCard extends React.Component {
           className={cs(c.inputName)}
           value={this.state.instructions}
           onChange={this.handleChange('instructions')}
-          onFocus={this.handleFocus('instructions')}
-          onBlur={this.handleBlur('instructions')}
+          onFocus={this.handleFocus(['instructions'])}
+          onBlur={this.handleBlur(['instructions'])}
         />
       </InputWithLabel>
     );
     const exercises = (
       <div key="exers">
         <div className={c.sectionHeading}>Exercises</div>
-
-        {
-        this.state.exercises.map((w, i) => (
-          <Box key={`wrkt-${i}`}>
-            <div className={cs(s.flex1, s.containWidth, c.exerciseBox)}>
+        {this.state.exerciseBlocks.map((block, j) => (
+          <Box
+            className={c.block}
+            key={`block${j}`}
+            column
+          >
+            <div className={c.blockTitle}>Block {j + 1}</div>
+            {block.subheadings.map((sub, k) => (
               <InputWithLabel
-                required={i === 0}
-                label={`Exercise ${i + 1}`}
-                focused={this.state.focus.exercises[i].label}
+                label="Subheading/Parameter"
+                focused={this.state.focus.exerciseBlocks[j].subheadings[k]}
               >
                 <input
-                  className={cs(c.inputName, i === 0 && this.state.invalidFields.includes('exercises') && c.highlightInput)}
-                  value={this.state.exercises[i].label}
-                  onChange={this.handleChangeArray(i, 'exercises', 'label')}
-                  onFocus={this.handleFocus('exercises', i, 'label')}
-                  onBlur={this.handleBlur('exercises', i, 'label')}
-                />
-              </InputWithLabel>
-            </div>
-            <div className={cs(s.flex1, s.containWidth, c.exerciseBox)}>
-              <InputWithLabel label="Reps/Weights" focused={this.state.focus.exercises[i].scheme}>
-                <input
                   className={c.inputName}
-                  value={this.state.exercises[i].scheme}
-                  onChange={this.handleChangeArray(i, 'exercises', 'scheme')}
-                  onFocus={this.handleFocus('exercises', i, 'scheme')}
-                  onBlur={this.handleBlur('exercises', i, 'scheme')}
+                  value={sub}
+                  onChange={this.handleChangeArray(['exerciseBlocks', j, 'subheadings', k])}
+                  onFocus={this.handleFocus(['exerciseBlocks', j, 'subheadings', k])}
+                  onBlur={this.handleBlur(['exerciseBlocks', j, 'subheadings', k])}
                 />
               </InputWithLabel>
-            </div>
+                  ))}
+            <Box justify="end">
+              <a
+                onClick={this.addSectionItem(['exerciseBlocks', j, 'subheadings'], '')}
+                className={cs(s.toggleLink, c.add)}
+              >Add Subheading
+              </a>
+            </Box>
+            {
+              block.exercises.map((w, i) => (
+                <Box column key={`wrkt-${i}`}>
+                  <div className={cs(s.flex1, s.containWidth, c.exerciseBox)}>
+                    <InputWithLabel
+                      required={i === 0}
+                      label={`Exercise ${i + 1}`}
+                      focused={this.state.focus.exerciseBlocks[j].exercises[i]}
+                    >
+                      <input
+                        className={cs(c.inputName, i === 0 && this.state.invalidFields.includes('exercises') && c.highlightInput)}
+                        value={this.state.exerciseBlocks[j].exercises[i]}
+                        onChange={this.handleChangeArray(['exerciseBlocks', j, 'exercises', i])}
+                        onFocus={this.handleFocus(['exerciseBlocks', j, 'exercises', i])}
+                        onBlur={this.handleBlur(['exerciseBlocks', j, 'exercises', i])}
+                      />
+                    </InputWithLabel>
+                  </div>
+                </Box>
+                 ))
+              }
+            <Box column align="end">
+              <a
+                onClick={this.addSectionItem(['exerciseBlocks', j, 'exercises'], '')}
+                className={cs(s.toggleLink, c.add)}
+              >Add Exercise
+              </a>
+            </Box>
           </Box>
-        ))
-      }
-        <Box justify="end">
-          <a
-            onClick={this.addSectionInput('exercises')}
-            className={cs(s.toggleLink, c.add)}
-          >Add
-          </a>
-        </Box>
+        ))}
+        <a
+          onClick={this.addSectionItem(['exerciseBlocks'], {
+                  subheadings: [''],
+                  exercises: [''],
+                })}
+          className={cs(s.toggleLink, c.add)}
+        >Add Block
+        </a>
+
       </div>
     );
-    const parameters = (
-      <div key="params">
-        <div className={c.sectionHeading}>Workout Parameters</div>
-        <div className={c.sectionSubheading}>{'i.e. \'Time : 15-20 mins\''}</div>
-        <div className={c.sectionSubheading}>{'or \'Max Reps in 30 mins\''}</div>
-        {
-          this.state.parameters.map((param, i) => (
-            <InputWithLabel
-              key={`par-${i}`}
-              label={`Parameter ${i + 1}`}
-              focused={this.state.focus.parameters[i].label}
-            >
-              <input
-                className={cs(c.inputName)}
-                value={this.state.parameters[i].label}
-                onChange={this.handleChangeArray(i, 'parameters', 'label')}
-                onFocus={this.handleFocus('parameters', i, 'label')}
-                onBlur={this.handleBlur('parameters', i, 'label')}
-              />
-            </InputWithLabel>
-        ))
-        }
-        <Box justify="end">
-          <a
-            onClick={this.addSectionInput('parameters')}
-            className={cs(s.toggleLink, c.add)}
-          >Add
-          </a>
-        </Box>
-      </div>
-    );
+
     const resultFields = (
       <div key="resfields">
         <div className={c.sectionHeading}>Result Fields</div>
@@ -294,16 +248,16 @@ export default class NewCard extends React.Component {
               <input
                 className={cs(c.inputName)}
                 value={this.state.recordables[i].label}
-                onChange={this.handleChangeArray(i, 'recordables', 'label')}
-                onFocus={this.handleFocus('recordables', i, 'label')}
-                onBlur={this.handleBlur('recordables', i, 'label')}
+                onChange={this.handleChangeArray(['recordables', i, 'label'])}
+                onFocus={this.handleFocus(['recordables', i, 'label'])}
+                onBlur={this.handleBlur(['recordables', i, 'label'])}
               />
             </InputWithLabel>
           ))
         }
         <Box justify="end">
           <a
-            onClick={this.addSectionInput('recordables')}
+            onClick={this.addSectionItem('recordables', '')}
             className={cs(s.toggleLink, c.add)}
           >Add
           </a>
@@ -319,7 +273,7 @@ export default class NewCard extends React.Component {
           <i onClick={close} className={cs(font.iconCancel, c.close)} />
         </Box>
 
-        {[name, instructions, exercises, parameters, resultFields]}
+        {[name, instructions, exercises, resultFields]}
         <Box className={s.sectionWrapper} justify="end">
           <div className={c.error}>
             {!isEmpty(this.state.invalidFields) && 'Enter required fields'}
