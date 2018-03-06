@@ -10,7 +10,6 @@ const CalendarCard = ({ session, className, ...props }) => {
   const {
     type, workout, results, template,
   } = session;
-  log(workout);
   return (
     <Box
       column
@@ -34,7 +33,7 @@ const CalendarCard = ({ session, className, ...props }) => {
             align="center"
             key={sid.generate()}
           >{[
-            <div className={s.resultName}>{workout.recordables[i]}</div>,
+            <div key={`resname${i}`} className={s.resultName}>{workout.recordables[i]}</div>,
              r || 'N/A',
           ]}
           </Box>
@@ -46,10 +45,11 @@ const CalendarCard = ({ session, className, ...props }) => {
           <Box
             className={s.exercises}
             column
+            key={i}
           >
             {
             block.subheadings.map((sub, j) => (
-              <div key={sid.generate()}>
+              <div key={j}>
                 <div
                   className={s.cardSubheading}
                 >{sub}
@@ -58,8 +58,8 @@ const CalendarCard = ({ session, className, ...props }) => {
             ))
           }
             {
-            block.exercises.map(e => (
-              <div key={sid.generate()}>
+            block.exercises.map((e, k) => (
+              <div key={k}>
                 <div
                   className={s.cardLabel}
                 >{e}

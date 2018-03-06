@@ -10,29 +10,32 @@ const getStyle = (list, idx) => ({
 });
 
 export default class DayEntry extends React.Component {
-  state={ cardActive: false }
+  state={ cardActive: false, currentWorkout: {} }
 
-  toggleCard = active => ({ target }) => {
-    log('tog', active);
-    this.setState({ cardActive: !this.state.cardActive });
-    if (active) {
-      const pos = target.getBoundingClientRect();
-      const cardPosition = {
-        top: pos.top + pos.height - 24,
-        left: pos.left + pos.width + 16,
-      };
+  toggleCard = (active, workout) => ({ target }) => {
+    if (!active) {
+      this.setState({ cardActive: !this.state.cardActive });
+    } else {
+      this.setState({ currentWorkout: workout }, () => {
+        const pos = target.getBoundingClientRect();
+        const cardPosition = {
+          top: pos.top + pos.height - 24,
+          left: pos.left + pos.width + 16,
+        };
 
-      const horizDiff = document.documentElement.clientWidth - (pos.right + 245 + 24);
-      const vertDiff = (document.documentElement.clientHeight - pos.top - 16) - 300;
-      if (vertDiff < 0) {
-        cardPosition.top += vertDiff - 2;
-      }
-      if (horizDiff < 0) {
-        cardPosition.left = pos.left - 245 - 16;
-      }
+        const horizDiff = document.documentElement.clientWidth - (pos.right + 245 + 24);
+        const vertDiff = (document.documentElement.clientHeight - pos.top - 16) - 300;
+        if (vertDiff < 0) {
+          cardPosition.top += vertDiff - 2;
+        }
+        if (horizDiff < 0) {
+          cardPosition.left = pos.left - 245 - 16;
+        }
 
-      this.setState({
-        cardPosition,
+        this.setState({
+          cardPosition,
+          cardActive: !this.state.cardActive,
+        });
       });
     }
   }
@@ -44,24 +47,22 @@ export default class DayEntry extends React.Component {
         column
         className={cs(s.entryContainer, s.flex1)}
       >
+        {this.state.cardActive && <CalendarCard
+          style={this.state.cardPosition}
+          session={this.state.currentWorkout}
+          className={cs(s.card, this.state.cardActive && s.active)}
+        />}
         {workouts.map((w, i) => (
-          <React.Fragment>
-            <Box
-              key="sess"
-              onMouseEnter={this.toggleCard(true)}
-              onMouseLeave={this.toggleCard(false)}
-            >
-              <Box className={s.strip} style={getStyle(s.stripColors.split(','), w.styleIdx)} />
-              <Box align="center" className={cs(s.flex1, s.entry)} style={getStyle(s.entryColors.split(','), w.styleIdx)} >
-                {w.type}
-              </Box>
+          <Box
+            key={`sess${i}`}
+            onMouseEnter={this.toggleCard(true, w)}
+            onMouseLeave={this.toggleCard(false)}
+          >
+            <Box className={s.strip} style={getStyle(s.stripColors.split(','), w.styleIdx)} />
+            <Box align="center" className={cs(s.flex1, s.entry)} style={getStyle(s.entryColors.split(','), w.styleIdx)} >
+              {w.type}
             </Box>
-            <CalendarCard
-              style={this.state.cardPosition}
-              session={w}
-              className={cs(s.card, this.state.cardActive && s.active)}
-            />
-          </React.Fragment>
+          </Box>
         ))}
 
       </Box>);

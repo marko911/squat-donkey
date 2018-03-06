@@ -146,7 +146,7 @@ export default class Card extends React.Component {
 
     const inputRecords = (
       <Box
-        key="footer-card"
+          key="footer-card"
         column
         className={cs(c.sectionWrapper)}
       >
@@ -243,7 +243,8 @@ export default class Card extends React.Component {
             );
           })}
         </Box>
-        {records.length > 1
+        {
+          records.length > 1
           ? this.state.showAllRecords ? caretUp : caretDown
           : null}
       </Box>
@@ -283,5 +284,4 @@ Card.propTypes = {
   onSubmitRecord: PropTypes.func,
   onDeleteSelf: PropTypes.func,
   editMode: PropTypes.bool,
-  shouldHighlight: PropTypes.bool,
 };

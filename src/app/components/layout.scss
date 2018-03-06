@@ -126,7 +126,7 @@ body {
   margin-left: 10px;
   background-color: $color-card-btn-bg;
   &:hover {
-    background-color: #91B2FF;
+    background-color: $color-icon-header-hover;
     color: #fff;
   }
 }

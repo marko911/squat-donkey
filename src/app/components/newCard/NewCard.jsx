@@ -69,7 +69,7 @@ export default class NewCard extends React.Component {
       name,
       instructions,
       exerciseBlocks: exerciseBlocks.filter(block => !isEmpty(block.exercises.filter(e => !isEmpty(e)))),
-      recordables: recordables.filter(r => !isEmpty(r.label)),
+      recordables: recordables.filter(r => !isEmpty(r)),
       records: [],
     };
 

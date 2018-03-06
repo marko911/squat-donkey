@@ -76,7 +76,7 @@ export default class Calendar extends React.Component {
                   justify="center"
                   align="center"
                   className={s.month}
-                >{moment().month(this.state.currentMonth).format('MMMM')}
+                >{moment().month(this.state.currentMonth).format('MMMM YYYY') }
                 </Box>
                 <Box
                   onClick={this.changeMonth('next')}
@@ -86,7 +86,6 @@ export default class Calendar extends React.Component {
                 ><i className={cs(font.iconAngleRight, s.iconArrow)} />
                 </Box>
               </Box>
-              <div className={s.year}>{moment().month(this.state.currentMonth).format('YYYY')}</div>
             </Box>
           </Box>
 
