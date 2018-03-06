@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js && cp CNAME dist/CNAME"
+    "build": "webpack --config webpack.prod.js && cp CNAME dist/CNAME",
+    "build-dev":"webpack --config webpack.dev.js && cp CNAME dist/CNAME"
   },
   "author": "Marko Bilal",
   "license": "MIT",

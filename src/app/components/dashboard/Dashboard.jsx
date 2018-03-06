@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
 import S3 from 'aws-sdk/clients/s3';
-import { Config } from 'aws-sdk';
-import CognitoIdentityCredentials from 'aws-sdk/clients/cognitoidentity';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   merge,
