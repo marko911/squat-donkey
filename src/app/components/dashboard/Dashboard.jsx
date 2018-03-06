@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
-import S3 from 'aws-sdk/clients/s3';
+// import S3 from 'aws-sdk/clients/s3';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   merge,
@@ -43,7 +43,7 @@ const Slide = ({ children, ...props }) => (
   <CSSTransition {...props}>{children}</CSSTransition>
 );
 
-const s3 = new S3();
+// const s3 = new S3();
 
 export default class Dashboard extends React.Component {
   state = {
@@ -104,20 +104,20 @@ export default class Dashboard extends React.Component {
     this.setState({ numColsShown: this.columns.children.length });
 
   saveTemplateToCloud = () => {
-    const url = 'https://s3.amazonaws.com/workouttemplates/markoTemplate.json';
-    const params = {
-      Bucket: 'workouttemplates',
-      Fields: {
-        key: 'key',
-      },
-    };
-    s3.createPresignedPost(params, (err, data) => {
-      if (err) {
-        console.error('Presigning post data encountered an error', err);
-      } else {
-        console.log('The post data is', data);
-      }
-    });
+    // const url = 'https://s3.amazonaws.com/workouttemplates/markoTemplate.json';
+    // const params = {
+    //   Bucket: 'workouttemplates',
+    //   Fields: {
+    //     key: 'key',
+    //   },
+    // };
+    // s3.createPresignedPost(params, (err, data) => {
+    //   if (err) {
+    //     console.error('Presigning post data encountered an error', err);
+    //   } else {
+    //     console.log('The post data is', data);
+    //   }
+    // });
   }
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
