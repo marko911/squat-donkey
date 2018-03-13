@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js && cp CNAME dist/CNAME",
-    "build-dev":"webpack --config webpack.dev.js && cp CNAME dist/CNAME"
+    "build-dev": "webpack --config webpack.dev.js && cp CNAME dist/CNAME"
   },
   "author": "Marko Bilal",
   "license": "MIT",
@@ -46,11 +46,12 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.205.0",
+    "bcryptjs": "^2.4.3",
     "classnames": "^2.2.5",
     "moment": "^2.20.1",
     "moment-range": "^3.1.1",
     "prop-types": "^15.6.0",
+    "query-string": "^5.1.0",
     "ramda": "^0.25.0",
     "react": "^16.2.0",
     "react-day-picker": "^7.0.7",

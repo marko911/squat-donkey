@@ -19,6 +19,7 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       log: ['utils', 'log'],
+      getParamByName: ['utils', 'getParameterByName'],
     }),
   ],
   resolve: {

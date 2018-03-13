@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
 import cs from 'classnames';
 import {
   over,
@@ -315,6 +314,7 @@ export default class TemplateModal extends React.Component {
 
     const closeButton = (
       <button
+        key="footerClose"
         onClick={closeOptionsModal}
         className={cs(o.btnClose, o.spaceTop)}
       >
@@ -338,7 +338,7 @@ export default class TemplateModal extends React.Component {
             <TabPanel> {createNew} </TabPanel>
           </TabPanels>
           <ModalFooter closeButton={closeButton}>
-            <TabPanel>
+            <TabPanel key="modalfooter">
               <button
                 disabled={this.props.saveBlankDisabled}
                 onClick={this.props.updateBlanks}
@@ -353,9 +353,9 @@ export default class TemplateModal extends React.Component {
               </button>
             </TabPanel>
 
-            <TabPanel>{null}</TabPanel>
+            <TabPanel key="footerPlaceholder">{null}</TabPanel>
 
-            <TabPanel>
+            <TabPanel key="footerSaveBtn">
               <button
                 disabled={this.props.saveBlankDisabled}
                 onClick={this.props.createTemplate}

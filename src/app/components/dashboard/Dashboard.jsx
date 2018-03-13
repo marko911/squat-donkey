@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sid from 'shortid';
 import cs from 'classnames';
-// import S3 from 'aws-sdk/clients/s3';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   merge,
   remove,
   lensPath,
-  isEmpty,
   lensProp,
   prepend,
   map,
@@ -34,16 +32,23 @@ import CalendarIcon from '../icons/calendarIcon';
 import CircleAddIcon from '../icons/circleadd';
 import CircleCancelIcon from '../icons/circleCancel';
 import SlidersIcon from '../icons/slidersIcon';
-import maximus from '../../constants/maximusBody.json';
 import TemplateModal from '../modal/TemplateModal';
 
-const stock = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
+const STOCKTEMPLATES = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
 
 const Slide = ({ children, ...props }) => (
   <CSSTransition {...props}>{children}</CSSTransition>
 );
 
-// const s3 = new S3();
+const debounce = (func, delay) => {
+  let inDebounce;
+  return () => {
+    const context = this;
+    const args = arguments;
+    clearTimeout(inDebounce);
+    inDebounce = setTimeout(() => func.apply(context, args), delay);
+  };
+};
 
 export default class Dashboard extends React.Component {
   state = {
@@ -71,54 +76,84 @@ export default class Dashboard extends React.Component {
 
   componentWillMount() {
     this.getStockTemplates();
-    let template = JSON.parse(localStorage.getItem('currentTemplate')) || {};
-    const blankTemplates =
-      JSON.parse(localStorage.getItem('blankTemplates')) || {};
-    const recentTemplates =
-      JSON.parse(localStorage.getItem('recentTemplates')) || {};
-    const calendarWorkouts =
-      JSON.parse(localStorage.getItem('calendarWorkouts')) || [];
-    template = !isEmpty(template) ? template : maximus;
-
-    this.setState({
-      template,
-      blankTemplates,
-      recentTemplates,
-      calendarWorkouts,
-      stockTemplates: [],
-    });
+    this.getUserTemplates();
   }
 
   componentDidMount() {
     setTimeout(this.setShownCols, 100);
   }
 
+
   getStockTemplates = () => {
-    const getStock = url => fetch(url).then(data => data.json());
-    Promise.all(stock.map(getStock)).then(stockTemplates =>
+    const getStock = url => fetch(url).then(data => data.json()).catch(err => log(err));
+    Promise.all(STOCKTEMPLATES.map(getStock)).then(stockTemplates =>
       this.setState({ stockTemplates }));
   };
 
+  setBlankTemplate = () => this.setState({
+    template: {},
+    calendarWorkouts: [],
+    blankTemplates: {},
+    recentTemplates: {},
+  })
 
   setShownCols = () =>
     this.setState({ numColsShown: this.columns.children.length });
 
-  saveTemplateToCloud = () => {
-    // const url = 'https://s3.amazonaws.com/workouttemplates/markoTemplate.json';
-    // const params = {
-    //   Bucket: 'workouttemplates',
-    //   Fields: {
-    //     key: 'key',
-    //   },
-    // };
-    // s3.createPresignedPost(params, (err, data) => {
-    //   if (err) {
-    //     console.error('Presigning post data encountered an error', err);
-    //   } else {
-    //     console.log('The post data is', data);
-    //   }
-    // });
+  getUserTemplates = () => {
+    const idFromUrl = getParamByName('id');
+    log(idFromUrl)
+    let id = idFromUrl || JSON.parse(localStorage.getItem('id'));
+    if (!id) {
+      id = sid.generate();
+      localStorage.setItem('id', JSON.stringify(id));
+      this.setState({ id });
+      this.setBlankTemplate();
+    } else {
+      const profileUrl = `https://s3.amazonaws.com/workouttemplates/${id}.json`;
+      fetch(profileUrl)
+        .then(data => data.json())
+        .then(({
+          currentTemplate: template,
+          calendarWorkouts,
+          blankTemplates,
+          recentTemplates,
+        }) => this.setState({
+          template, calendarWorkouts, blankTemplates, recentTemplates, id,
+        }))
+        .catch(err => log('Failed to fetch profile', err));
+    }
+    if (!idFromUrl) {
+      this.setUrlParam(id);
+    }
   }
+
+  setUrlParam = (id) => {
+    history.pushState(null, null, `?id=${id}`);
+  }
+
+  updateProp = (path, functor) => this.setState(over(path, functor), debounce(this.saveTemplateToCloud, 500));
+
+  saveTemplateToCloud = () => {
+    const url = `https://s3.amazonaws.com/workouttemplates/${this.state.id}.json`;
+    const myProfile = {
+      currentTemplate: this.state.template,
+      calendarWorkouts: this.state.calendarWorkouts,
+      blankTemplates: this.state.blankTemplates,
+      recentTemplates: this.state.recentTemplates,
+    };
+    fetch(url, {
+      body: JSON.stringify(myProfile),
+      headers: {
+        'content-type': 'application/json',
+        'x-amz-acl': 'bucket-owner-full-control',
+      },
+      method: 'PUT',
+      mode: 'cors',
+    }).then(res => log('upload success', res)).catch(err => log(err));
+    this.setState({ saveBlankDisabled: false });
+  }
+
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
     const column = lensPath(['template', 'categories', catIdx]);
@@ -142,22 +177,6 @@ export default class Dashboard extends React.Component {
     return merge(blanks, { [blank.templateName]: blank });
   };
 
-  updateProp = (path, functor) =>
-    this.setState(over(path, functor), () => this.updateLocalStorage());
-
-  updateLocalStorage = () => {
-    localStorage.setItem(
-      'currentTemplate',
-      JSON.stringify(this.state.template),
-    );
-    localStorage.setItem(
-      'calendarWorkouts',
-      JSON.stringify(this.state.calendarWorkouts),
-    );
-    this.setState({ saveBlankDisabled: false });
-    log('sending');
-    this.saveTemplateToCloud();
-  };
 
   addWorkoutResult = (catIdx, woIdx) => (submission) => {
     const workoutResults = lensPath([
@@ -179,7 +198,6 @@ export default class Dashboard extends React.Component {
       ['exerciseBlocks', 'name', 'recordables'],
       category.workouts[woIdx],
     );
-    log('wrkout', workout);
     this.updateProp(
       lensProp('calendarWorkouts'),
       append({
@@ -198,11 +216,7 @@ export default class Dashboard extends React.Component {
         blankTemplates: this.createBlankTemplate(this.state.template),
         saveBlankDisabled: true,
       }),
-      () =>
-        localStorage.setItem(
-          'blankTemplates',
-          JSON.stringify(this.state.blankTemplates),
-        ),
+      () => this.saveTemplateToCloud(),
     );
 
   saveCurrentTemplate = () => {
@@ -211,8 +225,7 @@ export default class Dashboard extends React.Component {
     const addedToRecents = merge(recentTemplates, {
       [this.state.template.templateName]: this.state.template,
     });
-    this.setState({ recentTemplates: addedToRecents });
-    localStorage.setItem('recentTemplates', JSON.stringify(addedToRecents));
+    this.setState({ recentTemplates: addedToRecents }, this.saveTemplateToCloud);
   };
 
   loadTemplate = template => () => {
@@ -365,7 +378,8 @@ export default class Dashboard extends React.Component {
   };
 
   render() {
-    const { categories, templateName } = this.state.template;
+    const { categories = [], templateName = '' } = this.state.template;
+
     const {
       newColumnName,
       numColsShown,
@@ -376,6 +390,7 @@ export default class Dashboard extends React.Component {
       calendarWorkouts,
       addingColumnActive,
     } = this.state;
+
     const addWorkoutIcon = (
       <i className={cs(font.iconPlusSquared, font.iconPlusSquaredColor)} />
     );
@@ -406,7 +421,6 @@ export default class Dashboard extends React.Component {
         </Box>
       </Box>
     );
-
     const TemplateOptionsModal = (
       <TransitionGroup
         onClick={this.closeOptionsModal}
@@ -591,7 +605,6 @@ export default class Dashboard extends React.Component {
                   onClick={this.toggleField('showOptionsModal')}
                   text="Template Options"
                 />
-
               </Box>
             </Box>
             {view === 'template' ? (
