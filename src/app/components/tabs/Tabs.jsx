@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cs from 'classnames';
-import Box from '../box/Box';
 import s from './tabs.scss';
 
 export class Tabs extends Component {
@@ -14,11 +13,18 @@ export class Tabs extends Component {
     activeIndex: 0,
   };
 
+
   getChildContext() {
     return {
       activeIndex: this.state.activeIndex,
       onSelectTab: this.selectTabIndex,
     };
+  }
+
+  componentWillMount() {
+    if (this.props.activeIndex) {
+      this.setState({ activeIndex: this.props.activeIndex });
+    }
   }
 
   selectTabIndex= (activeIndex) => {
@@ -44,12 +50,12 @@ export class TabList extends Component {
   }
 
   componentDidMount() {
-    setTimeout(this.setInkbarStyle, 100);
+    this.setInkbarStyle();
   }
 
   setInkbarStyle = () => this.setState({
     inkBarStyle: {
-      left: 16,
+      left: this.container.children[this.context.activeIndex].offsetLeft,
       width: this.container.children[0].getBoundingClientRect().width,
     },
   })
@@ -93,10 +99,12 @@ TabList.contextTypes = {
   onSelectTab: PropTypes.func.isRequired,
 };
 
-export const Tab = ({ children, isActive, onSelect }) => (
+export const Tab = ({
+  children, isActive, onSelect, disabled,
+}) => (
   <div
-    className={cs(s.tab, isActive && s.isActive)}
-    onClick={onSelect}
+    className={cs(s.tab, isActive && s.isActive, disabled && s.disabled)}
+    onClick={disabled ? null : onSelect}
   >{children}
   </div>
 );

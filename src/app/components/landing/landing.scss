@@ -1,0 +1,32 @@
+@import "../layout.scss";
+@import "../variables.scss";
+
+h2 {
+  color : $color-font-card;
+  margin: 24px 0;
+}
+
+h3 {
+  margin-top: 20px;
+  font-weight: 400;
+  color: $color-template-title;
+  font-size: 20px;
+  text-align: center;
+}
+
+.card {
+  border: 1px solid $color-column-border;
+  border-radius: 5px;
+  padding: 16px;
+  background: #fff;
+  width: 15%;
+  max-height: 140px;
+  cursor: pointer;
+  &:not(:first-child){
+    margin-left:32px;
+  }
+}
+
+.new {
+  color: $color-icon-add;
+}

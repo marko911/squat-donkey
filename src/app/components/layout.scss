@@ -16,6 +16,7 @@ body {
 }
 
 .dashContainer {
+  justify-content: center;
   padding: 54px 24px 16px;
   box-sizing: border-box;
   position: relative;
@@ -135,5 +136,10 @@ body {
   padding: 4px 10px;
 }
 
+.disabled {
+  color: rgba(0,0,0,.38) !important;
+  cursor: default !important;
+  fill: rgba(0,0,0,.28) !important;
+}
 
 

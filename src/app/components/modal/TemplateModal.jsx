@@ -71,6 +71,8 @@ export default class TemplateModal extends React.Component {
       closeOptionsModal,
       invalidFields,
       blankTemplates,
+      activeIndex = 0,
+      disableCurrent,
     } = this.props;
 
     const current = (
@@ -326,9 +328,9 @@ export default class TemplateModal extends React.Component {
         key="templateOptions"
         onClick={this.stopProp}
       >
-        <Tabs>
+        <Tabs activeIndex={activeIndex}>
           <TabList>
-            <Tab> Current </Tab>
+            <Tab disabled={disableCurrent}> Current </Tab>
             <Tab> Load </Tab>
             <Tab> New </Tab>
           </TabList>
@@ -388,4 +390,5 @@ TemplateModal.propTypes = {
   closeOptionsModal: PropTypes.func.isRequired,
   invalidFields: PropTypes.array,
   blankTemplates: PropTypes.object,
+  activeIndex: PropTypes.number,
 };
