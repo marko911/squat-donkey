@@ -16,6 +16,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
       filename: 'index.html',
+      favicon: 'favicon.ico',
     }),
     new webpack.ProvidePlugin({
       log: ['utils', 'log'],
