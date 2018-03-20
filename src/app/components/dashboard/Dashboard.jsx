@@ -132,10 +132,11 @@ export default class Dashboard extends React.Component {
     }
   }
 
+  setOne=() =>
 
-  setUrlParam = (id) => {
-    history.pushState(null, null, `?id=${id}`);
-  }
+    setUrlParam = (id) => {
+      history.pushState(null, null, `?id=${id}`);
+    }
 
   createNewProfile = () => {
     const id = sid.generate();
