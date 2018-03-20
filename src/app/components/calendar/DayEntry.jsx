@@ -79,5 +79,6 @@ export default class DayEntry extends React.Component {
 
 DayEntry.propTypes = {
   workouts: PropTypes.array,
+  day: PropTypes.object,
 };
 

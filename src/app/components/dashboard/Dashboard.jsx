@@ -20,6 +20,7 @@ import {
   T,
   over,
 } from 'ramda';
+import { debounce, throttle } from 'lodash';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -46,15 +47,6 @@ const Slide = ({ children, ...props }) => (
   <CSSTransition {...props}>{children}</CSSTransition>
 );
 
-const debounce = (func, delay) => {
-  let inDebounce;
-  return () => {
-    const context = this;
-    const args = arguments;
-    clearTimeout(inDebounce);
-    inDebounce = setTimeout(() => func.apply(context, args), delay);
-  };
-};
 
 export default class Dashboard extends React.Component {
   state = {
@@ -85,6 +77,7 @@ export default class Dashboard extends React.Component {
   componentWillMount() {
     this.getStockTemplates();
     this.getUserTemplates();
+    this.debouncedSave = debounce(this.saveTemplateToCloud, 2000, { trailing: true });
   }
 
   componentDidMount() {
@@ -111,12 +104,9 @@ export default class Dashboard extends React.Component {
 
   getUserTemplates = () => {
     const idFromUrl = getParamByName('id');
-    let id = idFromUrl || JSON.parse(localStorage.getItem('id'));
+    const id = idFromUrl || JSON.parse(localStorage.getItem('id'));
     if (!id) {
-      id = sid.generate();
-      localStorage.setItem('id', JSON.stringify(id));
-      this.setState({ id });
-      this.setTemplateView();
+      this.createNewProfile();
     } else {
       const profileUrl = `https://s3.amazonaws.com/workouttemplates/${id}.json`;
       fetch(profileUrl)
@@ -135,19 +125,30 @@ export default class Dashboard extends React.Component {
           disableCurrent: false,
           optionsModalTabIndex: 0,
         }, this.setTemplateView))
-        .catch(err => log('Failed to fetch profile', err));
+        .catch(err => this.createNewProfile());
     }
     if (!idFromUrl) {
       this.setUrlParam(id);
     }
   }
 
+
   setUrlParam = (id) => {
     history.pushState(null, null, `?id=${id}`);
   }
 
-  updateProp = (path, functor) =>
-    this.setState(over(path, functor), debounce(this.saveTemplateToCloud, 1000));
+  createNewProfile = () => {
+    const id = sid.generate();
+    localStorage.setItem('id', JSON.stringify(id));
+    this.setState({ id }, this.setTemplateView);
+    this.setUrlParam(id);
+  }
+
+  updateProp = (path, functor) => {
+    this.setState(over(path, functor));
+    this.debouncedSave();
+  }
+
 
   saveTemplateToCloud = () => {
     const url = `https://s3.amazonaws.com/workouttemplates/${this.state.id}.json`;

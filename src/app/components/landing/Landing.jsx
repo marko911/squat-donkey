@@ -22,7 +22,6 @@ export default class Landing extends React.Component {
         <Box
           wrap
           className={cs(s.cardsWrapper)}
-          justify="around"
         >
           <Box
             align="center"

@@ -63,6 +63,5 @@ Tooltip.propTypes = {
   el: PropTypes.node.isRequired,
   text: PropTypes.string.isRequired,
   className: PropTypes.string,
-  positionShift: PropTypes.number,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
