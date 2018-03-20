@@ -13,6 +13,7 @@ import font from '../card/fontello.scss';
 import Box from '../box/Box';
 import CustomOverlay from './CustomOverlay';
 
+
 export default class Card extends React.Component {
   state = {
     showInstructions: false,
@@ -77,6 +78,7 @@ export default class Card extends React.Component {
 
   toggleInstructions = () =>
     this.setState({ showInstructions: !this.state.showInstructions });
+
   toggleCollapse = () =>
     this.setState({ showAllRecords: !this.state.showAllRecords });
 
@@ -112,7 +114,7 @@ export default class Card extends React.Component {
     );
 
     const mainText = (
-      <div key={sid.generate()} className={c.lineItem}>
+      <div key={sid.generate()} className={c.cInstructions}>
         {instructions}
       </div>
     );
@@ -146,7 +148,7 @@ export default class Card extends React.Component {
 
     const inputRecords = (
       <Box
-          key="footer-card"
+        key="footer-card"
         column
         className={cs(c.sectionWrapper)}
       >
@@ -204,8 +206,7 @@ export default class Card extends React.Component {
         className={cs(font.iconTrashEmpty)}
       />
     );
-    const recordsList = this.state.showAllRecords
-      ? records
+    const recordsList = this.state.showAllRecords ? records
       : isEmpty(records) ? [] : [head(records)];
     const mostRecentWithCollapse = isEmpty(recordsList) ? (
       []

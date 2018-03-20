@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import cs from 'classnames';
 import s from '../layout.scss';
 
-
 const Box = ({
   children, column, align, wrap, auto, content, justify, className, ...props
 }) => {

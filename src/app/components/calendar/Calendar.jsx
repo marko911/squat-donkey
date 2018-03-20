@@ -104,13 +104,13 @@ export default class Calendar extends React.Component {
             </Box>
             {this.state.weeks.map(week => (
               <Box key={sid.generate()} className={s.week}>
-                {week.map((day) => {
+                {week.map((day, i) => {
                   const workouts = this.getWorkoutsForDate(day, this.state.workouts);
                   return (
                     <Day
                       workouts={workouts}
                       active={this.isToday(day)}
-                      key={sid.generate()}
+                      key={`day${i}`}
                       inRange={this.isInMonth(day)}
                       day={day}
                     />

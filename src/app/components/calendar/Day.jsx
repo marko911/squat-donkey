@@ -23,6 +23,7 @@ const Day = ({
         <div className={cs(active ? s.active : undefined)}>{day.format('D')}</div>
       </Box>
       <DayEntry
+        day={day}
         workouts={workouts}
       />
     </Box>

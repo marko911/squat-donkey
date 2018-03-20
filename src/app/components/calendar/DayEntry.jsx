@@ -14,9 +14,15 @@ export default class DayEntry extends React.Component {
 
   toggleCard = (active, workout) => ({ target }) => {
     if (!active) {
-      this.setState({ cardActive: !this.state.cardActive });
+      this.setState(state => ({
+        ...state,
+        cardActive: !this.state.cardActive,
+      }));
     } else {
-      this.setState({ currentWorkout: workout }, () => {
+      this.setState(state => ({
+        ...state,
+        currentWorkout: workout,
+      }), () => {
         const pos = target.getBoundingClientRect();
         const cardPosition = {
           top: pos.top + pos.height - 24,
@@ -31,17 +37,17 @@ export default class DayEntry extends React.Component {
         if (horizDiff < 0) {
           cardPosition.left = pos.left - 245 - 16;
         }
-
-        this.setState({
+        this.setState(state => ({
+          ...state,
           cardPosition,
           cardActive: !this.state.cardActive,
-        });
+        }));
       });
     }
   }
 
   render() {
-    const { workouts } = this.props;
+    const { workouts, day } = this.props;
     return (
       <Box
         column
@@ -54,12 +60,17 @@ export default class DayEntry extends React.Component {
         />}
         {workouts.map((w, i) => (
           <Box
-            key={`sess${i}`}
+            id={`hover${i}`}
+            key={`${day.format('D') + i}`}
             onMouseEnter={this.toggleCard(true, w)}
             onMouseLeave={this.toggleCard(false)}
           >
             <Box className={s.strip} style={getStyle(s.stripColors.split(','), w.styleIdx)} />
-            <Box align="center" className={cs(s.flex1, s.entry)} style={getStyle(s.entryColors.split(','), w.styleIdx)} >
+            <Box
+              align="center"
+              className={cs(s.flex1, s.entry)}
+              style={getStyle(s.entryColors.split(','), w.styleIdx)}
+            >
               {w.type}
             </Box>
           </Box>
