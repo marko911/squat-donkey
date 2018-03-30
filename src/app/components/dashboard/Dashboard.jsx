@@ -20,7 +20,7 @@ import {
   T,
   over,
 } from 'ramda';
-import { debounce, throttle } from 'lodash';
+import { debounce } from 'lodash';
 import form from '../newCard/newCard.scss';
 import s from './dashboard.scss';
 import font from '../card/fontello.scss';
@@ -41,12 +41,13 @@ import TemplateModal from '../modal/TemplateModal';
 import Landing from '../landing/Landing';
 import Spinner from '../icons/Spinner';
 
-const STOCKTEMPLATES = ['https://s3.amazonaws.com/workouttemplates/maximusBody.json'];
+const STOCKTEMPLATES = [
+  'https://s3.amazonaws.com/workouttemplates/maximusBody.json',
+];
 
 const Slide = ({ children, ...props }) => (
   <CSSTransition {...props}>{children}</CSSTransition>
 );
-
 
 export default class Dashboard extends React.Component {
   state = {
@@ -77,7 +78,9 @@ export default class Dashboard extends React.Component {
   componentWillMount() {
     this.getStockTemplates();
     this.getUserTemplates();
-    this.debouncedSave = debounce(this.saveTemplateToCloud, 2000, { trailing: true });
+    this.debouncedSave = debounce(this.saveTemplateToCloud, 2000, {
+      trailing: true,
+    });
   }
 
   componentDidMount() {
@@ -85,7 +88,10 @@ export default class Dashboard extends React.Component {
   }
 
   getStockTemplates = () => {
-    const getStock = url => fetch(url).then(data => data.json()).catch(err => log(err));
+    const getStock = url =>
+      fetch(url)
+        .then(data => data.json())
+        .catch(err => log(err));
     Promise.all(STOCKTEMPLATES.map(getStock)).then(stockTemplates =>
       this.setState({ stockTemplates }));
   };
@@ -93,14 +99,15 @@ export default class Dashboard extends React.Component {
   setTemplateView = () => {
     const disabled = !!isEmpty(this.state.template);
     this.setState({
-      view: isEmpty(this.state.template) ?
-        'landing' : 'template',
+      view: isEmpty(this.state.template) ? 'landing' : 'template',
       disableCurrent: disabled,
     });
-  }
+  };
 
   setShownCols = () =>
-    this.setState({ numColsShown: this.columns ? this.columns.children.length : 0 });
+    this.setState({
+      numColsShown: this.columns ? this.columns.children.length : 0,
+    });
 
   getUserTemplates = () => {
     const idFromUrl = getParamByName('id');
@@ -116,43 +123,46 @@ export default class Dashboard extends React.Component {
           calendarWorkouts,
           blankTemplates,
           recentTemplates,
-        }) => this.setState({
-          template,
-          calendarWorkouts,
-          blankTemplates,
-          recentTemplates,
-          id,
-          disableCurrent: false,
-          optionsModalTabIndex: 0,
-        }, this.setTemplateView))
+        }) =>
+          this.setState(
+            {
+              template,
+              calendarWorkouts,
+              blankTemplates,
+              recentTemplates,
+              id,
+              disableCurrent: false,
+              optionsModalTabIndex: 0,
+            },
+            this.setTemplateView,
+          ))
         .catch(err => this.createNewProfile());
     }
     if (!idFromUrl) {
       this.setUrlParam(id);
     }
-  }
+  };
 
-  setOne=() =>
 
-    setUrlParam = (id) => {
-      history.pushState(null, null, `?id=${id}`);
-    }
+    setUrlParam = id => history.pushState(null, null, `?id=${id}`);
+  ;
 
   createNewProfile = () => {
     const id = sid.generate();
     localStorage.setItem('id', JSON.stringify(id));
     this.setState({ id }, this.setTemplateView);
     this.setUrlParam(id);
-  }
+  };
 
   updateProp = (path, functor) => {
     this.setState(over(path, functor));
     this.debouncedSave();
-  }
-
+  };
 
   saveTemplateToCloud = () => {
-    const url = `https://s3.amazonaws.com/workouttemplates/${this.state.id}.json`;
+    const url = `https://s3.amazonaws.com/workouttemplates/${
+      this.state.id
+    }.json`;
     const myProfile = {
       currentTemplate: this.state.template,
       calendarWorkouts: this.state.calendarWorkouts,
@@ -167,9 +177,11 @@ export default class Dashboard extends React.Component {
       },
       method: 'PUT',
       mode: 'cors',
-    }).then(res => log('upload success', res)).catch(err => log(err));
+    })
+      .then(res => log('upload success', res))
+      .catch(err => log(err));
     this.setState({ saveBlankDisabled: false });
-  }
+  };
 
   // puts the latest workout at top of column
   rearrangeColumn = (catIdx, woIdx) => {
@@ -193,7 +205,6 @@ export default class Dashboard extends React.Component {
     const blank = blankTemplate(current);
     return merge(blanks, { [blank.templateName]: blank });
   };
-
 
   addWorkoutResult = (catIdx, woIdx) => (submission) => {
     const workoutResults = lensPath([
@@ -242,11 +253,13 @@ export default class Dashboard extends React.Component {
     const addedToRecents = merge(recentTemplates, {
       [this.state.template.templateName]: this.state.template,
     });
-    this.setState({ recentTemplates: addedToRecents }, this.saveTemplateToCloud);
+    this.setState(
+      { recentTemplates: addedToRecents },
+      this.saveTemplateToCloud,
+    );
   };
 
   loadTemplate = template => () => {
-    log('loading');
     this.saveCurrentTemplate();
     this.updateProp(lensProp('template'), always(template));
     this.closeOptionsModal();
@@ -361,7 +374,7 @@ export default class Dashboard extends React.Component {
   openModalNewTab = () => {
     this.setState({ optionsModalTabIndex: 2, disableCurrent: true });
     this.toggleField('showOptionsModal')();
-  }
+  };
 
   removeColumnFromTemplate = i => () =>
     this.deleteFromList(lensPath(['template', 'categories']), i);
@@ -492,11 +505,7 @@ export default class Dashboard extends React.Component {
     const columns = (
       <div
         ref={x => (this.columns = x)}
-        className={cs(
-          s.columns,
-          s.flex1,
-          numColsShown > 2 && s.spread,
-        )}
+        className={cs(s.columns, s.flex1, numColsShown > 2 && s.spread)}
       >
         {categories.map((c, i) =>
             (c.show ? (
@@ -522,9 +531,7 @@ export default class Dashboard extends React.Component {
                       onClick={() =>
                         this.updateProp(lensPath(['editMode', [c.type]]), not)
                       }
-                      text={`Edit:${
-                        editMode[c.type] ? 'On' : 'Off'
-                      }`}
+                      text={`Edit:${editMode[c.type] ? 'On' : 'Off'}`}
                     />
                   </Box>
                 </Box>
@@ -584,13 +591,18 @@ export default class Dashboard extends React.Component {
     );
     const renderView = cond([
       [equals('template'), always(columns)],
-      [equals('landing'), always(<Landing
-        stockTemplates={stockTemplates}
-        loadTemplate={this.loadTemplate}
-        createNew={this.openModalNewTab}
-      />)],
-      [equals('loading'),
-        always(<Box justify="center" align="center"><Spinner /></Box>)],
+      [
+        equals('landing'),
+        always(<Landing
+          stockTemplates={stockTemplates}
+          loadTemplate={this.loadTemplate}
+          createNew={this.openModalNewTab}
+        />),
+      ],
+      [
+        equals('loading'),
+        always(<Box justify="center" align="center"><Spinner /></Box>),
+      ],
       [T, always(<Calendar workouts={calendarWorkouts} />)],
     ]);
 
@@ -600,10 +612,7 @@ export default class Dashboard extends React.Component {
         <Box className={s.overflowWrapper} onClick={this.closeOnOutside}>
           <div
             ref={x => (this.dashContainer = x)}
-            className={cs(
-              s.dashContainer,
-              s.flex1,
-            )}
+            className={cs(s.dashContainer, s.flex1)}
           >
             <Box align="center" justify="between" className={s.viewToggle}>
               <Box align="center">
@@ -616,34 +625,52 @@ export default class Dashboard extends React.Component {
               <Box className={h.menuIcons}>
                 {view === 'template' ? (
                   <Tooltip
-                    el={<CalendarIcon
-                      className={cs(h.menuIcon, disableCurrent && s.disabled)}
-                    />}
-                    onClick={disableCurrent ? null : () => this.setState({ view: 'calendar' })}
+                    el={
+                      <CalendarIcon
+                        className={cs(h.menuIcon, disableCurrent && s.disabled)}
+                      />
+                    }
+                    onClick={
+                      disableCurrent
+                        ? null
+                        : () => this.setState({ view: 'calendar' })
+                    }
                     text="Calendar"
                   />
-              ) : (
-                <Tooltip
-                  el={<TemplateIcon
-                    className={cs(h.menuIcon, disableCurrent && s.disabled)}
-                    width={24}
-                    height={24}
-                  />}
-                  onClick={disableCurrent ? null : () => this.setState({ view: 'template' })}
-                  text="Dashboard"
-                />
-              )}
-                {this.state.addingColumnActive ?
+                ) : (
+                  <Tooltip
+                    el={
+                      <TemplateIcon
+                        className={cs(h.menuIcon, disableCurrent && s.disabled)}
+                        width={24}
+                        height={24}
+                      />
+                    }
+                    onClick={
+                      disableCurrent
+                        ? null
+                        : () => this.setState({ view: 'template' })
+                    }
+                    text="Dashboard"
+                  />
+                )}
+                {this.state.addingColumnActive ? (
                   <Tooltip
                     el={<CircleCancelIcon className={h.menuIcon} />}
                     onClick={this.addNewColumn}
                     text="Cancel"
-                  /> :
+                  />
+                ) : (
                   <Tooltip
-                    el={<CircleAddIcon className={cs(h.menuIcon, disableCurrent && s.disabled)} />}
+                    el={
+                      <CircleAddIcon
+                        className={cs(h.menuIcon, disableCurrent && s.disabled)}
+                      />
+                    }
                     onClick={disableCurrent ? null : this.addNewColumn}
                     text="Add new workout"
-                  />}
+                  />
+                )}
                 <Tooltip
                   el={<SlidersIcon className={h.menuIcon} />}
                   onClick={this.toggleField('showOptionsModal')}
