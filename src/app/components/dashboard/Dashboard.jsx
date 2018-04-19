@@ -43,6 +43,7 @@ import Spinner from '../icons/Spinner';
 
 const STOCKTEMPLATES = [
   'https://s3.amazonaws.com/workouttemplates/maximusBody.json',
+  'https://s3.amazonaws.com/workouttemplates/10kswings.json',
 ];
 
 const Slide = ({ children, ...props }) => (
@@ -253,6 +254,7 @@ export default class Dashboard extends React.Component {
     const addedToRecents = merge(recentTemplates, {
       [this.state.template.templateName]: this.state.template,
     });
+    log(JSON.stringify(this.state.template));
     this.setState(
       { recentTemplates: addedToRecents },
       this.saveTemplateToCloud,
