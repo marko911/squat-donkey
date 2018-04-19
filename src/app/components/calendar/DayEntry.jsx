@@ -46,8 +46,7 @@ export default class DayEntry extends React.Component {
   render() {
     const { workouts, day } = this.props;
     return (
-      <Box
-        column
+      <div
         className={cs(s.entryContainer, s.flex1)}
       >
         {this.state.cardActive && <CalendarCard
@@ -72,8 +71,7 @@ export default class DayEntry extends React.Component {
             </Box>
           </Box>
         ))}
-
-      </Box>);
+      </div>);
   }
 }
 

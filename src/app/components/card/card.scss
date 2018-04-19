@@ -10,7 +10,7 @@
   padding-bottom: 0;
 }
 .card-divider {
-  border-bottom: 1px solid $color-card-divider-strong;
+  @extend .blue-horizontal-divder;
 }
 .card {
   color: $color-font-card;

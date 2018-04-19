@@ -41,8 +41,8 @@
 
 .category-header {
   @extend .header-font;
+  @extend .blue-horizontal-divder;
   background-color: $color-card-bg;
-  border-bottom: 1px solid #e0ebfc;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   min-height: 30px;

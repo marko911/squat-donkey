@@ -1,46 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cs from 'classnames';
-import { keys } from 'ramda';
 import sid from 'shortid';
 import Box from '../box/Box';
 import s from './calendar.scss';
 
 const CalendarCard = ({ session, className, ...props }) => {
   const {
-    type, workout, results, template,
+    workout, results, template: templateName,
   } = session;
+  log('sessss', session);
   return (
     <Box
       column
       className={className}
       {...props}
     >
-      <Box
-        className={s.woType}
-        align="baseline"
-      >{type}<div className={s.templateName}> ({template})</div>
-      </Box>
-      <div className={s.cardTitle}>{workout.name}</div>
-      <Box
-        align="end"
-        justify="between"
-        className={s.cardResult}
-      >
-        {results.map((r, i) => (
-          <Box
-            column
-            align="center"
-            key={sid.generate()}
-          >{[
-            <div key={`resname${i}`} className={s.resultName}>{workout.recordables[i]}</div>,
-             r || 'N/A',
-          ]}
-          </Box>
-          )).reduce((prev, curr) => [prev, <span key={sid.generate()} className={s.divider} />,
-             curr])}
-      </Box>
-      <Box column>
+      <div className={s.cardTitle}>{workout.name}
+        <div className={s.templateName}> {templateName}</div>
+      </div>
+
+      <Box className={s.workoutBlock} column>
         {workout.exerciseBlocks.map((block, i) => (
           <Box
             className={s.exercises}
@@ -49,11 +28,10 @@ const CalendarCard = ({ session, className, ...props }) => {
           >
             {
             block.subheadings.map((sub, j) => (
-              <div key={j}>
-                <div
-                  className={s.cardSubheading}
-                >{sub}
-                </div>
+              <div
+                key={j}
+                className={s.cardSubheading}
+              >{sub}
               </div>
             ))
           }
@@ -69,6 +47,28 @@ const CalendarCard = ({ session, className, ...props }) => {
           </Box>
         ))}
       </Box>
+      {
+        !!results.length &&
+        <Box
+          align="end"
+          justify="between"
+          className={s.cardResult}
+        >
+          { results.map((r, i) => (
+            <Box
+              column
+              align="center"
+              key={sid.generate()}
+            >{[
+              <div key={`resname${i}`} className={s.resultName}>{workout.recordables[i]}</div>,
+             r || 'N/A',
+          ]}
+            </Box>
+          )).reduce((prev, curr) => [prev, <span key={sid.generate()} className={s.divider} />,
+             curr], [])}
+        </Box>
+      }
+
     </Box>
   );
 };
