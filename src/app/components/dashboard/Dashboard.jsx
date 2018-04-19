@@ -67,6 +67,8 @@ export default class Dashboard extends React.Component {
     addingColumnActive: false,
     showOptionsModal: false,
     showMenu: false,
+    blankTemplates: {},
+    recentTemplates: {},
     focus: {
       newTemplateName: false,
       categories: [false],
@@ -119,13 +121,14 @@ export default class Dashboard extends React.Component {
       const profileUrl = `https://s3.amazonaws.com/workouttemplates/${id}.json`;
       fetch(profileUrl)
         .then(data => data.json())
-        .then(({
-          currentTemplate: template,
-          calendarWorkouts,
-          blankTemplates,
-          recentTemplates,
-        }) =>
-          this.setState(
+        .then((result) => {
+          const {
+            currentTemplate: template,
+            calendarWorkouts,
+            blankTemplates = {},
+            recentTemplates = {},
+          } = result;
+          return this.setState(
             {
               template,
               calendarWorkouts,
@@ -136,7 +139,8 @@ export default class Dashboard extends React.Component {
               optionsModalTabIndex: 0,
             },
             this.setTemplateView,
-          ))
+          );
+        })
         .catch(err => this.createNewProfile());
     }
     if (!idFromUrl) {
@@ -155,8 +159,8 @@ export default class Dashboard extends React.Component {
     this.setUrlParam(id);
   };
 
-  updateProp = (path, functor) => {
-    this.setState(over(path, functor));
+  updateProp = (path, functor, cb) => {
+    this.setState(over(path, functor), cb || T);
     this.debouncedSave();
   };
 
@@ -254,7 +258,6 @@ export default class Dashboard extends React.Component {
     const addedToRecents = merge(recentTemplates, {
       [this.state.template.templateName]: this.state.template,
     });
-    log(JSON.stringify(this.state.template));
     this.setState(
       { recentTemplates: addedToRecents },
       this.saveTemplateToCloud,
@@ -262,14 +265,15 @@ export default class Dashboard extends React.Component {
   };
 
   loadTemplate = template => () => {
-    this.saveCurrentTemplate();
-    this.updateProp(lensProp('template'), always(template));
-    this.closeOptionsModal();
-    this.setState({
-      view: 'template',
-      showOptionsModal: false,
-      disableCurrent: false,
-      optionsModalTabIndex: 0,
+    this.updateProp(lensProp('template'), always(template), () => {
+      this.saveCurrentTemplate();
+      this.closeOptionsModal();
+      this.setState({
+        view: 'template',
+        showOptionsModal: false,
+        disableCurrent: false,
+        optionsModalTabIndex: 0,
+      });
     });
   };
 
@@ -544,7 +548,6 @@ export default class Dashboard extends React.Component {
                         in={newCardOpen[i]}
                         timeout={{ enter: 200, exit: 0 }}
                         classNames={s}
-                        onEnter={() => log('entering')}
                         key="newcard"
                       >
                         <NewCard

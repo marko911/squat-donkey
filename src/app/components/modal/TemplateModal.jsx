@@ -74,7 +74,7 @@ export default class TemplateModal extends React.Component {
       activeIndex = 0,
       disableCurrent,
     } = this.props;
-
+    log(recentTemplates);
     const current = (
       <React.Fragment>
         <Box key="curre" justify="between" className={cs(o.tableHeader)}>
