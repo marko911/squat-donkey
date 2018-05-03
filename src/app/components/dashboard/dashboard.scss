@@ -25,8 +25,12 @@
 .columns {
   display:flex;
   margin-top: 9px;
-  overflow: hidden;
+  overflow: scroll;
   height: calc(100vh - 79px);
+}
+
+.cols-container {
+  display: flex;
 }
 
 .header-font{

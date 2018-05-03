@@ -406,11 +406,10 @@ export default class Dashboard extends React.Component {
       { addingColumnActive: !this.state.addingColumnActive },
       () => {
         if (this.state.addingColumnActive) {
-          const parent = this.dashElement.parentElement;
-          const diff =
-            this.dashContainer.offsetWidth -
+          const { columns } = this;
+          const diff = this.colsContainer.offsetWidth + 24 -
             document.documentElement.clientWidth;
-          parent.scrollLeft = diff;
+          columns.scrollLeft = diff + 24;
         }
       },
     );
@@ -508,92 +507,87 @@ export default class Dashboard extends React.Component {
         )}
       </TransitionGroup>
     );
-    const columns = (
-      <div
-        ref={x => (this.columns = x)}
-        className={cs(s.columns, s.flex1, numColsShown > 2 && s.spread)}
-      >
-        {categories.map((c, i) =>
-            (c.show ? (
-              <Box key={`cat${i}`} column className={s.colWrapper}>
-                <Box
-                  className={s.categoryHeader}
-                  align="center"
-                  justify="between"
-                >
-                  <div className={s.cardName}>{c.type}</div>
-                  <Box align="center">
-                    <Tooltip
-                      className={font.tooltipIcon}
-                      el={addWorkoutIcon}
-                      onClick={() =>
-                        this.updateProp(lensPath(['newCardOpen', [i]]), not)
-                      }
-                      text="Add workout"
-                    />
-                    <Tooltip
-                      className={font.tooltipIcon}
-                      el={editColumnIcon}
-                      onClick={() =>
-                        this.updateProp(lensPath(['editMode', [c.type]]), not)
-                      }
-                      text={`Edit:${editMode[c.type] ? 'On' : 'Off'}`}
-                    />
-                  </Box>
-                </Box>
-                <Box column className={s.workoutsContainer}>
-                  <TransitionGroup>
-                    {newCardOpen[i] && (
-                      <Slide
-                        in={newCardOpen[i]}
-                        timeout={{ enter: 200, exit: 0 }}
-                        classNames={s}
-                        key="newcard"
-                      >
-                        <NewCard
-                          key={`newcard${i}`}
-                          className={s.newCardOpen}
-                          onSubmit={this.addWorkoutToColumn(i)}
-                          close={() =>
-                            this.updateProp(lensPath(['newCardOpen', [i]]), not)
-                          }
-                        />
-                      </Slide>
-                    )}
-                  </TransitionGroup>
-
-                  {c.workouts.length || newCardOpen[i] ? (
-                    c.workouts.map((w, j) => (
-                      <Card
-                        key={`card--${j}`}
-                        onSubmitRecord={this.addWorkoutResult(i, j)}
-                        onDeleteSelf={this.deleteWorkout(i, j)}
-                        onDeleteRecord={this.deleteRecord(i, j)}
-                        data={w}
-                        type={c.type}
-                        editMode={!!editMode[c.type]}
-                      />
-                    ))
-                  ) : (
-                    <Card key={sid.generate()}>
-                      <Box className={s.flex1} justify="center" align="center">
-                        <div
-                          onClick={() =>
-                            this.updateProp(lensPath(['newCardOpen', [i]]), not)
-                          }
-                          className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
-                        >
-                          + Add New Workout
-                        </div>
-                      </Box>
-                    </Card>
-                  )}
-                </Box>
+    const columns = (<Box>
+      {categories.map((c, i) =>
+        (c.show ? (
+          <Box key={`catcols-${i}`} column className={s.colWrapper}>
+            <Box
+              className={s.categoryHeader}
+              align="center"
+              justify="between"
+            >
+              <div className={s.cardName}>{c.type}</div>
+              <Box align="center">
+                <Tooltip
+                  className={font.tooltipIcon}
+                  el={addWorkoutIcon}
+                  onClick={() =>
+        this.updateProp(lensPath(['newCardOpen', [i]]), not)
+        }
+                  text="Add workout"
+                />
+                <Tooltip
+                  className={font.tooltipIcon}
+                  el={editColumnIcon}
+                  onClick={() =>
+        this.updateProp(lensPath(['editMode', [c.type]]), not)
+        }
+                  text={`Edit:${editMode[c.type] ? 'On' : 'Off'}`}
+                />
               </Box>
-            ) : null))}
-        {addingColumnActive && NewColumn}
-      </div>
-    );
+            </Box>
+            <Box column className={s.workoutsContainer}>
+              <TransitionGroup>
+                {newCardOpen[i] && (
+                <Slide
+                  in={newCardOpen[i]}
+                  timeout={{ enter: 200, exit: 0 }}
+                  classNames={s}
+                  key="newcard"
+                >
+                  <NewCard
+                    key="newcard"
+                    className={s.newCardOpen}
+                    onSubmit={this.addWorkoutToColumn(i)}
+                    close={() =>
+        this.updateProp(lensPath(['newCardOpen', [i]]), not)
+        }
+                  />
+                </Slide>
+        )}
+              </TransitionGroup>
+
+              {c.workouts.length || newCardOpen[i] ? (
+        c.workouts.map((w, j) => (
+          <Card
+            key="card--"
+            onSubmitRecord={this.addWorkoutResult(i, j)}
+            onDeleteSelf={this.deleteWorkout(i, j)}
+            onDeleteRecord={this.deleteRecord(i, j)}
+            data={w}
+            type={c.type}
+            editMode={!!editMode[c.type]}
+          />
+        ))
+        ) : (
+          <Card key={sid.generate()}>
+            <Box className={s.flex1} justify="center" align="center">
+              <div
+                onClick={() =>
+        this.updateProp(lensPath(['newCardOpen', [i]]), not)
+        }
+                className={cs(s.btn, s.btnSecondary, s.addWorkoutBtn)}
+              >
+        + Add New Workout
+              </div>
+            </Box>
+          </Card>
+        )}
+            </Box>
+          </Box>
+        ) : null))}
+      {addingColumnActive && NewColumn}
+                     </Box>);
     const renderView = cond([
       [equals('template'), always(columns)],
       [
@@ -612,9 +606,9 @@ export default class Dashboard extends React.Component {
     ]);
 
     return (
-      <div ref={x => (this.dashElement = x)} className={cs(s.auto)}>
+      <div className={cs(s.auto)}>
         {TemplateOptionsModal}
-        <Box className={s.overflowWrapper} onClick={this.closeOnOutside}>
+        <Box column className={s.overflowWrapper} onClick={this.closeOnOutside}>
           <div
             ref={x => (this.dashContainer = x)}
             className={cs(s.dashContainer, s.flex1)}
@@ -673,7 +667,7 @@ export default class Dashboard extends React.Component {
                       />
                     }
                     onClick={disableCurrent ? null : this.addNewColumn}
-                    text="Add new workout"
+                    text="Add new column"
                   />
                 )}
                 <Tooltip
@@ -683,7 +677,14 @@ export default class Dashboard extends React.Component {
                 />
               </Box>
             </Box>
-            {renderView(this.state.view)}
+            <div
+              ref={x => (this.columns = x)}
+              className={cs(s.columns, s.flex1, numColsShown > 2 && s.spread)}
+            >
+              <div className={s.colsContainer} ref={x => this.colsContainer = x}>
+                {renderView(this.state.view)}
+              </div>
+            </div>
           </div>
         </Box>
       </div>
