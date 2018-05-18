@@ -40,25 +40,10 @@ const initialState = {
   invalidFields: [],
 };
 
-const requiredFields = [
-  { prop: 'name', validator: obj => !isEmpty(obj) },
-];
 
 export default class NewCard extends React.Component {
   state = initialState;
 
-  isValidWorkout = (workoutObj) => {
-    const invalidFields = [];
-    const isValid = requiredFields.reduce((valid, f) => {
-      const fieldValid = f.validator(workoutObj[f.prop]);
-      if (!fieldValid) {
-        invalidFields.push(f.prop);
-      }
-      return fieldValid && valid;
-    }, true);
-    this.setState({ invalidFields });
-    return isValid;
-  }
 
   submitWorkout =() => {
     const {
@@ -73,12 +58,7 @@ export default class NewCard extends React.Component {
       records: [],
     };
 
-    const validateAndSubmit = ifElse(
-      this.isValidWorkout,
-      this.props.onSubmit,
-      T,
-    );
-    validateAndSubmit(workoutObj);
+    this.props.onSubmit(workoutObj);
   }
 
   handleChange = field => ({ target: { value } }) => {
@@ -126,7 +106,6 @@ export default class NewCard extends React.Component {
       <InputWithLabel
         key="name"
         label="Workout Name/Title"
-        required
         focused={this.state.focus.name}
       >
         <input
